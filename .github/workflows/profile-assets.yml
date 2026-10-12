@@ -1,0 +1,87 @@
+name: Update profile assets
+
+# Builds the images the profile README uses (stats card, top languages and the
+# contribution snake) and publishes them to the `output` branch.
+# Generating them here instead of hot-linking public Vercel instances avoids
+# rate limits and paused deployments.
+
+on:
+  schedule:
+    - cron: "17 3 * * *" # daily at 08:47 IST
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/profile-assets.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: profile-assets
+  cancel-in-progress: true
+
+env:
+  DARK: bg_color=0d0221&title_color=a78bfa&icon_color=7dd3fc&text_color=c4b5fd&hide_border=true
+  LIGHT: bg_color=f5f3ff&title_color=6d28d9&icon_color=0284c7&text_color=1e1b4b&hide_border=true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      # Uses the built-in token, which only sees public activity. To include
+      # private contributions, add a STATS_TOKEN secret (classic PAT with
+      # `read:user` and `repo` scopes).
+      - name: Stats card (dark)
+        uses: stats-organization/github-readme-stats-action@v2
+        with:
+          card: stats
+          options: username=${{ github.repository_owner }}&show_icons=true&hide=stars&hide_rank=true&${{ env.DARK }}
+          path: dist/stats-dark.svg
+          token: ${{ secrets.STATS_TOKEN || secrets.GITHUB_TOKEN }}
+          fail_on_error: true
+
+      - name: Stats card (light)
+        uses: stats-organization/github-readme-stats-action@v2
+        with:
+          card: stats
+          options: username=${{ github.repository_owner }}&show_icons=true&hide=stars&hide_rank=true&${{ env.LIGHT }}
+          path: dist/stats-light.svg
+          token: ${{ secrets.STATS_TOKEN || secrets.GITHUB_TOKEN }}
+          fail_on_error: true
+
+      - name: Top languages (dark)
+        uses: stats-organization/github-readme-stats-action@v2
+        with:
+          card: top-langs
+          options: username=${{ github.repository_owner }}&layout=compact&langs_count=8&${{ env.DARK }}
+          path: dist/top-langs-dark.svg
+          token: ${{ secrets.STATS_TOKEN || secrets.GITHUB_TOKEN }}
+          fail_on_error: true
+
+      - name: Top languages (light)
+        uses: stats-organization/github-readme-stats-action@v2
+        with:
+          card: top-langs
+          options: username=${{ github.repository_owner }}&layout=compact&langs_count=8&${{ env.LIGHT }}
+          path: dist/top-langs-light.svg
+          token: ${{ secrets.STATS_TOKEN || secrets.GITHUB_TOKEN }}
+          fail_on_error: true
+
+      - name: Contribution snake
+        uses: Platane/snk/svg-only@v3
+        with:
+          github_user_name: ${{ github.repository_owner }}
+          outputs: |
+            dist/snake-dark.svg?color_snake=#7dd3fc&color_dots=#151b23,#3b0764,#6d28d9,#8b5cf6,#c4b5fd
+            dist/snake-light.svg?color_snake=#0284c7&color_dots=#ebedf0,#ddd6fe,#a78bfa,#7c3aed,#4c1d95
+
+      - name: Publish to output branch
+        uses: crazy-max/ghaction-github-pages@v5
+        with:
+          target_branch: output
+          build_dir: dist
+          commit_message: "chore: update profile assets"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
