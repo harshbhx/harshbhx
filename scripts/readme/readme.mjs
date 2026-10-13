@@ -1,7 +1,7 @@
 // README.md template. Images are referenced by absolute raw.githubusercontent
 // URLs because GitHub does not rewrite relative paths inside <picture srcset>.
 
-import { PROFILE, LINKS, SECTIONS, PROOF, PROJECTS, DECISIONS, PRINCIPLES, STACK, SERVICES, WORKING_STYLE, CTA } from './content.mjs'
+import { PROFILE, LINKS, SECTIONS, ARENA, WORK, PRINCIPLES, HIRE, NOW, STACK, CTA } from './content.mjs'
 import { LAYOUT } from './lib/theme.mjs'
 import { PAIR_GUTTER, FULL_GUTTER } from './lib/svg.mjs'
 
@@ -9,75 +9,78 @@ const REPO = 'harshbhx/harshbhx'
 export const ASSET_BASE = `https://raw.githubusercontent.com/${REPO}/main/assets/`
 export const OUTPUT_BASE = `https://raw.githubusercontent.com/${REPO}/output/`
 
-// Order of blocks on the page. 'pair' = two half-width images that sit side
-// by side on desktop and stack on phones. 'live' = images rebuilt daily by
-// .github/workflows/profile-assets.yml on the `output` branch.
+// Order of blocks on the page.
+//  full       one full-width image
+//  pair       two half-width images: side by side on desktop, stacked on phones
+//  tabs       the contents bar: small images linking to in-page anchors
+//  section    <a name> anchor + that section's header image
+//  live-pair  / live-full: images rebuilt daily by GitHub Actions (output branch)
+//  text       real Markdown/HTML text (selectable, translatable, searchable)
 export const PAGE = [
-  ['full', 'hero'],
-  ['pair', 'about-terminal', 'about-now'],
-  ['full', 'section-proof'],
-  ['pair', 'proof-a', 'proof-b'],
-  ['full', 'section-projects'],
-  ['pair', 'project-dualmind', 'arch-dualmind'],
-  ['pair', 'project-mealmind', 'arch-mealmind'],
-  ['pair', 'project-agent', 'arch-agent'],
-  ['full', 'section-build'],
-  ['pair', 'decisions', 'principles'],
-  ['full', 'section-stack'],
-  ['pair', 'stack-build', 'stack-run'],
-  ['full', 'section-services'],
-  ['pair', 'services-a', 'services-b'],
-  ['full', 'section-activity'],
-  ['live'],
-  ['full', 'cta'],
-  ['row', 'btn-email', 'btn-linkedin', 'btn-github', 'btn-devto', 'btn-website', 'btn-discord'],
-  ['full', 'footer'],
+  ['full', 'masthead'],
+  ['tabs', ...SECTIONS.map((s) => `tab-${s.key}`)],
+  ['text', 'links'],
+  ['section', 'arena'],
+  ['pair', 'arena-story', 'arena-figure'],
+  ['section', 'work'],
+  ['pair', 'feature-pixelproof', 'feature-modvigil'],
+  ['pair', 'feature-builder', 'feature-agent'],
+  ['pair', 'feature-mealmind', 'house-rules'],
+  ['section', 'hire'],
+  ['pair', 'hire', 'now'],
+  ['section', 'stack'],
+  ['pair', 'stack-a', 'stack-b'],
+  ['live-pair', 'numbers', 'languages'],
+  ['live-full', 'calendar'],
+  ['section', 'contact'],
+  ['full', 'letter'],
+  ['text', 'contact-links'],
+  ['text', 'map'],
+  ['live-full', 'colophon'],
 ]
 
-// Which side of a pair each asset sits on (build.mjs / live.mjs pad every half).
+// Alt text for the images built in CI. README.md is static while the images
+// change daily, so these must stay true whatever the data, the time of the run
+// (the card's kicker says "this morning" / "this evening") or the token (with
+// a STATS_TOKEN private repositories count too). Each SVG's own <desc> carries
+// the exact figures.
+export const LIVE_ALT = {
+  numbers: 'My GitHub numbers: all-time contributions; commits, pull requests, issues and repositories over the last 12 months; and streaks, refreshed daily',
+  languages: 'Languages across my repositories by code size, as counted by GitHub, refreshed daily',
+  calendar: 'My GitHub contribution calendar for the last 12 months, refreshed daily',
+  colophon: 'Colophon: reprinted daily by GitHub Actions, with a live status check of dualmindlab.tech, the Arena, the docs and PixelProof',
+}
+
+/** Which side of a pair an asset sits on (build.mjs / live.mjs pad every half). */
 export function pairSide(name) {
-  for (const [kind, a, b] of PAGE) if (kind === 'pair') {
+  for (const [kind, a, b] of PAGE) if (kind === 'pair' || kind === 'live-pair') {
     if (name === a) return 'left'
     if (name === b) return 'right'
   }
-  if (name === 'activity-stats') return 'left'
-  if (name === 'activity-langs') return 'right'
   return null
 }
 
-/** True for the full-width blocks (build.mjs pads them like the halves). */
-export const isFull = (name) => PAGE.some(([kind, n]) => kind === 'full' && n === name)
-
-export const LIVE = [
-  { name: 'activity-stats', alt: 'GitHub stats: contributions, commits, pull requests, issues and streaks' },
-  { name: 'activity-langs', alt: 'Most used languages across my repositories' },
-  { name: 'snake', alt: 'Contribution graph being eaten by a snake', full: true },
-]
+/** True for full-width blocks (padded like the halves so card edges line up). */
+export const isFull = (name) => PAGE.some(([kind, n]) => (kind === 'full' || kind === 'live-full') && n === name) || name.startsWith('section-')
 
 // ── Geometry ────────────────────────────────────────────────────────────────
 // github.com draws the profile README in an 846px column on desktop (358px on
 // a 390px phone); two images on one line are separated by one ~4.4px space.
-// Every image carries a transparent side margin (lib/svg.mjs): halves 8 of
-// 431 units, full-width blocks 16 of 882 — the same share of their width.
-//  - phone: every image is drawn at the column width, so all card edges meet;
-//  - desktop: full-width blocks fill the column, and the halves get the README
-//    width that puts a pair's outer card edges on the full-width card edges
-//    (the gap between the two cards is then 2 × 8 units + the space ≈ 20px).
-// The contribution snake (Platane/snk, 880 wide with ~16-unit margins) gets
-// the full width too, so its grid lines up with the cards as well.
+// Halves carry an 8-unit transparent margin each side (431 units), full-width
+// blocks 16 units (882), so every card edge lines up on desktop and phone.
 const COLUMN = 846
 const SPACE = 4.4
 const HALF_SRC = LAYOUT.half + 2 * PAIR_GUTTER // 431
 const FULL_SRC = LAYOUT.full + 2 * FULL_GUTTER // 882
 export const FULL_W = COLUMN
-const fullInset = (FULL_GUTTER * FULL_W) / FULL_SRC // card edge, px from the column edge
+const fullInset = (FULL_GUTTER * FULL_W) / FULL_SRC
 export const HALF_W = Math.round(((COLUMN - SPACE) / 2 - fullInset) / (1 - PAIR_GUTTER / HALF_SRC)) // 413
 if (2 * HALF_W + SPACE > COLUMN) throw new Error(`a pair (${2 * HALF_W}px + space) no longer fits the ${COLUMN}px column`)
 
 /** Width attribute the README gives an asset on desktop (null: its own width). */
 export function displayWidth(name) {
   if (pairSide(name)) return HALF_W
-  if (isFull(name) || name === 'snake') return FULL_W
+  if (isFull(name)) return FULL_W
   return null
 }
 
@@ -88,115 +91,155 @@ function picture(base, name, alt, width) {
     '<picture>',
     `<source media="(prefers-color-scheme: dark)" srcset="${base}${name}-dark.svg">`,
     `<source media="(prefers-color-scheme: light)" srcset="${base}${name}-light.svg">`,
-    `<img src="${base}${name}-dark.svg" alt="${esc(alt)}" width="${width}">`,
+    `<img src="${base}${name}-dark.svg" alt="${esc(alt)}"${width ? ` width="${width}"` : ''}>`,
     '</picture>',
   ].join('')
 }
 
-function linked(html, href) {
-  return href ? `<a href="${esc(href)}">${html}</a>` : html
+const linked = (html, href) => (href ? `<a href="${esc(href)}">${html}</a>` : html)
+const a = (label, href) => `<a href="${esc(href)}">${label}</a>`
+
+// Real-text blocks: the secondary links the images cannot carry (one link per
+// image), as real, selectable text. The pitch itself lives in the images
+// (masthead, /now, letter), so these rows are links only. Every line is short
+// enough for a 358px phone column, and breaks are explicit, so no line ever
+// ends on a dangling '·'.
+const TEXT = {
+  // under the contents tabs: the hiring email (role template), then the two places to look me up
+  links: () => `<p align="center">\n${[a('<b>Email me</b>', LINKS.hire.href), a('LinkedIn', LINKS.linkedin.href), a(LINKS.website.value, LINKS.website.href)].join(' · ')}\n</p>`,
+  // under the letter (which links to the role template): the plain address for anything else.
+  // No GitHub link: the reader is already on the profile.
+  'contact-links': () =>
+    `<p align="center">\n${a(`<b>${PROFILE.email}</b>`, LINKS.email.href)}<br>\n${[a('LinkedIn', LINKS.linkedin.href), a('Dev.to', LINKS.devto.href), `Discord:&nbsp;${LINKS.discord.value}`].join(' · ')}\n</p>`,
+  map: () =>
+    [
+      '<details>',
+      `<summary>Where I am — ${PROFILE.city} on GitHub’s interactive map</summary>`,
+      '',
+      '```geojson',
+      JSON.stringify(
+        {
+          type: 'FeatureCollection',
+          features: [
+            {
+              type: 'Feature',
+              geometry: { type: 'Point', coordinates: PROFILE.coords },
+              properties: { title: PROFILE.name, description: `${PROFILE.location} · ${PROFILE.openTo.headline.toLowerCase()}`, 'marker-color': '#C9643C', 'marker-symbol': 'star' },
+            },
+          ],
+        },
+        null,
+        2,
+      ),
+      '```',
+      '',
+      '</details>',
+    ].join('\n'),
 }
 
 export function readme(registry) {
   const missing = []
-  const img = (name) => {
+  const img = (name, opts = {}) => {
     const e = registry.get(name)
     if (!e) {
       missing.push(name)
       return null
     }
-    return linked(picture(ASSET_BASE, e.name, e.alt, displayWidth(e.name) ?? e.width), e.href)
+    return linked(picture(ASSET_BASE, e.name, e.alt, opts.width ?? displayWidth(e.name) ?? e.width), opts.href ?? e.href)
   }
+  // the colophon's 'reprinted daily by GitHub Actions' links to the runs themselves
+  const LIVE_HREF = { colophon: LINKS.actions.href }
+  const live = (name) => linked(picture(OUTPUT_BASE, name, LIVE_ALT[name], displayWidth(name)), LIVE_HREF[name])
+  const p = (parts) => (parts.filter(Boolean).length ? `<p align="center">\n${parts.filter(Boolean).join('\n')}\n</p>` : null)
+
   const blocks = []
   for (const [kind, ...names] of PAGE) {
-    if (kind === 'live') {
-      const [stats, langs, snake] = LIVE.map((l) => picture(OUTPUT_BASE, l.name, l.alt, displayWidth(l.name)))
-      blocks.push(`<p align="center">\n${stats}\n${langs}\n</p>`, `<p align="center">\n${snake}\n</p>`)
-      continue
-    }
-    const parts = names.map(img).filter(Boolean)
-    if (parts.length) blocks.push(`<p align="center">\n${parts.join('\n')}\n</p>`)
+    if (kind === 'full' || kind === 'pair') blocks.push(p(names.map((n) => img(n))))
+    else if (kind === 'tabs') blocks.push(p(names.map((n) => img(n, { href: `#user-content-${n.replace(/^tab-/, '')}` }))))
+    else if (kind === 'section') blocks.push(`<a name="${names[0]}"></a>\n\n${p([img(`section-${names[0]}`)]) || ''}`)
+    else if (kind === 'live-pair' || kind === 'live-full') blocks.push(p(names.map(live)))
+    else if (kind === 'text') blocks.push(TEXT[names[0]]())
   }
 
   const markdown = [
     '<!-- Generated by scripts/readme (npm run build). Edit scripts/readme/content.mjs, not this file. -->',
     '',
-    blocks.join('\n\n'),
+    blocks.filter(Boolean).join('\n\n'),
     '',
-    plainText(registry),
+    plainText(),
     '',
   ].join('\n')
   return { markdown, missing }
 }
 
 // A text version of everything in the images, for screen readers, search
-// engines and anyone with images turned off.
-function plainText(registry) {
+// engines, translation and anyone with images turned off.
+function plainText() {
   const L = LINKS
-  // a detail that is one of the links (e.g. "docs.dualmindlab.tech") becomes that link
-  const link = (text) => {
-    const l = Object.values(L).find((x) => x.value === text && x.href)
-    return l ? `[${text}](${l.href})` : text
-  }
-  const status = (p) => (p.status === 'live' ? `live at [${p.url}](${p.href})` : 'built')
-  // the architecture diagram's alt text, minus its "<name> architecture — <title>." lead-in
-  const arch = (p) => registry.get(`arch-${p.key}`)?.alt?.replace(/^.*? architecture — [^.]*\.\s*/, '')
-  const contact = ['email', 'linkedin', 'github', 'devto', 'website', 'discord'].map((k) => L[k])
+  const S = Object.fromEntries(SECTIONS.map((s) => [s.key, s]))
+  const links = (w) => (w.links.length ? ` — ${w.links.map((l) => `[${l.label}](${l.href})`).join(' · ')}` : '')
+  // a detail that is just a domain becomes a link; a one-word value ("Docs") takes a colon
+  const detail = (s) => (/^[a-z0-9.-]+\.[a-z]{2,}$/i.test(s) ? `[${s}](https://${s})` : s)
+  const proof = (x) => `- **${x.value}${/^[A-Z][a-z]+$/.test(x.value) ? ':' : ''}** ${x.label} — ${detail(x.detail)}`
   const lines = [
     '<details>',
     '<summary>Plain-text version</summary>',
     '',
-    `**${PROFILE.name}** — ${PROFILE.role} · ${PROFILE.companyRole} @ [${PROFILE.company}](${L.website.href})`,
+    `**${PROFILE.name}** — ${PROFILE.companyRole}, [${PROFILE.company}](${L.website.href}) · ${PROFILE.location}`,
     '',
-    `> ${PROFILE.tagline}`,
+    `> ${PROFILE.deck}`,
     '',
-    PROFILE.summary,
+    PROFILE.intro,
     '',
-    `- **Focus:** ${PROFILE.focus.join(' · ')}`,
-    `- **Building:** ${PROFILE.now.building} — [${L.arena.value}](${L.arena.href})`,
-    `- **Next:** ${PROFILE.now.next}`,
-    `- **Open to:** ${PROFILE.openTo.join(' · ')}`,
+    `- **Focus:** ${PROFILE.focus}`,
+    `- **${PROFILE.openTo.headline}:** ${PROFILE.openTo.types.join(', ')} · ${PROFILE.openTo.note}`,
     `- **Based in:** ${PROFILE.location} · ${PROFILE.timezone}`,
     '',
-    `**${SECTIONS.proof.title}**`,
+    `**No. ${S.arena.no} — ${S.arena.title}: ${ARENA.name}** (live at [${ARENA.url}](${ARENA.href}))`,
     '',
-    ...PROOF.map((p) => `- **${p.value}** ${p.label} — ${link(p.detail)}`),
+    `${ARENA.problem} ${ARENA.approach}`,
     '',
-    `**${SECTIONS.projects.title}**`,
+    ...ARENA.proof.map(proof),
+    ...ARENA.decisions.map((x) => `- **${x.title}:** ${x.why}`),
+    `- **Stack:** ${ARENA.stack.join(', ')}`,
+    `- **Request path:** ${ARENA.diagram.join(' → ')}`,
+    `- **Next:** ${ARENA.next}`,
     '',
-    ...PROJECTS.flatMap((p) => [
-      `- **${p.name}** — ${p.kind} (${status(p)})`,
-      `  - **Problem:** ${p.problem}`,
-      `  - **Approach:** ${p.approach}`,
-      ...p.highlights.map((h) => `  - ${h}`),
-      `  - **Stack:** ${p.stack.join(', ')}`,
-      ...(arch(p) ? [`  - **Architecture (${p.diagram.title.toLowerCase()}):** ${arch(p)}`] : []),
+    `**No. ${S.work.no} — ${S.work.title}**`,
+    '',
+    ...WORK.flatMap((w) => [
+      `- **${w.name}** — ${w.kind}${w.event ? ` · built ${w.eventPhrase || `for ${w.event}`}` : ''}${links(w)}`,
+      `  - ${w.deck}`,
+      `  - ${w.summary}`,
+      ...(w.pipeline ? [`  - ${w.pipeline.map((s) => `${s.step} (${s.tool})`).join(' → ')}`] : []),
+      ...(w.rules ? w.rules.map((r) => `  - **${r.rule}:** ${r.detail}`) : []),
+      `  - **Stack:** ${w.stack.join(', ')}`,
     ]),
     '',
-    `**${SECTIONS.build.title}**`,
-    '',
-    '_Architecture decisions_',
-    '',
-    ...DECISIONS.map((x) => `- **${x.title}** — ${x.why}`),
-    '',
-    '_Engineering principles_',
+    '_House rules_',
     '',
     ...PRINCIPLES.map((x, i) => `${i + 1}. **${x.title}.** ${x.why}`),
     '',
-    `**${SECTIONS.stack.title}**`,
+    `**No. ${S.hire.no} — ${S.hire.title}** (${S.hire.note})`,
     '',
-    // items are [slug, label, full name when the label is shortened]
-    ...[...STACK.build, ...STACK.run].map((g) => `- **${g.group}:** ${g.items.map(([, label, full]) => full || label).join(', ')}`),
+    HIRE.deck,
     '',
-    `**${SECTIONS.services.title}**`,
+    ...HIRE.services.map((x) => `- **${x.title}** (${x.time}) — ${x.detail}`),
+    ...HIRE.terms.map((x) => `- **${x.title}:** ${x.detail}`),
     '',
-    ...SERVICES.map((s) => `- **${s.title}** (${s.time}) — ${s.items.join(' · ')}`),
+    '_Now_',
     '',
-    `${WORKING_STYLE.join(' · ')}.`,
+    ...NOW.map((n) => `- **${n.label}:** ${n.text}`),
     '',
-    `**${CTA.title}** ${CTA.body}`,
+    `**No. ${S.stack.no} — ${S.stack.title}**`,
     '',
-    contact.map((l) => `${l.label}: ${l.href ? `[${l.value}](${l.href})` : l.value}`).join(' · '),
+    ...STACK.map((g) => `- **${g.group}:** ${g.items.map(([, label]) => label).join(', ')}`),
+    '',
+    `**No. ${S.contact.no} — ${S.contact.title}**`,
+    '',
+    `${CTA.kicker} ${CTA.body} [${L.hire.label}](${L.hire.href}).`,
+    '',
+    [`Email: [${L.email.value}](${L.email.href})`, `[LinkedIn](${L.linkedin.href})`, `[GitHub](${L.github.href})`, `[Dev.to](${L.devto.href})`, `[${L.website.value}](${L.website.href})`, `Discord: ${L.discord.value}`].join(' · '),
     '',
     '</details>',
   ]

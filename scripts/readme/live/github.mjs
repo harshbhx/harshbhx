@@ -1,16 +1,21 @@
-// GitHub GraphQL client and the numbers the activity cards show.
+// GitHub GraphQL client and the numbers the daily images show.
 //
 // Everything here is plain data: fetchActivity() talks to the API and
 // summarise() turns raw contribution days + repository languages into the
-// shape live/cards.mjs renders. The mock data (live/mock.mjs) goes through the
-// same summarise() so previews exercise the real streak / language maths.
+// shape live/cards.mjs and live/calendar.mjs render. The mock data
+// (live/mock.mjs) goes through the same summarise() so previews exercise the
+// real streak / language maths.
 
 export const ENDPOINT = 'https://api.github.com/graphql'
 
 // Every query live.mjs sends. `node live.mjs --validate-schema <schema.graphql>`
 // checks each of these against GitHub's published schema.
 export const QUERIES = {
-  // Account age plus the last-12-months contribution collection.
+  // Account age plus the last-12-months contribution collection. The
+  // repositories contributed to are counted inside the same window and
+  // include my own (user.repositoriesContributedTo would do neither): the
+  // union of the repositories behind the commits, pull requests, issues and
+  // reviews, never less than any of GitHub's per-kind totals.
   profile: /* GraphQL */ `
     query Profile($login: String!, $from: DateTime!, $to: DateTime!) {
       user(login: $login) {
@@ -22,13 +27,18 @@ export const QUERIES = {
           totalPullRequestContributions
           totalIssueContributions
           totalPullRequestReviewContributions
+          totalRepositoriesWithContributedCommits
+          totalRepositoriesWithContributedPullRequests
+          totalRepositoriesWithContributedIssues
+          totalRepositoriesWithContributedPullRequestReviews
+          commitContributionsByRepository(maxRepositories: 100) { repository { nameWithOwner } }
+          pullRequestContributionsByRepository(maxRepositories: 100) { repository { nameWithOwner } }
+          issueContributionsByRepository(maxRepositories: 100) { repository { nameWithOwner } }
+          pullRequestReviewContributionsByRepository(maxRepositories: 100) { repository { nameWithOwner } }
           contributionCalendar {
             totalContributions
             weeks { contributionDays { date contributionCount } }
           }
-        }
-        repositoriesContributedTo(first: 1, contributionTypes: [COMMIT, PULL_REQUEST, ISSUE, REPOSITORY]) {
-          totalCount
         }
       }
     }`,
@@ -194,6 +204,19 @@ const calendarDays = (cal) => cal.weeks.flatMap((w) => w.contributionDays).map((
 
 // ── fetch ────────────────────────────────────────────────────────────────────
 
+/**
+ * Distinct repositories with a commit, pull request, issue or review in the
+ * collection's window (my own included). Each by-repository list holds at
+ * most 25 repositories (the schema default, kept so the query never trips a
+ * limit), so the count never drops below GitHub's own per-kind totals.
+ */
+export function reposContributedTo(cc) {
+  const lists = [cc.commitContributionsByRepository, cc.pullRequestContributionsByRepository, cc.issueContributionsByRepository, cc.pullRequestReviewContributionsByRepository]
+  const names = new Set(lists.flatMap((l) => l ?? []).map((x) => x.repository?.nameWithOwner).filter(Boolean))
+  const totals = [cc.totalRepositoriesWithContributedCommits, cc.totalRepositoriesWithContributedPullRequests, cc.totalRepositoriesWithContributedIssues, cc.totalRepositoriesWithContributedPullRequestReviews]
+  return Math.max(names.size, ...totals.map((n) => n ?? 0))
+}
+
 /** Everything the cards need, straight from the API. */
 export async function fetchActivity({ login, token, now = new Date(), exclude = [], log = console.log }) {
   const opts = { token, log }
@@ -236,7 +259,7 @@ export async function fetchActivity({ login, token, now = new Date(), exclude = 
       issues: cc.totalIssueContributions,
       reviews: cc.totalPullRequestReviewContributions,
       restricted: cc.restrictedContributionsCount,
-      reposContributedTo: user.repositoriesContributedTo.totalCount,
+      reposContributedTo: reposContributedTo(cc),
     },
     days,
     repos: repos.filter((r) => !exclude.includes(r.name)),

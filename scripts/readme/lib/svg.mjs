@@ -24,6 +24,11 @@ const attrs = (o = {}) =>
     .join('')
 
 // Animations shared by all components. Components add their own with d.css().
+// Any running animation makes the browser re-rasterise the whole SVG image
+// every frame (glyphs, portrait, grain), so .pulse runs 4 times and then
+// rests: after the last ring the circle is back at its base state, hidden
+// under the solid dot drawn on top of it. .pulse-live loops forever; keep it
+// to one small signal per page.
 export const BASE_CSS = `
 @keyframes fade-up{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 @keyframes fade-in{from{opacity:0}to{opacity:1}}
@@ -35,7 +40,8 @@ export const BASE_CSS = `
 @keyframes breathe{0%,100%{opacity:.55}50%{opacity:1}}
 .fade-up{animation:fade-up .9s cubic-bezier(.2,.7,.2,1) both}
 .fade-in{animation:fade-in 1.2s ease both}
-.pulse{transform-box:fill-box;transform-origin:center;animation:pulse-ring 2.4s cubic-bezier(.2,.6,.3,1) infinite}
+.pulse{transform-box:fill-box;transform-origin:center;animation:pulse-ring 2.4s cubic-bezier(.2,.6,.3,1) 4}
+.pulse-live{transform-box:fill-box;transform-origin:center;animation:pulse-ring 2.4s cubic-bezier(.2,.6,.3,1) infinite}
 .blink{animation:blink 1.1s step-end infinite}
 .flow{stroke-dasharray:4 8;animation:dash-flow 1.6s linear infinite}
 .drift-a{animation:drift-a 16s ease-in-out infinite}
@@ -378,7 +384,7 @@ export function createDoc({ width, height, theme, title, desc = '' }) {
       const meta = `<title id="title">${esc(title)}</title><desc id="desc">${esc(desc || title)}</desc>`
       const style = `<style>${(BASE_CSS + css.join('\n')).replace(/\n+/g, '')}</style>`
       const allDefs = `<defs>${glyphDefs.join('')}${defs.join('')}</defs>`
-      return `${head}${meta}${style}${allDefs}${body.join('')}</svg>\n`
+      return slimGlyphs(`${head}${meta}${style}${allDefs}${body.join('')}</svg>\n`)
     },
   }
 
@@ -483,4 +489,64 @@ export const FULL_GUTTER = 16
  * layer shows whenever the image is narrower than PHONE_MAX px.
  */
 export const PHONE_MAX = 600
-export const PHONE_CSS = `.ph{display:none}@media (max-width:${PHONE_MAX}px){.dt{display:none}.ph{display:inline}}`
+// The phone layer always carries a short load-time animation: Firefox lays an
+// SVG image out at its small size first, and if the visible layer has no
+// running animation it never advances the desktop layer's entrance animations.
+export const PHONE_CSS = `.ph{display:none;animation:fade-in .6s ease both}@media (max-width:${PHONE_MAX}px){.dt{display:none}.ph{display:inline}}`
+
+/**
+ * Shrink the outlined-glyph definitions of a finished SVG without changing a
+ * pixel: drop the zero-length "L" segments the font converter emits after
+ * every curve and rewrite each path with relative integer coordinates.
+ * Applied to every document by createDoc().end(); it is idempotent.
+ */
+export function slimGlyphs(svg) {
+  return svg.replace(/(<path id="g[0-9a-z]+" d=")([^"]*)(")/g, (_, a, path, b) => a + slimPath(path) + b)
+}
+
+const ARITY = { M: 2, L: 2, H: 1, V: 1, Q: 4, T: 2, C: 6, S: 4, Z: 0 }
+function slimPath(path) {
+  const tok = path.match(/[A-Za-z]|-?(?:\d+\.?\d*|\.\d+)(?:e-?\d+)?/g) || []
+  if (tok.some((x) => /[a-z]/.test(x) && x !== 'z')) return path // only absolute paths are rewritten
+  let i = 0
+  let cx = 0, cy = 0, sx = 0, sy = 0
+  let out = ''
+  let lastCmd = ''
+  const emit = (cmd, nums) => {
+    let s = cmd === lastCmd && cmd !== 'm' && cmd !== 'z' ? '' : cmd
+    lastCmd = cmd === 'm' ? 'l' : cmd
+    nums.forEach((n, k) => {
+      const v = String(Math.round(n * 100) / 100)
+      const sep = (k === 0 && s.length) || v.startsWith('-') ? '' : ' ' // a letter or a minus sign separates too
+      s += sep + v
+    })
+    out += s
+  }
+  let cmd = ''
+  while (i < tok.length) {
+    if (/[A-Za-z]/.test(tok[i])) cmd = tok[i++].toUpperCase()
+    else if (cmd === 'M') cmd = 'L'
+    const n = tok.slice(i, i + ARITY[cmd]).map(Number)
+    i += ARITY[cmd]
+    if (cmd === 'M') {
+      emit('m', [n[0] - cx, n[1] - cy])
+      cx = sx = n[0]
+      cy = sy = n[1]
+    } else if (cmd === 'L') {
+      if (n[0] === cx && n[1] === cy) continue
+      emit('l', [n[0] - cx, n[1] - cy])
+      cx = n[0]
+      cy = n[1]
+    } else if (cmd === 'Q' || cmd === 'C') {
+      emit(cmd.toLowerCase(), n.map((v, k) => v - (k % 2 ? cy : cx)))
+      cx = n[n.length - 2]
+      cy = n[n.length - 1]
+    } else if (cmd === 'Z') {
+      emit('z', [])
+      cx = sx
+      cy = sy
+    } else return path // H/V/T/S never come out of the converter; leave such paths alone
+  }
+  return out
+}
+

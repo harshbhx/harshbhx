@@ -10,19 +10,34 @@ import { readFileSync } from 'node:fs'
 import opentype from 'opentype.js'
 
 const FILES = {
-  'display-500': 'SpaceGrotesk-500.ttf',
-  'display-600': 'SpaceGrotesk-600.ttf',
-  'display-700': 'SpaceGrotesk-700.ttf',
-  'body-400': 'Inter-400.ttf',
-  'body-500': 'Inter-500.ttf',
-  'body-600': 'Inter-600.ttf',
-  'body-700': 'Inter-700.ttf',
-  'mono-400': 'JetBrainsMono-400.ttf',
-  'mono-500': 'JetBrainsMono-500.ttf',
-  'mono-700': 'JetBrainsMono-700.ttf',
+  // Instrument Serif: display headlines (regular + italic only)
+  'serif-400': 'InstrumentSerif-Regular.ttf',
+  'serif-400i': 'InstrumentSerif-Italic.ttf',
+  // Instrument Sans: body and UI
+  'sans-400': 'InstrumentSans-400.ttf',
+  'sans-400i': 'InstrumentSans-400i.ttf',
+  'sans-500': 'InstrumentSans-500.ttf',
+  'sans-600': 'InstrumentSans-600.ttf',
+  'sans-700': 'InstrumentSans-700.ttf',
+  // Geist Mono: kickers, labels, data
+  'mono-400': 'GeistMono-400.ttf',
+  'mono-500': 'GeistMono-500.ttf',
 }
 
-export const FONT_KEYS = Object.keys(FILES)
+// Older key names still used as defaults inside lib/svg.mjs.
+const ALIASES = {
+  'body-400': 'sans-400',
+  'body-500': 'sans-500',
+  'body-600': 'sans-600',
+  'body-700': 'sans-700',
+  'display-500': 'serif-400',
+  'display-600': 'serif-400',
+  'display-700': 'serif-400',
+  'mono-700': 'mono-500',
+}
+for (const [alias, key] of Object.entries(ALIASES)) FILES[alias] = FILES[key]
+
+export const FONT_KEYS = Object.keys(FILES).filter((k) => !(k in ALIASES))
 
 const fonts = new Map()
 const pathCache = new Map()

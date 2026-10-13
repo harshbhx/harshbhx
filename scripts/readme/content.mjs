@@ -1,163 +1,230 @@
 // Everything the profile says, in one place. Components read from here;
 // edit this file and run `npm run build` to regenerate assets/ and README.md.
+// Only facts Harsh has confirmed or that are public on his repos / sites.
 
 export const PROFILE = {
   name: 'Harsh Bhanushali',
   handle: 'harshbhx',
-  role: 'Full-stack engineer · AI systems',
+  publication: 'A working portfolio · 2026',
+  deck: 'I build AI agents & automations — and the products around them.',
+  deckHighlight: 'AI agents & automations', // phrase marked with the highlighter
+  intro:
+    'CS student at Parul University in Vadodara, India. In 2025 I co-founded DualMind Labs with Rishi A. Bangoriya, and our first product — DualMind Arena, blind head-to-head AI model evaluation — is live.',
+  city: 'Vadodara',
+  location: 'Vadodara, Gujarat, India',
+  timezone: 'IST (UTC+5:30)',
+  coords: [73.1812, 22.3072], // [lon, lat] — Vadodara, for the GeoJSON map
+  university: 'Parul University',
+  study: 'Computer Science',
+  diploma: 'Diploma from Darshan University', // completed before Parul
   company: 'DualMind Labs',
   companyRole: 'Co-founder',
-  tagline: 'I build systems. Real ones. Deployed. Live.',
-  summary:
-    'CS student and co-founder of DualMind Labs. I take products from idea to production — app, API, database, infrastructure, security and docs — and keep them running after launch.',
-  location: 'Rajkot, India',
-  timezone: 'IST (UTC+5:30)',
-  openTo: ['Internships', 'Freelance', 'AI product builds', 'Early-stage startups'],
-  email: 'bhanushaliharsh434@gmail.com',
-  focus: ['Backend & AI systems', 'Flutter', '.NET', 'Cloudflare'],
-  now: {
-    building: 'DualMind Arena — blind, head-to-head AI model evaluation',
-    next: 'Expanding DualMind into AI agent evaluation',
+  cofounder: 'Rishi A. Bangoriya',
+  founded: '2025',
+  focus: 'Generative AI — AI agents & automations',
+  openTo: {
+    headline: 'Open to work, worldwide',
+    types: ['Freelance', 'Contract', 'Full-time', 'Internships'],
+    note: 'remote · NDA-friendly',
+    detail: 'freelance first, any time zone',
   },
+  hiringHook: 'Freelance or NDA project in mind?',
+  email: 'harshbhx@gmail.com',
+  photoCaption: 'Harsh, Vadodara · IST (UTC+5:30)',
 }
 
 export const LINKS = {
-  github: { label: 'GitHub', value: 'harshbhx', href: 'https://github.com/harshbhx', icon: 'github' },
-  linkedin: { label: 'LinkedIn', value: 'harshu-dev', href: 'https://linkedin.com/in/harshu-dev', icon: 'linkedin' },
-  devto: { label: 'Dev.to', value: 'harshudev', href: 'https://dev.to/harshudev', icon: 'devdotto' },
-  email: { label: 'Email', value: 'bhanushaliharsh434@gmail.com', href: 'mailto:bhanushaliharsh434@gmail.com', icon: 'gmail' },
-  website: { label: 'Website', value: 'dualmindlab.tech', href: 'https://dualmindlab.tech', icon: 'lucide:globe' },
-  discord: { label: 'Discord', value: 'harshu911', href: null, icon: 'discord' },
+  email: { label: 'Email', value: 'harshbhx@gmail.com', href: 'mailto:harshbhx@gmail.com?subject=Hello%20Harsh' },
+  hire: {
+    label: 'Email me about a project',
+    href: 'mailto:harshbhx@gmail.com?subject=Project%20for%20Harsh&body=Hi%20Harsh%2C%0A%0AWhat%20we%E2%80%99re%20building%3A%20%0AType%20(freelance%20%2F%20contract%20%2F%20full-time%20%2F%20internship)%3A%20%0ANDA%20needed%3F%20%0ATimeline%3A%20%0A%0A',
+  },
+  linkedin: { label: 'LinkedIn', value: 'in/harshu-dev', href: 'https://linkedin.com/in/harshu-dev' },
+  github: { label: 'GitHub', value: '@harshbhx', href: 'https://github.com/harshbhx' },
+  devto: { label: 'Dev.to', value: 'harshudev', href: 'https://dev.to/harshudev' },
+  website: { label: 'DualMind Labs', value: 'dualmindlab.tech', href: 'https://dualmindlab.tech' },
+  discord: { label: 'Discord', value: 'harshu911', href: null },
   arena: { label: 'DualMind Arena', value: 'arena.dualmindlab.tech', href: 'https://arena.dualmindlab.tech' },
   docs: { label: 'Docs', value: 'docs.dualmindlab.tech', href: 'https://docs.dualmindlab.tech' },
+  actions: { label: 'GitHub Actions', value: 'actions', href: 'https://github.com/harshbhx/harshbhx/actions' },
 }
 
-export const SECTIONS = {
-  proof: { index: '01', title: 'Proof of work', note: 'from systems I built' },
-  projects: { index: '02', title: 'Featured projects', note: 'what I built & how it works' },
-  build: { index: '03', title: 'How I build', note: 'decisions and the reasons behind them' },
-  stack: { index: '04', title: 'Tech stack', note: 'what I ship with' },
-  services: { index: '05', title: 'Work with me', note: 'what you can hire me for today' },
-  activity: { index: '06', title: 'GitHub activity', note: 'refreshed daily by GitHub Actions' },
-}
-
-// Only claims that are already public on the profile / dualmindlab.tech.
-export const PROOF = [
-  { key: 'traffic', icon: 'zap', value: '5,000+', label: 'requests absorbed in one traffic spike', detail: 'Bots + real users. Cloudflare CDN took the load before it reached the origin.' },
-  { key: 'payments', icon: 'credit-card', value: '3 apps', label: 'in sync on every Razorpay payment', detail: 'Webhook → Cloud Function → one Firestore write every app listens to.' },
-  { key: 'seo', icon: 'trending-up', value: '#1', label: 'on Google for “DualMind Labs”', detail: 'dualmindlab.tech' },
-  { key: 'security', icon: 'shield-check', value: 'Real-time', label: 'login anomaly detection', detail: 'IP capture, risk scoring and an email alert to the account owner on every suspicious event.' },
-  { key: 'docs', icon: 'book-open', value: 'Docs', label: 'site with full user documentation', detail: 'docs.dualmindlab.tech' },
-  { key: 'ownership', icon: 'workflow', value: 'E2E', label: 'design → code → infra → deploy → docs', detail: 'From first commit to a monitored production system.' },
+// Section order and numbering. `key` names the assets (section-<key>, tab-<key>)
+// and the in-page anchor the contents tabs link to (#user-content-<key>).
+// `tab` is the short form of `title` printed on the contents tab, so the tabs
+// and the department heads they jump to always agree.
+export const SECTIONS = [
+  { key: 'arena', no: 1, tab: 'Arena', title: 'The Arena story', note: 'what we run in production' },
+  { key: 'work', no: 2, tab: 'Work', title: 'Selected work', note: 'what I built, and why' },
+  { key: 'hire', no: 3, tab: 'Hire', title: 'Working together', note: 'freelance · remote · under NDA' },
+  { key: 'stack', no: 4, tab: 'Toolbox', title: 'The toolbox', note: 'what I ship with, and how often' },
+  { key: 'contact', no: 5, tab: 'Letters', title: 'Letters', note: 'by email, from any time zone' },
 ]
 
-export const PROJECTS = [
+// No. 1 — DualMind Arena (live product)
+export const ARENA = {
+  name: 'DualMind Arena',
+  status: 'live',
+  kind: 'Blind, head-to-head AI model evaluation',
+  href: 'https://arena.dualmindlab.tech',
+  url: 'arena.dualmindlab.tech',
+  docs: 'docs.dualmindlab.tech',
+  problem: 'Public AI benchmarks are easy to game: cherry-picked prompts, brand bias, results nobody can audit.',
+  approach: 'Two models answer the same real prompt with their names hidden; the community votes before the identities are revealed, and the votes feed a live leaderboard.',
+  proof: [
+    { value: '5,000+', label: 'requests absorbed in one traffic spike', detail: 'Bots + real users; Cloudflare CDN took the load before it reached the origin.' },
+    { value: '#1', label: 'on Google for “DualMind Labs”', detail: 'dualmindlab.tech' },
+    { value: 'Real-time', label: 'login anomaly detection', detail: 'IP capture, risk scoring and an email alert to the account owner on every suspicious event.' },
+    { value: 'Docs', label: 'full user documentation, published', detail: 'docs.dualmindlab.tech' },
+  ],
+  decisions: [
+    { title: 'CDN first, stateless API', why: 'Spikes land on Cloudflare, not the origin; scaling the .NET API out is a config change.' },
+    { title: 'AI Gateway over direct calls', why: 'One place for rate limits, caching and per-request logs across every model provider.' },
+    { title: 'Supabase on purpose', why: 'Leaderboard ranking needs relational queries.' },
+  ],
+  stack: ['Azure', '.NET Web API', 'Vanilla JS', 'Supabase · PostgreSQL', 'Cloudflare CDN', 'Cloudflare AI Gateway', 'GitHub Actions'],
+  diagram: ['User prompt', 'Cloudflare CDN', '.NET Web API (stateless)', 'Cloudflare AI Gateway (rate limits · cache · logs)', 'Model A / Model B (identities hidden)', 'Community vote', 'Supabase · PostgreSQL (leaderboard)'],
+  next: 'Expanding from model evaluation into AI agent evaluation.',
+}
+
+// No. 2 — Selected work (cards appear in this order, two per row)
+export const WORK = [
   {
-    key: 'dualmind',
-    name: 'DualMind Arena',
-    kind: 'AI model evaluation platform',
-    status: 'live', // live | built
-    href: 'https://arena.dualmindlab.tech',
-    url: 'arena.dualmindlab.tech',
-    problem: 'Public AI benchmarks are easy to game: cherry-picked prompts, brand bias, results nobody can audit.',
-    approach: 'Blind head-to-head battles on real community prompts. Model identities stay hidden until the vote is locked.',
-    highlights: [
-      'Cloudflare AI Gateway routes every LLM call — rate limits, caching, per-request logs',
-      'Stateless .NET Web API behind Cloudflare CDN; scaling out is a config change',
-      'Supabase (PostgreSQL) on purpose: leaderboard ranking needs relational SQL',
-      'Real-time login anomaly detection with IP capture, risk scoring and owner alerts',
+    key: 'pixelproof',
+    name: 'PixelProof',
+    status: 'built',
+    event: 'Next Byte Hacks V2',
+    eventPhrase: 'for Next Byte Hacks V2', // reads after “built …” in running text
+    kind: 'Chrome extension · AI image detection',
+    deck: 'Is this image real? A Chrome extension that answers while you browse.',
+    summary: 'Flags AI-generated and manipulated images on any page, explains the verdict in plain English and cross-checks the claim against live fact-check data.',
+    pipeline: [
+      { step: 'Detect', tool: 'Reality Defender API' },
+      { step: 'Explain', tool: 'Google Gemini, in plain English' },
+      { step: 'Cross-check', tool: 'Google Fact Check API' },
     ],
-    stack: ['Azure', '.NET Web API', 'Vanilla JS', 'Supabase', 'Cloudflare CDN + AI Gateway', 'GitHub Actions'],
-    diagram: {
-      title: 'Request path',
-      nodes: ['User prompt', 'Cloudflare CDN', '.NET Web API (stateless)', 'Cloudflare AI Gateway', 'Model A (hidden)', 'Model B (hidden)', 'Community vote', 'Supabase · PostgreSQL leaderboard'],
-    },
+    highlights: ['Scan one image or the whole page in one click', 'Confidence badges drawn over each image', 'Cached results, keys stored locally, graceful fallback mode'],
+    stack: ['Chrome MV3', 'Vanilla JS', 'Gemini', 'Reality Defender', 'Fact Check API'],
+    links: [
+      { label: 'pixelproof.dualmindlab.tech', href: 'https://pixelproof.dualmindlab.tech' },
+      { label: 'Devpost', href: 'https://devpost.com/software/pixelproof-l5ofpx' },
+      { label: 'Source', href: 'https://github.com/harshbhx/pixelproof' },
+    ],
   },
   {
-    key: 'mealmind',
-    name: 'MealMind',
-    kind: 'Restaurant management ecosystem',
+    key: 'modvigil',
+    name: 'ModVigil',
     status: 'built',
-    href: null,
-    url: null,
-    problem: 'Customers, kitchen and owners each need a different live view of the same orders and payments.',
-    approach: 'Three coordinated Flutter apps on one Firebase backend. A confirmed payment reaches the chef screen and admin dashboard in under a second.',
-    highlights: [
-      'Full Razorpay payment lifecycle: webhook → Cloud Function → every app',
-      'One Firestore write drives the customer, chef and admin views',
-      'Firebase security rules scoped per role — built in, not bolted on',
-      'CI/CD with GitHub Actions for all three apps',
+    event: 'Reddit Mod Tools Hackathon 2026',
+    eventPhrase: 'for the Reddit Mod Tools Hackathon 2026',
+    kind: 'Reddit moderation automation · Devvit',
+    deck: 'A second pair of eyes for Reddit moderators.',
+    summary: 'Turns a subreddit’s raw mod log into a live dashboard and runs the routine safety work automatically — humans still make every final call.',
+    rules: [
+      { rule: 'Spike alerts', detail: 'modmail when removals hit 3× the hourly baseline (checked every 15 min)' },
+      { rule: 'Progressive warnings', detail: 'educational note → final warning → flagged for human review' },
+      { rule: 'Ghost-mod detection', detail: 'surfaces moderators inactive for 30+ days' },
+      { rule: 'Weekly digest', detail: 'week-over-week report every Monday' },
     ],
-    stack: ['Flutter ×3', 'Firestore', 'Firebase Auth', 'Cloud Functions', 'Razorpay', 'GitHub Actions'],
-    diagram: {
-      title: 'Real-time sync',
-      nodes: ['Customer app', 'Razorpay', 'Cloud Functions (webhook)', 'Firestore (single source of truth)', 'Chef app', 'Admin app'],
-    },
+    stack: ['Reddit Devvit', 'TypeScript', 'React', 'Redis'],
+    links: [{ label: 'Source', href: 'https://github.com/harshbhx/modvigil' }],
+  },
+  {
+    key: 'builder',
+    name: 'AI Component Builder',
+    status: 'built',
+    event: 'Cursor workshop, Rajkot',
+    eventPhrase: 'at a Cursor workshop in Rajkot',
+    kind: 'Generative UI · Cursor SDK',
+    deck: 'Describe a component in plain English; get working React back.',
+    summary: 'A chat panel streams generated React components from the Cursor SDK into a live preview with syntax-highlighted code.',
+    pipeline: [
+      { step: 'Prompt', tool: 'chat panel' },
+      { step: 'Generate', tool: 'Cursor SDK, streamed over SSE' },
+      { step: 'Preview', tool: 'sandboxed iframe + code view' },
+    ],
+    stack: ['Next.js 14', 'TypeScript', 'Cursor SDK', 'SSE', 'Tailwind'],
+    links: [{ label: 'Source', href: 'https://github.com/harshbhx/cursor-rajkot-workshop' }],
   },
   {
     key: 'agent',
     name: 'AI Support Agent',
-    kind: 'Automated query pipeline',
     status: 'built',
-    href: null,
-    url: null,
-    problem: 'Support teams spend most of their time on routine questions, and escalations arrive without context.',
-    approach: 'Claude / GPT-4o with function calling resolves routine queries and escalates the rest with the context already drafted.',
-    highlights: [
-      'Classifies intent and urgency for every inbound query',
-      'Routine queries: auto-reply + logged to the CRM',
-      'Needs judgment: human review with context pre-drafted',
-      'Multi-model, with webhook integrations',
+    event: null,
+    kind: 'Support automation · function calling',
+    deck: 'Answers the routine questions; hands people the rest with context.',
+    summary: 'Claude / GPT-4o with function calling classifies every inbound query by intent and urgency, resolves the routine ones and escalates the rest with the context already drafted.',
+    pipeline: [
+      { step: 'Classify', tool: 'intent + urgency' },
+      { step: 'Resolve', tool: 'auto-reply, logged to the CRM' },
+      { step: 'Escalate', tool: 'human review, context pre-drafted' },
     ],
-    stack: ['Node.js', 'Claude', 'GPT-4o', 'Supabase', 'Function calling', 'Webhooks'],
-    diagram: {
-      title: 'Query pipeline',
-      nodes: ['Inbound query', 'AI agent (intent + urgency)', 'Auto-reply + CRM log', 'Human review (context pre-drafted)'],
-    },
+    stack: ['Node.js', 'Claude', 'GPT-4o', 'Supabase', 'Webhooks'],
+    links: [],
+  },
+  {
+    key: 'mealmind',
+    name: 'MealMind',
+    status: 'built',
+    event: null,
+    kind: 'Restaurant ecosystem · 3 Flutter apps',
+    deck: 'One payment, three apps, under a second.',
+    summary: 'Customer, chef and admin apps on one Firebase backend: a confirmed Razorpay payment reaches the kitchen screen and the admin dashboard in under a second.',
+    pipeline: [
+      { step: 'Pay', tool: 'Razorpay, in the customer app' },
+      { step: 'Confirm', tool: 'webhook → Cloud Function' },
+      { step: 'Sync', tool: 'one Firestore write, every app' },
+    ],
+    stack: ['Flutter ×3', 'Firestore', 'Firebase Auth', 'Cloud Functions', 'Razorpay'],
+    links: [],
   },
 ]
 
-export const DECISIONS = [
-  { title: 'CDN first, stateless API', why: 'Spikes land on Cloudflare, not the origin. Scaling the .NET API out is a config change.' },
-  { title: 'Supabase here, Firebase there', why: 'Leaderboards need relational queries. Live sync across three apps is exactly Firestore’s job.' },
-  { title: 'AI Gateway over direct calls', why: 'One place for rate limits, caching and per-request logs across every model provider.' },
-  { title: 'Observability from day one', why: 'Gateway logs, webhook and function traces ship with the product.' },
-  { title: 'Security by design', why: 'Anomaly detection and owner alerts were part of the launch, not a patch after a breach.' },
-]
-
+// Short rules of thumb, printed as "House rules" next to MealMind.
 export const PRINCIPLES = [
   { title: 'Ship early', why: 'Real users surface problems planning never will.' },
-  { title: 'Design for scale up front', why: 'Pick architectures that grow by configuration, not rewrites.' },
   { title: 'Observability is architecture', why: 'If you can’t see it in production, it isn’t done.' },
   { title: 'Pick the right tool', why: 'The trade-off matters more than familiarity.' },
   { title: 'Own the outcome', why: 'The deliverable is the running, monitored system — not the commit.' },
   { title: 'Communicate clearly', why: 'Async first, unprompted updates, no surprises.' },
 ]
 
-// [slug, label, full name when the label is shortened]; slug = Simple Icons slug (or icons/extra)
-export const STACK = {
-  build: [
-    { group: 'Languages', items: [['dart', 'Dart'], ['csharp', 'C#'], ['typescript', 'TypeScript'], ['javascript', 'JavaScript'], ['c', 'C']] },
-    { group: 'Frameworks', items: [['flutter', 'Flutter'], ['dotnet', '.NET'], ['nodedotjs', 'Node.js'], ['nextdotjs', 'Next.js'], ['html5', 'HTML'], ['css', 'CSS']] },
-    { group: 'AI', items: [['openai', 'OpenAI'], ['claude', 'Claude'], ['googlegemini', 'Gemini'], ['cloudflare', 'AI Gateway', 'Cloudflare AI Gateway']] },
+// No. 3 — working together (freelance first, remote, NDA-friendly).
+// Services, timelines and working style come from Harsh's own earlier README.
+export const HIRE = {
+  headline: 'Freelance, remote, under NDA',
+  deck: 'I take on AI and product work for clients worldwide — scoped up front, shipped in weekly steps.',
+  services: [
+    { title: 'AI agents & automations', detail: 'RAG, agents and multi-model systems on OpenAI + Claude, behind Cloudflare AI Gateway', time: '1–4 weeks' },
+    { title: 'Mobile apps', detail: 'Flutter for iOS & Android — auth, Firebase, Razorpay / Stripe, store release', time: '2–6 weeks' },
+    { title: 'Backend APIs', detail: '.NET Web API or Node.js — auth, security alerting, fully documented', time: '1–3 weeks' },
+    { title: 'Full-stack MVPs', detail: 'Mobile + backend + AI + security, deployed on Azure + Cloudflare', time: '3–8 weeks' },
   ],
-  run: [
-    { group: 'Data', items: [['supabase', 'Supabase'], ['postgresql', 'PostgreSQL'], ['firebase', 'Firebase'], ['mysql', 'MySQL']] },
-    { group: 'Cloud & DevOps', items: [['microsoftazure', 'Azure'], ['cloudflare', 'Cloudflare'], ['docker', 'Docker'], ['githubactions', 'Actions', 'GitHub Actions'], ['linux', 'Linux'], ['git', 'Git']] },
-    { group: 'Tools & payments', items: [['razorpay', 'Razorpay'], ['figma', 'Figma'], ['postman', 'Postman'], ['visualstudiocode', 'VS Code']] },
+  terms: [
+    { title: 'NDA-friendly', detail: 'Happy to sign one — client work stays private.' },
+    { title: 'Remote, worldwide', detail: 'IST (UTC+5:30), async-friendly, replies within 24 hours.' },
+    { title: 'Your code, delivered', detail: 'Weekly deliverables and full source handoff, no scope surprises.' },
   ],
 }
 
-export const SERVICES = [
-  { icon: 'smartphone', title: 'Mobile apps', time: '2–6 weeks', items: ['Flutter for iOS & Android', 'Multi-role auth · Firebase', 'Razorpay / Stripe payments', 'CI/CD · App Store + Play release'] },
-  { icon: 'server', title: 'Backend APIs', time: '1–3 weeks', items: ['.NET Web API or Node.js', 'Auth · security alerting', 'Supabase or Firebase', 'Fully documented'] },
-  { icon: 'sparkles', title: 'AI products', time: '1–4 weeks', items: ['RAG · AI agents', 'Multi-model: OpenAI + Claude', 'Behind Cloudflare AI Gateway', 'Cost-optimised'] },
-  { icon: 'rocket', title: 'Full-stack MVPs', time: '3–8 weeks', items: ['Mobile + backend + AI + security', 'Deployed on Azure + Cloudflare', 'Monitoring from day one', 'Full source handoff'] },
+export const NOW = [
+  { label: 'Building', text: 'AI agents & automations — my Gen AI focus' },
+  { label: 'At DualMind Labs', text: 'Taking DualMind Arena from model evaluation into AI agent evaluation' },
+  { label: 'Studying', text: 'Computer Science at Parul University, Vadodara — after a diploma from Darshan University' },
+  { label: 'Open to', text: 'Freelance first · contract · full-time · internships — remote, worldwide, NDA-friendly' },
 ]
 
-export const WORKING_STYLE = ['Upfront scoping', 'Weekly deliverables', 'Full source handoff', 'Replies within 24 hours', 'No scope surprises']
+// No. 4 — the toolbox. [Simple Icons slug, label]
+export const STACK = [
+  { group: 'AI', note: 'models, gateways, SDKs', items: [['openai', 'OpenAI'], ['claude', 'Claude'], ['googlegemini', 'Gemini'], ['cloudflare', 'AI Gateway'], ['cursor', 'Cursor SDK']] },
+  { group: 'Build', note: 'languages & frameworks', items: [['typescript', 'TypeScript'], ['javascript', 'JavaScript'], ['dart', 'Dart'], ['flutter', 'Flutter'], ['csharp', 'C#'], ['dotnet', '.NET'], ['nodedotjs', 'Node.js'], ['nextdotjs', 'Next.js'], ['react', 'React']] },
+  { group: 'Data', note: 'where state lives', items: [['supabase', 'Supabase'], ['postgresql', 'PostgreSQL'], ['firebase', 'Firebase'], ['redis', 'Redis']] },
+  { group: 'Run', note: 'cloud, edge, delivery', items: [['microsoftazure', 'Azure'], ['cloudflare', 'Cloudflare'], ['cloudflareworkers', 'Workers'], ['docker', 'Docker'], ['githubactions', 'GitHub Actions'], ['googlechrome', 'Chrome MV3'], ['reddit', 'Devvit']] },
+]
 
 export const CTA = {
-  title: 'Let’s build something real.',
-  body: 'If your team needs an engineer who ships end to end and owns the outcome, I’d love to hear about it.',
+  kicker: PROFILE.hiringHook,
+  title: 'Write to me.',
+  body: 'I’m open to remote work worldwide — freelance first, contract and full-time too — and happy to work under NDA. Tell me what you’re building.',
+  signoff: '— Harsh',
 }
