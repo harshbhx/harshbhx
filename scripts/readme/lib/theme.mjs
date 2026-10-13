@@ -1,4 +1,8 @@
-// Design tokens for the dark and light renditions of every component.
+// Design tokens — "Terracotta & Ink".
+//
+// The palette is taken from Harsh's own portrait: navy suit (ink), the
+// terracotta studio backdrop, warm paper, plus a turmeric highlighter.
+// Light theme = the paper edition; dark theme = the espresso night edition.
 // Each component is rendered once per theme; README.md switches between the
 // two with <picture> + prefers-color-scheme, which GitHub maps to the
 // viewer's theme setting.
@@ -7,131 +11,124 @@ export const LAYOUT = {
   full: 850, // README content width on github.com profile pages (~846px)
   half: 415, // two halves + gap = full; they stack on narrow screens
   gap: 20,
-  radius: 18,
-  pad: 24,
-}
-
-const dark = {
-  name: 'dark',
-  page: '#0d1117', // GitHub dark page background (used by previews only)
-
-  // surfaces
-  surfaceTop: '#171029',
-  surfaceBottom: '#0b0815',
-  surfaceRaised: '#1d1533',
-  inset: '#0a0713',
-  border: '#2c2247',
-  borderStrong: '#41336d',
-  highlight: 'rgba(255,255,255,0.07)', // 1px top-edge sheen on cards
-  shadow: 'rgba(0,0,0,0.35)',
-
-  // text
-  fg: '#f4f1ff',
-  fg2: '#cdc6ea',
-  muted: '#9a93bd',
-  faint: '#6d6790',
-
-  // accents
-  violet: '#a78bfa',
-  violetStrong: '#8b5cf6',
-  violetSoft: '#c4b5fd',
-  cyan: '#67e8f9',
-  sky: '#7dd3fc',
-  pink: '#f0abfc',
-  green: '#34d399',
-  amber: '#fbbf24',
-  red: '#fb7185',
-
-  // gradients (stops listed left → right)
-  gradText: ['#e9e3ff', '#c4b5fd', '#a78bfa', '#67e8f9'],
-  gradAccent: ['#8b5cf6', '#22d3ee'],
-  gradBorder: ['#8b5cf6', '#22d3ee', '#f0abfc'],
-
-  // glows: radial gradients painted behind content (color, peak opacity)
-  glowViolet: ['#7c3aed', 0.35],
-  glowCyan: ['#0891b2', 0.28],
-  glowPink: ['#c026d3', 0.18],
-
-  // patterns
-  grid: 'rgba(167,139,250,0.13)',
-  gridLine: 'rgba(167,139,250,0.07)',
-
-  // chips / pills
-  chipBg: 'rgba(167,139,250,0.10)',
-  chipBorder: 'rgba(167,139,250,0.30)',
-  chipFg: '#ddd6fe',
-
-  // syntax colors for terminal / code styled components
-  code: {
-    prompt: '#34d399',
-    command: '#f4f1ff',
-    keyword: '#c4b5fd',
-    string: '#7dd3fc',
-    number: '#fbbf24',
-    comment: '#6d6790',
-    punct: '#9a93bd',
-  },
-
-  // tile behind brand logos, and the rule for dark logos on it
-  logoTile: '#1a1430',
-  logoTileBorder: '#2c2247',
+  radius: 14,
+  pad: 28,
 }
 
 const light = {
   name: 'light',
-  page: '#ffffff',
+  page: '#ffffff', // GitHub light page background (previews only)
 
-  surfaceTop: '#ffffff',
-  surfaceBottom: '#f6f3ff',
-  surfaceRaised: '#ffffff',
-  inset: '#f3f0fc',
-  border: '#e4ddf7',
-  borderStrong: '#cfc3f0',
-  highlight: 'rgba(255,255,255,0.9)',
-  shadow: 'rgba(76,29,149,0.08)',
+  // paper
+  surfaceTop: '#FCF9F3',
+  surfaceBottom: '#F6F0E5',
+  surfaceRaised: '#FFFDF9',
+  inset: '#F2EADD',
+  border: '#E5DACA',
+  borderStrong: '#D3C4AC',
+  highlight: 'rgba(255,255,255,0)', // paper is matte: no glossy sheen
+  shadow: 'rgba(60,40,20,0.06)',
 
-  fg: '#16113a',
-  fg2: '#3d3862',
-  muted: '#5f5a80',
-  faint: '#8a86a6',
+  // ink (all text tokens ≥ 4.5:1 on paper)
+  fg: '#1B1E2B', // navy-black ink, 15.5:1
+  fg2: '#3E4050', // 9.6:1
+  muted: '#6A625B', // warm grey, 5.6:1
+  faint: '#A79C8E', // decoration only
 
-  violet: '#6d28d9',
-  violetStrong: '#7c3aed',
-  violetSoft: '#8b5cf6',
-  cyan: '#0e7490',
-  sky: '#0369a1',
-  pink: '#a21caf',
-  green: '#047857',
-  amber: '#b45309',
-  red: '#be123c',
+  // editorial accents
+  terra: '#A9441F', // terracotta text, 5.6:1
+  terraFill: '#C9643C', // fills only
+  turmeric: '#8A5C00', // text, 5.4:1
+  turmericFill: '#F2C55C', // highlighter
+  ink: '#27346B', // navy: links, secondary data
+  green: '#2C7A4B', // live / open / up only
+  red: '#B42318', // down only
+  rule: '#1B1E2B', // newspaper rules
+  ruleSoft: 'rgba(27,30,43,0.14)',
+  grain: 0.05, // paper grain opacity
+  highlighterFill: '#F2C55C',
+  highlighterOpacity: 0.62,
+  plateBackdrop: ['#D7855E', '#B9623D'], // portrait backdrop (baked into the JPEG)
 
-  gradText: ['#4c1d95', '#6d28d9', '#7c3aed', '#0e7490'],
-  gradAccent: ['#7c3aed', '#0891b2'],
-  gradBorder: ['#7c3aed', '#0891b2', '#c026d3'],
+  // names the shared primitives in lib/svg.mjs read
+  violet: '#A9441F',
+  violetStrong: '#C9643C',
+  violetSoft: '#B5552E',
+  cyan: '#27346B',
+  sky: '#27346B',
+  pink: '#A9441F',
+  amber: '#8A5C00',
+  gradText: ['#1B1E2B', '#1B1E2B'],
+  gradAccent: ['#C9643C', '#F2C55C'],
+  gradBorder: ['#C9643C', '#F2C55C', '#27346B'],
+  glowViolet: ['#F2C55C', 0],
+  glowCyan: ['#C9643C', 0],
+  glowPink: ['#C9643C', 0],
+  grid: 'rgba(27,30,43,0.10)',
+  gridLine: 'rgba(27,30,43,0.06)',
+  chipBg: '#FFFDF9',
+  chipBorder: '#D3C4AC',
+  chipFg: '#1B1E2B',
+  code: { prompt: '#2C7A4B', command: '#1B1E2B', keyword: '#A9441F', string: '#27346B', number: '#8A5C00', comment: '#A79C8E', punct: '#6A625B' },
+  logoTile: '#FFFDF9',
+  logoTileBorder: '#E5DACA',
+}
 
-  glowViolet: ['#c4b5fd', 0.45],
-  glowCyan: ['#a5f3fc', 0.4],
-  glowPink: ['#f5d0fe', 0.35],
+const dark = {
+  name: 'dark',
+  page: '#0d1117', // GitHub dark page background (previews only)
 
-  grid: 'rgba(109,40,217,0.12)',
-  gridLine: 'rgba(109,40,217,0.06)',
+  // espresso "night edition"
+  surfaceTop: '#1C1714',
+  surfaceBottom: '#15110E',
+  surfaceRaised: '#231D18',
+  inset: '#110E0B',
+  border: '#33291F',
+  borderStrong: '#4A3D31',
+  highlight: 'rgba(255,255,255,0)',
+  shadow: 'rgba(0,0,0,0.35)',
 
-  chipBg: 'rgba(109,40,217,0.06)',
-  chipBorder: 'rgba(109,40,217,0.22)',
-  chipFg: '#4c1d95',
+  // cream ink
+  fg: '#F5EDE0', // 15.6:1
+  fg2: '#D2C6B5', // 10.8:1
+  muted: '#A49683', // 6.3:1
+  faint: '#6E6257', // decoration only
 
-  code: {
-    prompt: '#047857',
-    command: '#16113a',
-    keyword: '#6d28d9',
-    string: '#0369a1',
-    number: '#b45309',
-    comment: '#8a86a6',
-    punct: '#5f5a80',
-  },
+  terra: '#F0875A', // 7.2:1
+  terraFill: '#D4825C',
+  turmeric: '#F2C25A', // 10.9:1
+  turmericFill: '#E0A93A',
+  ink: '#A9B8F2', // 8.6:1
+  green: '#7CCB94', // 9.3:1
+  red: '#FF8A7A',
+  rule: '#F5EDE0',
+  ruleSoft: 'rgba(245,237,224,0.14)',
+  grain: 0.06,
+  highlighterFill: '#D4825C',
+  highlighterOpacity: 0.42,
+  plateBackdrop: ['#C9764F', '#9C5232'],
 
-  logoTile: '#f6f3ff',
-  logoTileBorder: '#e4ddf7',
+  violet: '#F0875A',
+  violetStrong: '#D4825C',
+  violetSoft: '#F5A37E',
+  cyan: '#A9B8F2',
+  sky: '#A9B8F2',
+  pink: '#F0875A',
+  amber: '#F2C25A',
+  gradText: ['#F5EDE0', '#F5EDE0'],
+  gradAccent: ['#D4825C', '#F2C25A'],
+  gradBorder: ['#D4825C', '#F2C25A', '#A9B8F2'],
+  glowViolet: ['#D4825C', 0],
+  glowCyan: ['#F2C25A', 0],
+  glowPink: ['#D4825C', 0],
+  grid: 'rgba(245,237,224,0.10)',
+  gridLine: 'rgba(245,237,224,0.05)',
+  chipBg: '#231D18',
+  chipBorder: '#4A3D31',
+  chipFg: '#F5EDE0',
+  code: { prompt: '#7CCB94', command: '#F5EDE0', keyword: '#F0875A', string: '#A9B8F2', number: '#F2C25A', comment: '#6E6257', punct: '#A49683' },
+  logoTile: '#231D18',
+  logoTileBorder: '#33291F',
 }
 
 export const THEMES = { dark, light }
