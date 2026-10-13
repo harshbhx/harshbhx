@@ -5,7 +5,7 @@
 export const PROFILE = {
   name: 'Harsh Bhanushali',
   handle: 'harshbhx',
-  publication: 'A working portfolio',
+  publication: 'A working portfolio · 2026',
   deck: 'I build AI agents & automations — and the products around them.',
   deckHighlight: 'AI agents & automations', // phrase marked with the highlighter
   intro:
@@ -16,6 +16,7 @@ export const PROFILE = {
   coords: [73.1812, 22.3072], // [lon, lat] — Vadodara, for the GeoJSON map
   university: 'Parul University',
   study: 'Computer Science',
+  diploma: 'Diploma from Darshan University', // completed before Parul
   company: 'DualMind Labs',
   companyRole: 'Co-founder',
   cofounder: 'Rishi A. Bangoriya',
@@ -23,20 +24,20 @@ export const PROFILE = {
   focus: 'Generative AI — AI agents & automations',
   openTo: {
     headline: 'Open to work, worldwide',
-    types: ['Full-time', 'Internships', 'Freelance', 'Contract'],
-    note: 'remote-friendly',
-    detail: 'any kind of work, anywhere',
+    types: ['Freelance', 'Contract', 'Full-time', 'Internships'],
+    note: 'remote · NDA-friendly',
+    detail: 'freelance first, any time zone',
   },
-  hiringHook: 'Hiring for AI agents or automations?',
-  email: 'bhanushaliharsh434@gmail.com',
+  hiringHook: 'Freelance or NDA project in mind?',
+  email: 'harshbhx@gmail.com',
   photoCaption: 'Harsh, Vadodara · IST (UTC+5:30)',
 }
 
 export const LINKS = {
-  email: { label: 'Email', value: 'bhanushaliharsh434@gmail.com', href: 'mailto:bhanushaliharsh434@gmail.com?subject=Hello%20Harsh' },
+  email: { label: 'Email', value: 'harshbhx@gmail.com', href: 'mailto:harshbhx@gmail.com?subject=Hello%20Harsh' },
   hire: {
-    label: 'Email me about a role',
-    href: 'mailto:bhanushaliharsh434@gmail.com?subject=Opportunity%20for%20Harsh&body=Hi%20Harsh%2C%0A%0ARole%3A%20%0AType%20(full-time%20%2F%20internship%20%2F%20freelance%20%2F%20contract)%3A%20%0ARemote%20%2F%20location%3A%20%0ATimeline%3A%20%0A%0A',
+    label: 'Email me about a project',
+    href: 'mailto:harshbhx@gmail.com?subject=Project%20for%20Harsh&body=Hi%20Harsh%2C%0A%0AWhat%20we%E2%80%99re%20building%3A%20%0AType%20(freelance%20%2F%20contract%20%2F%20full-time%20%2F%20internship)%3A%20%0ANDA%20needed%3F%20%0ATimeline%3A%20%0A%0A',
   },
   linkedin: { label: 'LinkedIn', value: 'in/harshu-dev', href: 'https://linkedin.com/in/harshu-dev' },
   github: { label: 'GitHub', value: '@harshbhx', href: 'https://github.com/harshbhx' },
@@ -55,9 +56,9 @@ export const LINKS = {
 export const SECTIONS = [
   { key: 'arena', no: 1, tab: 'Arena', title: 'The Arena story', note: 'what we run in production' },
   { key: 'work', no: 2, tab: 'Work', title: 'Selected work', note: 'what I built, and why' },
-  { key: 'journey', no: 3, tab: 'Route', title: 'The route so far', note: 'where I’ve been, where I’m headed' },
+  { key: 'hire', no: 3, tab: 'Hire', title: 'Working together', note: 'freelance · remote · under NDA' },
   { key: 'stack', no: 4, tab: 'Toolbox', title: 'The toolbox', note: 'what I ship with, and how often' },
-  { key: 'contact', no: 5, tab: 'Letters', title: 'Letters', note: 'by email, from anywhere' },
+  { key: 'contact', no: 5, tab: 'Letters', title: 'Letters', note: 'by email, from any time zone' },
 ]
 
 // No. 1 — DualMind Arena (live product)
@@ -188,24 +189,29 @@ export const PRINCIPLES = [
   { title: 'Communicate clearly', why: 'Async first, unprompted updates, no surprises.' },
 ]
 
-// No. 3 — the route so far. Years only where they are known.
-export const JOURNEY = [
-  { title: PROFILE.university, detail: `${PROFILE.study} · ${PROFILE.city}`, kind: 'start' },
-  { title: `Co-founded ${PROFILE.company}`, detail: `${PROFILE.founded} · with ${PROFILE.cofounder}`, kind: 'major' },
-  { title: 'DualMind Arena goes live', detail: 'Blind AI model evaluation · 5,000+ request spike handled', kind: 'major' },
-  { title: 'ModVigil', detail: 'Reddit Mod Tools Hackathon 2026', kind: 'hackathon' },
-  { title: 'PixelProof', detail: 'Next Byte Hacks V2', kind: 'hackathon' },
-  { title: 'AI Component Builder', detail: 'Cursor workshop, Rajkot', kind: 'hackathon' },
-  { title: 'Now: AI agents & automations', detail: 'my Gen AI focus', kind: 'now' },
-  { title: 'Next: AI agent evaluation', detail: 'DualMind Arena’s next chapter', kind: 'next' },
-  { title: 'Anywhere', detail: 'open to work worldwide · remote-friendly', kind: 'end' },
-]
+// No. 3 — working together (freelance first, remote, NDA-friendly).
+// Services, timelines and working style come from Harsh's own earlier README.
+export const HIRE = {
+  headline: 'Freelance, remote, under NDA',
+  deck: 'I take on AI and product work for clients worldwide — scoped up front, shipped in weekly steps.',
+  services: [
+    { title: 'AI agents & automations', detail: 'RAG, agents and multi-model systems on OpenAI + Claude, behind Cloudflare AI Gateway', time: '1–4 weeks' },
+    { title: 'Mobile apps', detail: 'Flutter for iOS & Android — auth, Firebase, Razorpay / Stripe, store release', time: '2–6 weeks' },
+    { title: 'Backend APIs', detail: '.NET Web API or Node.js — auth, security alerting, fully documented', time: '1–3 weeks' },
+    { title: 'Full-stack MVPs', detail: 'Mobile + backend + AI + security, deployed on Azure + Cloudflare', time: '3–8 weeks' },
+  ],
+  terms: [
+    { title: 'NDA-friendly', detail: 'Happy to sign one — client work stays private.' },
+    { title: 'Remote, worldwide', detail: 'IST (UTC+5:30), async-friendly, replies within 24 hours.' },
+    { title: 'Your code, delivered', detail: 'Weekly deliverables and full source handoff, no scope surprises.' },
+  ],
+}
 
 export const NOW = [
   { label: 'Building', text: 'AI agents & automations — my Gen AI focus' },
   { label: 'At DualMind Labs', text: 'Taking DualMind Arena from model evaluation into AI agent evaluation' },
-  { label: 'Studying', text: 'Computer Science at Parul University, Vadodara' },
-  { label: 'Open to', text: 'Full-time · internships · freelance · contract — worldwide, remote-friendly' },
+  { label: 'Studying', text: 'Computer Science at Parul University, Vadodara — after a diploma from Darshan University' },
+  { label: 'Open to', text: 'Freelance first · contract · full-time · internships — remote, worldwide, NDA-friendly' },
 ]
 
 // No. 4 — the toolbox. [Simple Icons slug, label]
@@ -219,6 +225,6 @@ export const STACK = [
 export const CTA = {
   kicker: PROFILE.hiringHook,
   title: 'Write to me.',
-  body: 'I’m open to work worldwide — full-time, internships, freelance or contract, remote-friendly. Tell me what you’re building.',
+  body: 'I’m open to remote work worldwide — freelance first, contract and full-time too — and happy to work under NDA. Tell me what you’re building.',
   signoff: '— Harsh',
 }

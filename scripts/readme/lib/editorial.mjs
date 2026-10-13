@@ -97,18 +97,18 @@ export function highlighter(d, x, y, w, h, { color = d.t.highlighterFill, opacit
 }
 
 /**
- * Harsh's portrait (4:5, terracotta backdrop) embedded as a data URI, defined
+ * Harsh's portrait (4:5, 460×575, terracotta backdrop — see tools/plate.py) embedded as a data URI, defined
  * once per document. Returns place(x, y, w, opts) → { svg, h }.
  */
 export function portrait(d) {
   const id = d.uid('pp')
   const b64 = readFileSync(new URL(`portrait-${d.t.name}.jpg`, PHOTOS)).toString('base64')
-  d.def(`<image id="${id}" width="368" height="460" preserveAspectRatio="xMidYMid slice" href="data:image/jpeg;base64,${b64}"/>`)
+  d.def(`<image id="${id}" width="460" height="575" preserveAspectRatio="xMidYMid slice" href="data:image/jpeg;base64,${b64}"/>`)
   return (x, y, w, { r = 3, cls = 'develop', style, frame = true } = {}) => {
-    const h = (w * 460) / 368
+    const h = (w * 575) / 460
     const cid = d.uid('pc')
     d.def(`<clipPath id="${cid}"><rect x="${r1(x)}" y="${r1(y)}" width="${r1(w)}" height="${r1(h)}" rx="${r}"/></clipPath>`)
-    const s = (w / 368).toFixed(4)
+    const s = (w / 460).toFixed(4)
     const svg =
       `<g clip-path="url(#${cid})"><g class="${cls}"${style ? ` style="${style}"` : ''}><use href="#${id}" transform="translate(${r1(x)} ${r1(y)}) scale(${s})"/></g></g>` +
       (frame ? `<rect x="${r1(x)}" y="${r1(y)}" width="${r1(w)}" height="${r1(h)}" rx="${r}" fill="none" stroke="${d.t.rule}" stroke-opacity=".18"/>` : '')

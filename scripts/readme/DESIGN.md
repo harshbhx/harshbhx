@@ -33,7 +33,7 @@ source of truth (you may shorten wording, never add claims).
 
 ## Look
 
-A matte paper publication. Palette taken from the portrait: navy suit = ink,
+A matte paper publication. Palette taken from the portrait: dark suit = ink,
 terracotta backdrop, warm paper, turmeric highlighter. **No violet/cyan, no
 glows, no neon gradients, no glassmorphism.** Depth comes from typography,
 rules and whitespace — like a well-set magazine.

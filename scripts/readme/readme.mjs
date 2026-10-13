@@ -1,7 +1,7 @@
 // README.md template. Images are referenced by absolute raw.githubusercontent
 // URLs because GitHub does not rewrite relative paths inside <picture srcset>.
 
-import { PROFILE, LINKS, SECTIONS, ARENA, WORK, PRINCIPLES, JOURNEY, NOW, STACK, CTA } from './content.mjs'
+import { PROFILE, LINKS, SECTIONS, ARENA, WORK, PRINCIPLES, HIRE, NOW, STACK, CTA } from './content.mjs'
 import { LAYOUT } from './lib/theme.mjs'
 import { PAIR_GUTTER, FULL_GUTTER } from './lib/svg.mjs'
 
@@ -26,8 +26,8 @@ export const PAGE = [
   ['pair', 'feature-pixelproof', 'feature-modvigil'],
   ['pair', 'feature-builder', 'feature-agent'],
   ['pair', 'feature-mealmind', 'house-rules'],
-  ['section', 'journey'],
-  ['pair', 'journey', 'now'],
+  ['section', 'hire'],
+  ['pair', 'hire', 'now'],
   ['section', 'stack'],
   ['pair', 'stack-a', 'stack-b'],
   ['live-pair', 'numbers', 'languages'],
@@ -219,9 +219,12 @@ function plainText() {
     '',
     ...PRINCIPLES.map((x, i) => `${i + 1}. **${x.title}.** ${x.why}`),
     '',
-    `**No. ${S.journey.no} — ${S.journey.title}** (${S.journey.note})`,
+    `**No. ${S.hire.no} — ${S.hire.title}** (${S.hire.note})`,
     '',
-    ...JOURNEY.map((j) => `- ${j.title} — ${j.detail}`),
+    HIRE.deck,
+    '',
+    ...HIRE.services.map((x) => `- **${x.title}** (${x.time}) — ${x.detail}`),
+    ...HIRE.terms.map((x) => `- **${x.title}:** ${x.detail}`),
     '',
     '_Now_',
     '',

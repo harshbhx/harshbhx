@@ -11,7 +11,7 @@ import { r1 } from '../lib/svg.mjs'
 import { hairline, runs } from '../lib/editorial.mjs'
 
 export const P = 28 // card padding (DESIGN.md)
-export const KICK_Y = 40 // kicker baseline (same as stack-*, journey, now)
+export const KICK_Y = 40 // kicker baseline (same as stack-*, hire, now)
 export const KICK_RULE = 54 // hairline under the kicker row
 export const KICK = { font: 'mono-500', size: 11, tracking: 0.14, upper: true }
 
