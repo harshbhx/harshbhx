@@ -147,7 +147,9 @@ export function readme(registry) {
     }
     return linked(picture(ASSET_BASE, e.name, e.alt, opts.width ?? displayWidth(e.name) ?? e.width), opts.href ?? e.href)
   }
-  const live = (name) => picture(OUTPUT_BASE, name, LIVE_ALT[name], displayWidth(name))
+  // the colophon's 'reprinted daily by GitHub Actions' links to the runs themselves
+  const LIVE_HREF = { colophon: LINKS.actions.href }
+  const live = (name) => linked(picture(OUTPUT_BASE, name, LIVE_ALT[name], displayWidth(name)), LIVE_HREF[name])
   const p = (parts) => (parts.filter(Boolean).length ? `<p align="center">\n${parts.filter(Boolean).join('\n')}\n</p>` : null)
 
   const blocks = []

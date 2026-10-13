@@ -190,8 +190,8 @@ export const PRINCIPLES = [
 
 // No. 3 — the route so far. Years only where they are known.
 export const JOURNEY = [
-  { title: 'Parul University', detail: 'Computer Science · Vadodara', kind: 'start' },
-  { title: 'Co-founded DualMind Labs', detail: '2025 · with Rishi A. Bangoriya', kind: 'major' },
+  { title: PROFILE.university, detail: `${PROFILE.study} · ${PROFILE.city}`, kind: 'start' },
+  { title: `Co-founded ${PROFILE.company}`, detail: `${PROFILE.founded} · with ${PROFILE.cofounder}`, kind: 'major' },
   { title: 'DualMind Arena goes live', detail: 'Blind AI model evaluation · 5,000+ request spike handled', kind: 'major' },
   { title: 'ModVigil', detail: 'Reddit Mod Tools Hackathon 2026', kind: 'hackathon' },
   { title: 'PixelProof', detail: 'Next Byte Hacks V2', kind: 'hackathon' },
@@ -217,7 +217,7 @@ export const STACK = [
 ]
 
 export const CTA = {
-  kicker: 'Hiring for AI agents or automations?',
+  kicker: PROFILE.hiringHook,
   title: 'Write to me.',
   body: 'I’m open to work worldwide — full-time, internships, freelance or contract, remote-friendly. Tell me what you’re building.',
   signoff: '— Harsh',

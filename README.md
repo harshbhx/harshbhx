@@ -124,7 +124,7 @@
 </details>
 
 <p align="center">
-<picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/harshbhx/harshbhx/output/colophon-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/harshbhx/harshbhx/output/colophon-light.svg"><img src="https://raw.githubusercontent.com/harshbhx/harshbhx/output/colophon-dark.svg" alt="Colophon: reprinted daily by GitHub Actions, with a live status check of dualmindlab.tech, the Arena, the docs and PixelProof" width="846"></picture>
+<a href="https://github.com/harshbhx/harshbhx/actions"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/harshbhx/harshbhx/output/colophon-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/harshbhx/harshbhx/output/colophon-light.svg"><img src="https://raw.githubusercontent.com/harshbhx/harshbhx/output/colophon-dark.svg" alt="Colophon: reprinted daily by GitHub Actions, with a live status check of dualmindlab.tech, the Arena, the docs and PixelProof" width="846"></picture></a>
 </p>
 
 <details>

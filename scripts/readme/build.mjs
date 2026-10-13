@@ -23,6 +23,11 @@ const only = process.argv.slice(2)
 const files = readdirSync(COMPONENTS)
   .filter((f) => f.endsWith('.mjs'))
   .filter((f) => !only.length || only.includes(f.replace(/\.mjs$/, '')))
+if (only.length && files.length < only.length) {
+  const found = files.map((f) => f.replace(/\.mjs$/, ''))
+  console.error(`✗ no component file matches: ${only.filter((n) => !found.includes(n)).join(', ')}`)
+  process.exit(1)
+}
 
 mkdirSync(ASSETS, { recursive: true })
 const registry = new Map()
