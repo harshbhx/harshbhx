@@ -1,9 +1,10 @@
-// GitHub GraphQL client and the numbers the activity cards show.
+// GitHub GraphQL client and the numbers the daily images show.
 //
 // Everything here is plain data: fetchActivity() talks to the API and
 // summarise() turns raw contribution days + repository languages into the
-// shape live/cards.mjs renders. The mock data (live/mock.mjs) goes through the
-// same summarise() so previews exercise the real streak / language maths.
+// shape live/cards.mjs and live/calendar.mjs render. The mock data
+// (live/mock.mjs) goes through the same summarise() so previews exercise the
+// real streak / language maths.
 
 export const ENDPOINT = 'https://api.github.com/graphql'
 

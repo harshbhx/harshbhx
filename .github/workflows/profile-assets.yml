@@ -1,13 +1,13 @@
 name: Update profile assets
 
-# publish: builds the live images the profile README uses (the activity cards
-#   and the contribution-graph card around the snake, all rendered by
-#   scripts/readme/live.mjs) and publishes them to the `output` branch.
-#   Generating them here instead of hot-linking public services avoids rate
-#   limits and paused deployments.
+# publish: builds the daily images the profile README uses — the numbers and
+#   languages pair, the contribution calendar and the colophon with its status
+#   check of the linked sites, all rendered by scripts/readme/live.mjs — and
+#   publishes them to the `output` branch. Generating them here instead of
+#   hot-linking public services avoids rate limits and paused deployments.
 # verify: on every push and pull request that touches the generator, checks
 #   that the committed assets/ and README.md are what scripts/readme builds,
-#   and that the live cards still render.
+#   and that the daily images still render.
 
 on:
   schedule:
@@ -68,7 +68,7 @@ jobs:
             exit 1
           fi
 
-      - name: Render the live cards from mock data
+      - name: Render the daily images from mock data
         working-directory: scripts/readme
         run: node live.mjs --out "$RUNNER_TEMP/live-preview" --mock
 
@@ -98,29 +98,20 @@ jobs:
         working-directory: scripts/readme
         run: npm ci --omit=dev
 
-      # Raw snake into snk/ (not published): live.mjs wraps it in the
-      # contribution-graph card and recolours it with RAMP from
-      # scripts/readme/live/snake.mjs. The colours below are that same ramp,
-      # only as a fallback; the snake is the theme's sky token.
-      - name: Contribution snake
-        uses: Platane/snk/svg-only@v3
-        with:
-          github_user_name: ${{ github.repository_owner }}
-          outputs: |
-            snk/snake-dark.svg?color_snake=#7dd3fc&color_dots=#2c2247,#4c1d95,#7c3aed,#a78bfa,#ddd6fe
-            snk/snake-light.svg?color_snake=#0369a1&color_dots=#e4ddf7,#c4b5fd,#a78bfa,#7c3aed,#4c1d95
-
       # Without a STATS_TOKEN secret the built-in token only sees public
-      # repositories and public contributions, so the languages card is
+      # repositories and public contributions, so the languages image is
       # labelled "public repos". To count private work too, add a STATS_TOKEN
       # secret (classic PAT with `read:user` and `repo` scopes). If it expires,
       # live.mjs falls back to the built-in token and leaves a warning on the run.
-      # live.mjs exits non-zero on any other failure, which stops the job before
-      # publishing, so the previously published images stay in place.
-      - name: Activity cards and contribution-graph card
+      # live.mjs exits non-zero when the GitHub API fails, which stops the job
+      # before publishing, so the previously published images stay in place.
+      # The colophon's site check (one GET per site from this runner, 15 s
+      # timeout) never fails the job: a site that is down is printed in red
+      # and flagged with a warning on the run.
+      - name: Numbers, languages, calendar and colophon
         working-directory: scripts/readme
         # The profile repo itself is excluded so the generator code does not skew languages.
-        run: node live.mjs --out ../../dist --snake ../../snk --exclude "${GITHUB_REPOSITORY#*/}"
+        run: node live.mjs --out ../../dist --exclude "${GITHUB_REPOSITORY#*/}"
         env:
           STATS_TOKEN: ${{ secrets.STATS_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
