@@ -1,0 +1,8 @@
+{
+  "_source": "simple-icons 9.21.0 (CC0 1.0). These logos were removed from later simple-icons releases.",
+  "csharp": { "title": "C#", "hex": "512BD4" },
+  "microsoftazure": { "title": "Microsoft Azure", "hex": "0078D4" },
+  "visualstudiocode": { "title": "Visual Studio Code", "hex": "007ACC" },
+  "openai": { "title": "OpenAI", "hex": "412991" },
+  "linkedin": { "title": "LinkedIn", "hex": "0A66C2" }
+}

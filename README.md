@@ -1,501 +1,192 @@
-<!-- ══════════════════════════════════════════════════════════════ -->
-<!--         HARSH BHANUSHALI  ·  GitHub Profile README           -->
-<!-- ══════════════════════════════════════════════════════════════ -->
-
-<div align="center">
-  <img width="100%" src="https://capsule-render.vercel.app/api?type=venom&color=0:0d0221,25:130533,50:1a0845,75:0f0a2e,100:050111&height=300&section=header&text=HARSH%20BHANUSHALI&fontSize=72&fontColor=c4b5fd&fontAlignY=45&animation=fadeIn&desc=Full-Stack%20Engineer%20%20%E2%80%A2%20%20AI%20Systems%20%20%E2%80%A2%20%20Founder%20%40%20DualMind%20Labs&descSize=17&descAlignY=68&descColor=7dd3fc&stroke=a78bfa&strokeWidth=2"/>
-</div>
-
-<br/>
-
-<div align="center">
-
-<img src="https://readme-typing-svg.demolab.com?font=Space+Grotesk&weight=700&size=22&duration=3000&pause=1500&color=A78BFA&center=true&vCenter=true&width=700&lines=I+build+systems.+Real+ones.+Deployed.+Live." alt="line1"/>
-
-<img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=400&size=13&duration=2500&pause=1000&color=7DD3FC&center=true&vCenter=true&width=800&lines=Flutter+%C2%B7+.NET+Web+API+%C2%B7+Firebase+%C2%B7+Supabase+%C2%B7+Azure+%C2%B7+Cloudflare+CDN+%C2%B7+Cloudflare+AI+Gateway;Peak+traffic+handled.+Real-time+payments+shipped.+Security+systems+built.+SEO+ranking+earned.;Open+to+internships+%C2%B7+freelance+%C2%B7+AI+product+builds+%C2%B7+early-stage+startups." alt="line2"/>
-
-<br/>
-
-[![GitHub](https://img.shields.io/github/followers/HarshBhanushali07?style=for-the-badge&logo=github&logoColor=c4b5fd&label=Follow&color=1a0845&labelColor=0d0221)](https://github.com/HarshBhanushali07)&nbsp;
-[![Views](https://komarev.com/ghpvc/?username=HarshBhanushali07&style=for-the-badge&label=Profile+Views&color=1a0845&labelColor=0d0221)](https://github.com/HarshBhanushali07)&nbsp;
-[![Live](https://img.shields.io/badge/dualmindlab.tech-LIVE-a78bfa?style=for-the-badge&logo=googlechrome&logoColor=a78bfa&labelColor=0d0221)](http://dualmindlab.tech)&nbsp;
-[![Hire](https://img.shields.io/badge/Status-Open%20to%20Work-7dd3fc?style=for-the-badge&labelColor=0d0221)](mailto:bhanushaliharsh434@gmail.com)
-
-</div>
-
-<br/>
-
-<img width="100%" src="https://capsule-render.vercel.app/api?type=rect&color=0:0d0221,100:1a0845&height=2"/>
-
-<br/>
-
-<div align="center">
-
-```
-╔═══════════════════════════════════════════════════════════════════════════════╗
-║                                                                               ║
-║    CS student. Founder. Engineer who shipped a live AI platform that's        ║
-║    handling real traffic, earning Google rankings, and running a security     ║
-║    stack — all solo. Not someday. Right now.                                  ║
-║                                                                               ║
-║    Every project below has real users. Every system below is deployed.        ║
-║    Every architecture decision below has a reason.                            ║
-║                                                                               ║
-╚═══════════════════════════════════════════════════════════════════════════════╝
-```
-
-</div>
-
-<br/>
-
----
-
-<div align="center">
-
-## ◈ PROOF OF WORK
-
-*Real numbers. Real systems. No demos.*
-
-</div>
-
-<div align="center">
-
-![](https://img.shields.io/badge/⚡_Peak_Traffic-5%2C000%2B_requests_in_a_spike-a78bfa?style=flat-square&labelColor=1a0845&color=0d0221)
-![](https://img.shields.io/badge/💳_Payments-Razorpay_real--time_sync_3_apps-7dd3fc?style=flat-square&labelColor=1a0845&color=0d0221)
-![](https://img.shields.io/badge/🔒_Security-IP_logging_·_risk_scoring_·_email_alerts-a78bfa?style=flat-square&labelColor=1a0845&color=0d0221)
-![](https://img.shields.io/badge/📈_SEO-%231_Google_"DualMind_Labs"-7dd3fc?style=flat-square&labelColor=1a0845&color=0d0221)
-![](https://img.shields.io/badge/🏆_SEO-~Top_95_"AI_Arenas"-a78bfa?style=flat-square&labelColor=1a0845&color=0d0221)
-![](https://img.shields.io/badge/📱_Mobile-3_coordinated_Flutter_apps-7dd3fc?style=flat-square&labelColor=1a0845&color=0d0221)
-![](https://img.shields.io/badge/📄_Docs-Full_user_documentation_published-a78bfa?style=flat-square&labelColor=1a0845&color=0d0221)
-![](https://img.shields.io/badge/🔁_Ownership-Design_→_Code_→_Infra_→_Deploy-7dd3fc?style=flat-square&labelColor=1a0845&color=0d0221)
-
-</div>
-
-<br/>
-
----
-
-<div align="center">
-
-## ◈ FEATURED PROJECTS
-
-</div>
-
-<br/>
-
-### ⚔ &nbsp;DualMind Arena &nbsp;— &nbsp;AI Model Evaluation Platform
-
-<div align="center">
-
-[![LIVE](https://img.shields.io/badge/●_LIVE-dualmindlab.tech-a78bfa?style=for-the-badge&labelColor=1a0845&logo=googlechrome&logoColor=a78bfa)](http://dualmindlab.tech)&nbsp;
-[![PEAK](https://img.shields.io/badge/⚡_Peak-5K%2B_Requests-7dd3fc?style=for-the-badge&labelColor=1a0845)](https://dualmindlab.tech)&nbsp;
-[![SEO](https://img.shields.io/badge/📈_SEO-%231_Google-a78bfa?style=for-the-badge&labelColor=1a0845)]()
-
-</div>
-
-<br/>
-
-> **The problem:** AI benchmarks are a lie. Vendors cherry-pick prompts, brand recognition skews votes, and nobody can audit results. There is no honest, community-driven evaluation layer.
->
-> **The solution:** Blind head-to-head model battles. Real community prompts. Zero brand visibility until the vote is locked.
-
-<br/>
-
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                         SYSTEM ARCHITECTURE                                 │
-│                                                                             │
-│   [User Prompt]                                                             │
-│        │                                                                    │
-│        ▼                                                                    │
-│  ┌─────────────────────────────────────────────────────┐                   │
-│  │              Cloudflare CDN + AI Gateway             │ ← traffic layer  │
-│  └────────────────────────┬────────────────────────────┘                   │
-│                           │                                                 │
-│                    ┌──────▼──────┐                                          │
-│                    │ .NET Web API │ ← stateless, horizontally scalable      │
-│                    └──────┬──────┘                                          │
-│                           │                                                 │
-│              ┌────────────┴────────────┐                                    │
-│              ▼                         ▼                                    │
-│        ┌──────────┐             ┌──────────┐                                │
-│        │ Model  A │             │ Model  B │  ← identities hidden           │
-│        │ (blind)  │             │ (blind)  │                                │
-│        └────┬─────┘             └────┬─────┘                                │
-│             └──────────┬────────────┘                                       │
-│                        ▼                                                    │
-│              [Community Votes]  →  [Live Leaderboard]  →  [Open Data]      │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
-
-<br/>
-
-**What's shipped and running:**
-
-&nbsp;&nbsp;`▸` Handled **5,000+ requests during peak traffic spike** (bots + real users) — CDN absorbed load before origin was touched
-
-&nbsp;&nbsp;`▸` **Cloudflare AI Gateway** as unified LLM routing layer — rate limiting, response caching, per-request observability across all model providers
-
-&nbsp;&nbsp;`▸` **Real-time security system** — login anomaly detection, IP address capture, risk-level classification, automated email alert to account owner on every suspicious event
-
-&nbsp;&nbsp;`▸` **SEO** — ranks **#1 on Google for "DualMind Labs"**, ~**Top 95 for "AI arenas"**
-
-&nbsp;&nbsp;`▸` **Full user documentation** written, structured, and published
-
-&nbsp;&nbsp;`▸` **Supabase (PostgreSQL)** — chosen deliberately over Firebase. Leaderboard ranking queries require relational SQL at depth. NoSQL would have been unmanageable.
-
-&nbsp;&nbsp;`▸` **.NET Web API** — stateless; horizontal scaling is a config change, not a rewrite
-
-<div align="center">
-
-`Azure` &nbsp;·&nbsp; `.NET Web API` &nbsp;·&nbsp; `Vanilla JS` &nbsp;·&nbsp; `Supabase` &nbsp;·&nbsp; `Cloudflare CDN` &nbsp;·&nbsp; `Cloudflare AI Gateway` &nbsp;·&nbsp; `GitHub Actions`
-
-</div>
-
-<br/>
-
----
-
-### 🍽 &nbsp;MealMind &nbsp;— &nbsp;Restaurant Management Ecosystem
-
-<div align="center">
-
-[![BUILT](https://img.shields.io/badge/●_BUILT-3_Flutter_Apps-a78bfa?style=for-the-badge&labelColor=1a0845)]()&nbsp;
-[![PAYMENTS](https://img.shields.io/badge/💳_Razorpay-Real--time_Sync-7dd3fc?style=for-the-badge&labelColor=1a0845)]()&nbsp;
-[![REALTIME](https://img.shields.io/badge/⚡_Firebase-Live_3--Way_State-a78bfa?style=for-the-badge&labelColor=1a0845)]()
-
-</div>
-
-<br/>
-
-> **Three coordinated Flutter apps. One Firebase backend. Real-time payment sync across every role.** A production-grade restaurant system where a payment confirmed by the customer appears on the chef screen and admin dashboard in under a second.
-
-<br/>
-
-```
-┌────────────────┐    ┌────────────────┐    ┌────────────────┐
-│  CUSTOMER APP  │    │   CHEF  APP    │    │   ADMIN APP    │
-│                │    │                │    │                │
-│  Browse menu   │    │  Receive order │    │  Manage menu   │
-│  Place order   │    │  Update status │    │  View staff    │
-│  Pay Razorpay  │    │  Payment alert │    │  Revenue live  │
-│  Track live    │    │  Order ready   │    │  All orders    │
-└───────┬────────┘    └───────┬────────┘    └───────┬────────┘
-        └──────────────────────┼──────────────────────┘
-                               ▼
-                    ┌──────────────────────┐
-                    │   Firebase Firestore  │  ← single source of truth
-                    │   + Cloud Functions   │  ← Razorpay webhook handler
-                    └──────────────────────┘
-                               ▲
-                    ┌──────────┴──────────┐
-                    │      Razorpay        │
-                    │  Payment lifecycle   │
-                    └─────────────────────┘
-```
-
-<br/>
-
-**What's shipped and running:**
-
-&nbsp;&nbsp;`▸` **Razorpay full payment lifecycle** — webhook hits Cloud Function, payment status propagates across all three apps instantly, each role sees what they need to see
-
-&nbsp;&nbsp;`▸` **Real-time order notifications** — customer gets confirmation, chef gets order detail, admin sees revenue tick up — all from one Firestore write
-
-&nbsp;&nbsp;`▸` **Firebase security rules** scoped per role — strict access control baked in, not bolted on
-
-&nbsp;&nbsp;`▸` **CI/CD pipeline** via GitHub Actions across all three apps simultaneously
-
-<div align="center">
-
-`Flutter (3 apps)` &nbsp;·&nbsp; `Firebase Firestore` &nbsp;·&nbsp; `Firebase Auth` &nbsp;·&nbsp; `Cloud Functions` &nbsp;·&nbsp; `Razorpay` &nbsp;·&nbsp; `GitHub Actions`
-
-</div>
-
-<br/>
-
----
-
-### 🤖 &nbsp;AI Customer Support Agent &nbsp;— &nbsp;Automated Query Pipeline
-
-<div align="center">
-
-[![BUILT](https://img.shields.io/badge/●_BUILT-Function_Calling_+_Multi--Model-a78bfa?style=for-the-badge&labelColor=1a0845)]()
-
-</div>
-
-<br/>
-
-> Handles routine inbound support volume using Claude / GPT-4o with function calling. Escalates only what genuinely requires human judgment — with full context pre-attached so the human isn't starting cold.
-
-```
-[Inbound query]  →  [AI agent: classify intent + urgency]
-                              │
-              ┌───────────────┴───────────────┐
-              ▼                               ▼
-        [Resolved]                       [Escalate]
-    Auto-respond + log             Human review, context
-         to CRM                        pre-drafted
-```
-
-<div align="center">
-
-`Node.js` &nbsp;·&nbsp; `Anthropic Claude` &nbsp;·&nbsp; `OpenAI GPT-4o` &nbsp;·&nbsp; `Supabase` &nbsp;·&nbsp; `Function Calling` &nbsp;·&nbsp; `Webhooks`
-
-</div>
-
-<br/>
-
----
-
-<div align="center">
-
-## ◈ SYSTEM DESIGN THINKING
-
-*How I reason about the systems I build.*
-
-</div>
-
-<br/>
-
-<div align="center">
-
-```
-  SCALABILITY ──────────────────────────────────────────────────────────────
-  Cloudflare CDN absorbs spikes before they touch the origin.
-  The .NET API is stateless — horizontal scaling is a config change.
-  AI Gateway caches and rate-limits LLM calls; the model layer
-  isn't hammered unnecessarily.
-
-  OBSERVABILITY ────────────────────────────────────────────────────────────
-  Logging and alerting are day-one architecture, not post-incident patches.
-  DualMind: real-time login alerts with IP + risk scoring.
-  AI Gateway: per-request visibility across all model providers.
-  MealMind: webhook logs and Cloud Function execution traces.
-
-  SECURITY ─────────────────────────────────────────────────────────────────
-  Anomaly detection, IP capture, risk classification, and owner email
-  alerts were designed into DualMind at launch. Not added after a breach.
-
-  TRADEOFFS ────────────────────────────────────────────────────────────────
-  Firebase vs Supabase:
-    MealMind → Firebase. Real-time 3-app sync is exactly Firestore's job.
-    DualMind → Supabase. Leaderboard queries need real SQL. NoSQL fails here.
-
-  AI Gateway vs direct API calls:
-    Unified rate limiting, caching, and observability across providers.
-    For a multi-model platform, the abstraction pays for itself.
-```
-
-</div>
-
-<br/>
-
----
-
-<div align="center">
-
-## ◈ TECH STACK
-
-</div>
-
-<br/>
-
-<div align="center">
-
-<img src="https://skillicons.dev/icons?i=flutter,dart,nodejs,dotnet,js,ts,cs,c&theme=dark&perline=8"/>
-
-<br/><sub>Flutter &nbsp;·&nbsp; Dart &nbsp;·&nbsp; Node.js &nbsp;·&nbsp; .NET &nbsp;·&nbsp; JavaScript &nbsp;·&nbsp; TypeScript &nbsp;·&nbsp; C# &nbsp;·&nbsp; C</sub>
-
-<br/><br/>
-
-<img src="https://skillicons.dev/icons?i=firebase,supabase,postgresql,mysql,azure,cloudflare,linux,docker&theme=dark&perline=8"/>
-
-<br/><sub>Firebase &nbsp;·&nbsp; Supabase &nbsp;·&nbsp; PostgreSQL &nbsp;·&nbsp; MySQL &nbsp;·&nbsp; Azure &nbsp;·&nbsp; Cloudflare &nbsp;·&nbsp; Linux &nbsp;·&nbsp; Docker</sub>
-
-<br/><br/>
-
-<img src="https://skillicons.dev/icons?i=github,git,nextjs,html,css,figma,vscode,postman&theme=dark&perline=8"/>
-
-<br/><sub>GitHub Actions &nbsp;·&nbsp; Git &nbsp;·&nbsp; Next.js &nbsp;·&nbsp; HTML &nbsp;·&nbsp; CSS &nbsp;·&nbsp; Figma &nbsp;·&nbsp; VS Code &nbsp;·&nbsp; Postman</sub>
-
-<br/><br/>
-
-![OpenAI](https://img.shields.io/badge/OpenAI_GPT--4o-1a0845?style=flat-square&logo=openai&logoColor=a78bfa)
-![Anthropic](https://img.shields.io/badge/Anthropic_Claude-1a0845?style=flat-square&logo=anthropic&logoColor=a78bfa)
-![Gemini](https://img.shields.io/badge/Google_Gemini-1a0845?style=flat-square&logo=google&logoColor=a78bfa)
-![RAG](https://img.shields.io/badge/RAG_Pipelines-1a0845?style=flat-square&logoColor=a78bfa)
-![Multi-Agent](https://img.shields.io/badge/Multi--Agent_Systems-1a0845?style=flat-square&logoColor=a78bfa)
-![Razorpay](https://img.shields.io/badge/Razorpay-1a0845?style=flat-square&logo=razorpay&logoColor=a78bfa)
-![Webhooks](https://img.shields.io/badge/Webhooks-1a0845?style=flat-square&logoColor=a78bfa)
-![System Design](https://img.shields.io/badge/System_Design-1a0845?style=flat-square&logoColor=7dd3fc)
-![Real-time](https://img.shields.io/badge/Real--time_Systems-1a0845?style=flat-square&logoColor=7dd3fc)
-![Security](https://img.shields.io/badge/Security_Fundamentals-1a0845?style=flat-square&logoColor=7dd3fc)
-![Observability](https://img.shields.io/badge/Observability-1a0845?style=flat-square&logoColor=7dd3fc)
-![Payments](https://img.shields.io/badge/Payment_Integration-1a0845?style=flat-square&logoColor=7dd3fc)
-
-</div>
-
-<br/>
-
----
-
-<div align="center">
-
-## ◈ GITHUB STATS
-
-</div>
-
-<br/>
-
-<div align="center">
-
-<img height="175" src="https://github-readme-stats.vercel.app/api?username=HarshBhanushali07&show_icons=true&hide_border=true&bg_color=0d0221&title_color=a78bfa&icon_color=7dd3fc&text_color=c4b5fd&ring_color=a78bfa&include_all_commits=true&count_private=true&rank_icon=github"/>
-&nbsp;
-<img height="175" src="https://github-readme-stats.vercel.app/api/top-langs?username=HarshBhanushali07&layout=compact&hide_border=true&bg_color=0d0221&title_color=a78bfa&text_color=c4b5fd&langs_count=8"/>
-
-<br/>
-
-<img src="https://streak-stats.demolab.com?user=HarshBhanushali07&hide_border=true&background=0d0221&ring=a78bfa&fire=7dd3fc&currStreakLabel=a78bfa&sideLabels=7b68a0&dates=5b4a7a&stroke=1a0845&currStreakNum=e0e7ff&sideNums=e0e7ff"/>
-
-<br/>
-
-<img src="https://github-readme-activity-graph.vercel.app/graph?username=HarshBhanushali07&bg_color=0d0221&color=a78bfa&line=7dd3fc&point=a78bfa&area=true&area_color=1a0845&hide_border=true&radius=6"/>
-
-<br/>
-
-<img src="https://github-profile-trophy.vercel.app/?username=HarshBhanushali07&theme=dracula&no-frame=true&no-bg=true&row=1&column=7&margin-w=8"/>
-
-</div>
-
-<br/>
-
----
-
-<div align="center">
-
-## ◈ SERVICES
-
-*What I build for clients. What you can hire me for today.*
-
-</div>
-
-<br/>
-
-<div align="center">
-
-```
-  ┌─────────────────────────────────────────────────────────────────┐
-  │  01  MOBILE APPS                              →  2–6 weeks      │
-  │      Flutter · iOS & Android · Razorpay/Stripe                  │
-  │      Multi-role auth · Firebase · CI/CD · App Store + Play     │
-  ├─────────────────────────────────────────────────────────────────┤
-  │  02  BACKEND APIs                             →  1–3 weeks      │
-  │      .NET Web API or Node.js · Auth · Security alerting         │
-  │      Supabase or Firebase · Scalable · Fully documented         │
-  ├─────────────────────────────────────────────────────────────────┤
-  │  03  AI PRODUCT DEVELOPMENT                   →  1–4 weeks      │
-  │      RAG · AI agents · Multi-model systems                      │
-  │      OpenAI + Claude + Cloudflare AI Gateway · Cost-optimised  │
-  ├─────────────────────────────────────────────────────────────────┤
-  │  04  FULL-STACK MVPs                          →  3–8 weeks      │
-  │      Mobile + backend + AI + security + DevOps + deployed       │
-  │      Azure · Cloudflare CDN · CI/CD · Full source handoff      │
-  └─────────────────────────────────────────────────────────────────┘
-
-  Upfront scoping.  Weekly deliverables.  Full source on completion.
-  Response time < 24 hours.  No ghosting.  No scope surprises.
-```
-
-</div>
-
-<br/>
-
----
-
-<div align="center">
-
-## ◈ ENGINEERING PRINCIPLES
-
-</div>
-
-<br/>
-
-<div align="center">
-
-```
-  01  Ship early. Real users surface problems that planning never will.
-
-  02  Design for scale from day one. Stateless APIs. CDN-first.
-      SQL where queries get complex. These are cheap decisions early.
-
-  03  Observability is architecture. Logs, alerts, and dashboards
-      ship with the product — never added after an incident.
-
-  04  Pick the right tool. Firebase for sync. Supabase for SQL.
-      The tradeoff matters more than familiarity.
-
-  05  Own the outcome. The working, monitored, deployed system is
-      the deliverable. Not the commit.
-
-  06  Communicate clearly. Async-first. Unprompted updates. No surprises.
-```
-
-</div>
-
-<br/>
-
----
-
-<div align="center">
-
-## ◈ CONTRIBUTION GRAPH
-
-</div>
-
-<br/>
-
-<div align="center">
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/HarshBhanushali07/HarshBhanushali07/output/github-contribution-grid-snake-dark.svg"/>
-  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/HarshBhanushali07/HarshBhanushali07/output/github-contribution-grid-snake.svg"/>
-  <img alt="contribution snake" src="https://raw.githubusercontent.com/HarshBhanushali07/HarshBhanushali07/output/github-contribution-grid-snake-dark.svg"/>
-</picture>
-</div>
-
-<br/>
-
----
-
-<div align="center">
-
-## ◈ LET'S BUILD
-
-<br/>
-
-[![GitHub](https://img.shields.io/badge/GitHub-HarshBhanushali07-1a0845?style=for-the-badge&logo=github&logoColor=a78bfa)](https://github.com/HarshBhanushali07)&nbsp;
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-harshu--dev-1a0845?style=for-the-badge&logo=linkedin&logoColor=7dd3fc)](https://linkedin.com/in/harshu-dev)&nbsp;
-[![Dev.to](https://img.shields.io/badge/Dev.to-harshudev-1a0845?style=for-the-badge&logo=devdotto&logoColor=a78bfa)](https://dev.to/harshudev)
-
-[![GitLab](https://img.shields.io/badge/GitLab-HarshBhanushali07-1a0845?style=for-the-badge&logo=gitlab&logoColor=7dd3fc)](https://gitlab.com/HarshBhanushali07)&nbsp;
-[![Discord](https://img.shields.io/badge/Discord-harshu911-1a0845?style=for-the-badge&logo=discord&logoColor=a78bfa)](https://discord.com)&nbsp;
-[![Email](https://img.shields.io/badge/Email-bhanushaliharsh434-1a0845?style=for-the-badge&logo=gmail&logoColor=7dd3fc)](mailto:bhanushaliharsh434@gmail.com)
-
-[![Website](https://img.shields.io/badge/◈_dualmindlab.tech-LIVE_NOW-a78bfa?style=for-the-badge&logo=googlechrome&logoColor=a78bfa&labelColor=0d0221)](http://dualmindlab.tech)
-
-<br/>
-
-```
-  I build systems that handle real traffic, real payments, and real users.
-  If your team needs an engineer who ships end-to-end and owns the outcome —
-```
-
-### **[→ &nbsp; bhanushaliharsh434@gmail.com](mailto:bhanushaliharsh434@gmail.com)**
-
-</div>
-
-<br/>
-
-<div align="center">
-  <img width="100%" src="https://capsule-render.vercel.app/api?type=waving&color=0:050111,40:1a0845,80:130533,100:0d0221&height=140&section=footer&text=&fontSize=0"/>
-</div>
+<!-- Generated by scripts/readme (npm run build). Edit scripts/readme/content.mjs, not this file. -->
+
+<p align="center">
+<a href="https://dualmindlab.tech"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/hero-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/hero-light.svg"><img src="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/hero-dark.svg" alt="Harsh Bhanushali (@harshbhx) — Full-stack engineer · AI systems. Co-founder @ DualMind Labs. “I build systems. Real ones. Deployed. Live.” Open to work · Rajkot, India · IST (UTC+5:30)." width="846"></picture></a>
+</p>
+
+<p align="center">
+<a href="https://github.com/harshbhx"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/about-terminal-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/about-terminal-light.svg"><img src="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/about-terminal-dark.svg" alt="Terminal window. whoami: Harsh Bhanushali. about.txt: CS student and co-founder of DualMind Labs. I take products from idea to production — app, API, database, infrastructure, security and docs — and keep them running after launch. focus.txt: Backend &amp; AI systems, Flutter, .NET, Cloudflare." width="413"></picture></a>
+<a href="mailto:bhanushaliharsh434@gmail.com"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/about-now-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/about-now-light.svg"><img src="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/about-now-dark.svg" alt="Right now. Building: DualMind Arena — blind, head-to-head AI model evaluation. Next: Expanding DualMind into AI agent evaluation. Open to: Internships, Freelance, AI product builds, Early-stage startups. Replies within 24 hours. Email: bhanushaliharsh434@gmail.com." width="413"></picture></a>
+</p>
+
+<p align="center">
+<picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/section-proof-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/section-proof-light.svg"><img src="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/section-proof-dark.svg" alt="01 · Proof of work — from systems I built" width="846"></picture>
+</p>
+
+<p align="center">
+<a href="https://dualmindlab.tech"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/proof-a-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/proof-a-light.svg"><img src="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/proof-a-dark.svg" alt="Proof of work, part 1. 5,000+ — requests absorbed in one traffic spike. Bots + real users. Cloudflare CDN took the load before it reached the origin. 3 apps — in sync on every Razorpay payment. Webhook to Cloud Function to one Firestore write every app listens to. #1 — on Google for “DualMind Labs”. dualmindlab.tech." width="413"></picture></a>
+<a href="https://docs.dualmindlab.tech"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/proof-b-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/proof-b-light.svg"><img src="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/proof-b-dark.svg" alt="Proof of work, part 2. Real-time — login anomaly detection. IP capture, risk scoring and an email alert to the account owner on every suspicious event. Docs — site with full user documentation. docs.dualmindlab.tech. E2E — design to code to infra to deploy to docs. From first commit to a monitored production system." width="413"></picture></a>
+</p>
+
+<p align="center">
+<picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/section-projects-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/section-projects-light.svg"><img src="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/section-projects-dark.svg" alt="02 · Featured projects — what I built &amp; how it works" width="846"></picture>
+</p>
+
+<p align="center">
+<a href="https://arena.dualmindlab.tech"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/project-dualmind-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/project-dualmind-light.svg"><img src="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/project-dualmind-dark.svg" alt="DualMind Arena — AI model evaluation platform. Status: Live at arena.dualmindlab.tech. Problem: Public AI benchmarks are easy to game: cherry-picked prompts, brand bias, results nobody can audit. Approach: Blind head-to-head battles on real community prompts. Model identities stay hidden until the vote is locked. Highlights: Cloudflare AI Gateway routes every LLM call — rate limits, caching, per-request logs; Stateless .NET Web API behind Cloudflare CDN; scaling out is a config change; Supabase (PostgreSQL) on purpose: leaderboard ranking needs relational SQL; Real-time login anomaly detection with IP capture, risk scoring and owner alerts. Stack: Azure, .NET Web API, Vanilla JS, Supabase, Cloudflare CDN + AI Gateway, GitHub Actions." width="413"></picture></a>
+<a href="https://docs.dualmindlab.tech"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/arch-dualmind-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/arch-dualmind-light.svg"><img src="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/arch-dualmind-dark.svg" alt="DualMind Arena architecture — Request path, top to bottom. A user prompt enters the Edge layer at Cloudflare CDN, which absorbs traffic spikes before they reach the origin; then the API layer, a stateless .NET Web API that scales out; then the Gateway layer, Cloudflare AI Gateway, which handles rate limits, caching and per-request logs. The gateway fans the prompt out to Model A and Model B, head to head, in a blind Models layer where both identities are hidden. Both answers go to a community vote, and the Data layer — Supabase (PostgreSQL) — stores the result and ranks the leaderboard. Links to the documentation at docs.dualmindlab.tech." width="413"></picture></a>
+</p>
+
+<p align="center">
+<picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/project-mealmind-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/project-mealmind-light.svg"><img src="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/project-mealmind-dark.svg" alt="MealMind — Restaurant management ecosystem. Status: Built. Problem: Customers, kitchen and owners each need a different live view of the same orders and payments. Approach: Three coordinated Flutter apps on one Firebase backend. A confirmed payment reaches the chef screen and admin dashboard in under a second. Highlights: Full Razorpay payment lifecycle: webhook → Cloud Function → every app; One Firestore write drives the customer, chef and admin views; Firebase security rules scoped per role — built in, not bolted on; CI/CD with GitHub Actions for all three apps. Stack: Flutter ×3, Firestore, Firebase Auth, Cloud Functions, Razorpay, GitHub Actions." width="413"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/arch-mealmind-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/arch-mealmind-light.svg"><img src="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/arch-mealmind-dark.svg" alt="MealMind architecture — Real-time sync. The customer app (orders) pays through Razorpay (payments). Razorpay calls a webhook handled by Cloud Functions on Firebase, which makes one write to Firestore — the single source of truth, with security rules scoped per role. Firestore syncs that write live to the customer app, the chef app (kitchen screen) and the admin app (dashboard). All three are Flutter apps, and a confirmed payment reaches the chef screen and admin dashboard in under a second." width="413"></picture>
+</p>
+
+<p align="center">
+<picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/project-agent-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/project-agent-light.svg"><img src="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/project-agent-dark.svg" alt="AI Support Agent — Automated query pipeline. Status: Built. Problem: Support teams spend most of their time on routine questions, and escalations arrive without context. Approach: Claude / GPT-4o with function calling resolves routine queries and escalates the rest with the context already drafted. Highlights: Classifies intent and urgency for every inbound query; Routine queries: auto-reply + logged to the CRM; Needs judgment: human review with context pre-drafted; Multi-model, with webhook integrations. Stack: Node.js, Claude, GPT-4o, Supabase, Function calling, Webhooks." width="413"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/arch-agent-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/arch-agent-light.svg"><img src="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/arch-agent-dark.svg" alt="AI Support Agent architecture — Query pipeline. Every inbound query (a support question) goes to an AI agent — Claude and GPT-4o with function calling — that classifies its intent and urgency. Routine queries get an auto-reply and are logged to the CRM. Queries that need judgment go to human review, with the context already pre-drafted." width="413"></picture>
+</p>
+
+<p align="center">
+<picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/section-build-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/section-build-light.svg"><img src="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/section-build-dark.svg" alt="03 · How I build — decisions and the reasons behind them" width="846"></picture>
+</p>
+
+<p align="center">
+<picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/decisions-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/decisions-light.svg"><img src="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/decisions-dark.svg" alt="Architecture decisions. 1. CDN first, stateless API: Spikes land on Cloudflare, not the origin. Scaling the .NET API out is a config change. 2. Supabase here, Firebase there: Leaderboards need relational queries. Live sync across three apps is exactly Firestore’s job. 3. AI Gateway over direct calls: One place for rate limits, caching and per-request logs across every model provider. 4. Observability from day one: Gateway logs, webhook and function traces ship with the product. 5. Security by design: Anomaly detection and owner alerts were part of the launch, not a patch after a breach." width="413"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/principles-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/principles-light.svg"><img src="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/principles-dark.svg" alt="Engineering principles. 01 Ship early: Real users surface problems planning never will. 02 Design for scale up front: Pick architectures that grow by configuration, not rewrites. 03 Observability is architecture: If you can’t see it in production, it isn’t done. 04 Pick the right tool: The trade-off matters more than familiarity. 05 Own the outcome: The deliverable is the running, monitored system — not the commit. 06 Communicate clearly: Async first, unprompted updates, no surprises." width="413"></picture>
+</p>
+
+<p align="center">
+<picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/section-stack-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/section-stack-light.svg"><img src="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/section-stack-dark.svg" alt="04 · Tech stack — what I ship with" width="846"></picture>
+</p>
+
+<p align="center">
+<picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/stack-build-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/stack-build-light.svg"><img src="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/stack-build-dark.svg" alt="Tech stack — Build (15 tools). Languages: Dart, C#, TypeScript, JavaScript, C. Frameworks: Flutter, .NET, Node.js, Next.js, HTML, CSS. AI: OpenAI, Claude, Gemini, Cloudflare AI Gateway." width="413"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/stack-run-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/stack-run-light.svg"><img src="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/stack-run-dark.svg" alt="Tech stack — Run &amp; ship (14 tools). Data: Supabase, PostgreSQL, Firebase, MySQL. Cloud &amp; DevOps: Azure, Cloudflare, Docker, GitHub Actions, Linux, Git. Tools &amp; payments: Razorpay, Figma, Postman, VS Code." width="413"></picture>
+</p>
+
+<p align="center">
+<picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/section-services-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/section-services-light.svg"><img src="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/section-services-dark.svg" alt="05 · Work with me — what you can hire me for today" width="846"></picture>
+</p>
+
+<p align="center">
+<a href="mailto:bhanushaliharsh434@gmail.com"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/services-a-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/services-a-light.svg"><img src="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/services-a-dark.svg" alt="Services. Mobile apps (2–6 weeks): Flutter for iOS &amp; Android, Multi-role auth · Firebase, Razorpay / Stripe payments, CI/CD · App Store + Play release. Backend APIs (1–3 weeks): .NET Web API or Node.js, Auth · security alerting, Supabase or Firebase, Fully documented. Open to freelance. Start a project: bhanushaliharsh434@gmail.com." width="413"></picture></a>
+<a href="mailto:bhanushaliharsh434@gmail.com"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/services-b-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/services-b-light.svg"><img src="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/services-b-dark.svg" alt="Services. AI products (1–4 weeks): RAG · AI agents, Multi-model: OpenAI + Claude, Behind Cloudflare AI Gateway, Cost-optimised. Full-stack MVPs (3–8 weeks): Mobile + backend + AI + security, Deployed on Azure + Cloudflare, Monitoring from day one, Full source handoff. Replies within 24 hours. Start a project: bhanushaliharsh434@gmail.com." width="413"></picture></a>
+</p>
+
+<p align="center">
+<picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/section-activity-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/section-activity-light.svg"><img src="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/section-activity-dark.svg" alt="06 · GitHub activity — refreshed daily by GitHub Actions" width="846"></picture>
+</p>
+
+<p align="center">
+<picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/harshbhx/harshbhx/output/activity-stats-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/harshbhx/harshbhx/output/activity-stats-light.svg"><img src="https://raw.githubusercontent.com/harshbhx/harshbhx/output/activity-stats-dark.svg" alt="GitHub stats: contributions, commits, pull requests, issues and streaks" width="413"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/harshbhx/harshbhx/output/activity-langs-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/harshbhx/harshbhx/output/activity-langs-light.svg"><img src="https://raw.githubusercontent.com/harshbhx/harshbhx/output/activity-langs-dark.svg" alt="Most used languages across my repositories" width="413"></picture>
+</p>
+
+<p align="center">
+<picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/harshbhx/harshbhx/output/snake-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/harshbhx/harshbhx/output/snake-light.svg"><img src="https://raw.githubusercontent.com/harshbhx/harshbhx/output/snake-dark.svg" alt="Contribution graph being eaten by a snake" width="846"></picture>
+</p>
+
+<p align="center">
+<a href="mailto:bhanushaliharsh434@gmail.com"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/cta-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/cta-light.svg"><img src="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/cta-dark.svg" alt="Let’s build something real. If your team needs an engineer who ships end to end and owns the outcome, I’d love to hear about it. Email me at bhanushaliharsh434@gmail.com. Open to work · IST (UTC+5:30). How I work: Upfront scoping · Weekly deliverables · Full source handoff · Replies within 24 hours · No scope surprises." width="846"></picture></a>
+</p>
+
+<p align="center">
+<a href="mailto:bhanushaliharsh434@gmail.com"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/btn-email-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/btn-email-light.svg"><img src="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/btn-email-dark.svg" alt="Email: bhanushaliharsh434@gmail.com" width="135"></picture></a>
+<a href="https://linkedin.com/in/harshu-dev"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/btn-linkedin-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/btn-linkedin-light.svg"><img src="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/btn-linkedin-dark.svg" alt="LinkedIn: harshu-dev" width="135"></picture></a>
+<a href="https://github.com/harshbhx"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/btn-github-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/btn-github-light.svg"><img src="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/btn-github-dark.svg" alt="GitHub: harshbhx" width="135"></picture></a>
+<a href="https://dev.to/harshudev"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/btn-devto-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/btn-devto-light.svg"><img src="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/btn-devto-dark.svg" alt="Dev.to: harshudev" width="135"></picture></a>
+<a href="https://dualmindlab.tech"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/btn-website-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/btn-website-light.svg"><img src="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/btn-website-dark.svg" alt="Website: dualmindlab.tech" width="135"></picture></a>
+<picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/btn-discord-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/btn-discord-light.svg"><img src="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/btn-discord-dark.svg" alt="Discord: harshu911" width="135"></picture>
+</p>
+
+<p align="center">
+<picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/footer-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/footer-light.svg"><img src="https://raw.githubusercontent.com/harshbhx/harshbhx/main/assets/footer-dark.svg" alt="harshbhx · Rajkot, India" width="846"></picture>
+</p>
+
+<details>
+<summary>Plain-text version</summary>
+
+**Harsh Bhanushali** — Full-stack engineer · AI systems · Co-founder @ [DualMind Labs](https://dualmindlab.tech)
+
+> I build systems. Real ones. Deployed. Live.
+
+CS student and co-founder of DualMind Labs. I take products from idea to production — app, API, database, infrastructure, security and docs — and keep them running after launch.
+
+- **Focus:** Backend & AI systems · Flutter · .NET · Cloudflare
+- **Building:** DualMind Arena — blind, head-to-head AI model evaluation — [arena.dualmindlab.tech](https://arena.dualmindlab.tech)
+- **Next:** Expanding DualMind into AI agent evaluation
+- **Open to:** Internships · Freelance · AI product builds · Early-stage startups
+- **Based in:** Rajkot, India · IST (UTC+5:30)
+
+**Proof of work**
+
+- **5,000+** requests absorbed in one traffic spike — Bots + real users. Cloudflare CDN took the load before it reached the origin.
+- **3 apps** in sync on every Razorpay payment — Webhook → Cloud Function → one Firestore write every app listens to.
+- **#1** on Google for “DualMind Labs” — [dualmindlab.tech](https://dualmindlab.tech)
+- **Real-time** login anomaly detection — IP capture, risk scoring and an email alert to the account owner on every suspicious event.
+- **Docs** site with full user documentation — [docs.dualmindlab.tech](https://docs.dualmindlab.tech)
+- **E2E** design → code → infra → deploy → docs — From first commit to a monitored production system.
+
+**Featured projects**
+
+- **DualMind Arena** — AI model evaluation platform (live at [arena.dualmindlab.tech](https://arena.dualmindlab.tech))
+  - **Problem:** Public AI benchmarks are easy to game: cherry-picked prompts, brand bias, results nobody can audit.
+  - **Approach:** Blind head-to-head battles on real community prompts. Model identities stay hidden until the vote is locked.
+  - Cloudflare AI Gateway routes every LLM call — rate limits, caching, per-request logs
+  - Stateless .NET Web API behind Cloudflare CDN; scaling out is a config change
+  - Supabase (PostgreSQL) on purpose: leaderboard ranking needs relational SQL
+  - Real-time login anomaly detection with IP capture, risk scoring and owner alerts
+  - **Stack:** Azure, .NET Web API, Vanilla JS, Supabase, Cloudflare CDN + AI Gateway, GitHub Actions
+  - **Architecture (request path):** A user prompt enters the Edge layer at Cloudflare CDN, which absorbs traffic spikes before they reach the origin; then the API layer, a stateless .NET Web API that scales out; then the Gateway layer, Cloudflare AI Gateway, which handles rate limits, caching and per-request logs. The gateway fans the prompt out to Model A and Model B, head to head, in a blind Models layer where both identities are hidden. Both answers go to a community vote, and the Data layer — Supabase (PostgreSQL) — stores the result and ranks the leaderboard. Links to the documentation at docs.dualmindlab.tech.
+- **MealMind** — Restaurant management ecosystem (built)
+  - **Problem:** Customers, kitchen and owners each need a different live view of the same orders and payments.
+  - **Approach:** Three coordinated Flutter apps on one Firebase backend. A confirmed payment reaches the chef screen and admin dashboard in under a second.
+  - Full Razorpay payment lifecycle: webhook → Cloud Function → every app
+  - One Firestore write drives the customer, chef and admin views
+  - Firebase security rules scoped per role — built in, not bolted on
+  - CI/CD with GitHub Actions for all three apps
+  - **Stack:** Flutter ×3, Firestore, Firebase Auth, Cloud Functions, Razorpay, GitHub Actions
+  - **Architecture (real-time sync):** The customer app (orders) pays through Razorpay (payments). Razorpay calls a webhook handled by Cloud Functions on Firebase, which makes one write to Firestore — the single source of truth, with security rules scoped per role. Firestore syncs that write live to the customer app, the chef app (kitchen screen) and the admin app (dashboard). All three are Flutter apps, and a confirmed payment reaches the chef screen and admin dashboard in under a second.
+- **AI Support Agent** — Automated query pipeline (built)
+  - **Problem:** Support teams spend most of their time on routine questions, and escalations arrive without context.
+  - **Approach:** Claude / GPT-4o with function calling resolves routine queries and escalates the rest with the context already drafted.
+  - Classifies intent and urgency for every inbound query
+  - Routine queries: auto-reply + logged to the CRM
+  - Needs judgment: human review with context pre-drafted
+  - Multi-model, with webhook integrations
+  - **Stack:** Node.js, Claude, GPT-4o, Supabase, Function calling, Webhooks
+  - **Architecture (query pipeline):** Every inbound query (a support question) goes to an AI agent — Claude and GPT-4o with function calling — that classifies its intent and urgency. Routine queries get an auto-reply and are logged to the CRM. Queries that need judgment go to human review, with the context already pre-drafted.
+
+**How I build**
+
+_Architecture decisions_
+
+- **CDN first, stateless API** — Spikes land on Cloudflare, not the origin. Scaling the .NET API out is a config change.
+- **Supabase here, Firebase there** — Leaderboards need relational queries. Live sync across three apps is exactly Firestore’s job.
+- **AI Gateway over direct calls** — One place for rate limits, caching and per-request logs across every model provider.
+- **Observability from day one** — Gateway logs, webhook and function traces ship with the product.
+- **Security by design** — Anomaly detection and owner alerts were part of the launch, not a patch after a breach.
+
+_Engineering principles_
+
+1. **Ship early.** Real users surface problems planning never will.
+2. **Design for scale up front.** Pick architectures that grow by configuration, not rewrites.
+3. **Observability is architecture.** If you can’t see it in production, it isn’t done.
+4. **Pick the right tool.** The trade-off matters more than familiarity.
+5. **Own the outcome.** The deliverable is the running, monitored system — not the commit.
+6. **Communicate clearly.** Async first, unprompted updates, no surprises.
+
+**Tech stack**
+
+- **Languages:** Dart, C#, TypeScript, JavaScript, C
+- **Frameworks:** Flutter, .NET, Node.js, Next.js, HTML, CSS
+- **AI:** OpenAI, Claude, Gemini, Cloudflare AI Gateway
+- **Data:** Supabase, PostgreSQL, Firebase, MySQL
+- **Cloud & DevOps:** Azure, Cloudflare, Docker, GitHub Actions, Linux, Git
+- **Tools & payments:** Razorpay, Figma, Postman, VS Code
+
+**Work with me**
+
+- **Mobile apps** (2–6 weeks) — Flutter for iOS & Android · Multi-role auth · Firebase · Razorpay / Stripe payments · CI/CD · App Store + Play release
+- **Backend APIs** (1–3 weeks) — .NET Web API or Node.js · Auth · security alerting · Supabase or Firebase · Fully documented
+- **AI products** (1–4 weeks) — RAG · AI agents · Multi-model: OpenAI + Claude · Behind Cloudflare AI Gateway · Cost-optimised
+- **Full-stack MVPs** (3–8 weeks) — Mobile + backend + AI + security · Deployed on Azure + Cloudflare · Monitoring from day one · Full source handoff
+
+Upfront scoping · Weekly deliverables · Full source handoff · Replies within 24 hours · No scope surprises.
+
+**Let’s build something real.** If your team needs an engineer who ships end to end and owns the outcome, I’d love to hear about it.
+
+Email: [bhanushaliharsh434@gmail.com](mailto:bhanushaliharsh434@gmail.com) · LinkedIn: [harshu-dev](https://linkedin.com/in/harshu-dev) · GitHub: [harshbhx](https://github.com/harshbhx) · Dev.to: [harshudev](https://dev.to/harshudev) · Website: [dualmindlab.tech](https://dualmindlab.tech) · Discord: harshu911
+
+</details>
