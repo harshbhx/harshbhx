@@ -24,6 +24,11 @@ const attrs = (o = {}) =>
     .join('')
 
 // Animations shared by all components. Components add their own with d.css().
+// Any running animation makes the browser re-rasterise the whole SVG image
+// every frame (glyphs, portrait, grain), so .pulse runs 4 times and then
+// rests: after the last ring the circle is back at its base state, hidden
+// under the solid dot drawn on top of it. .pulse-live loops forever; keep it
+// to one small signal per page.
 export const BASE_CSS = `
 @keyframes fade-up{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 @keyframes fade-in{from{opacity:0}to{opacity:1}}
@@ -35,7 +40,8 @@ export const BASE_CSS = `
 @keyframes breathe{0%,100%{opacity:.55}50%{opacity:1}}
 .fade-up{animation:fade-up .9s cubic-bezier(.2,.7,.2,1) both}
 .fade-in{animation:fade-in 1.2s ease both}
-.pulse{transform-box:fill-box;transform-origin:center;animation:pulse-ring 2.4s cubic-bezier(.2,.6,.3,1) infinite}
+.pulse{transform-box:fill-box;transform-origin:center;animation:pulse-ring 2.4s cubic-bezier(.2,.6,.3,1) 4}
+.pulse-live{transform-box:fill-box;transform-origin:center;animation:pulse-ring 2.4s cubic-bezier(.2,.6,.3,1) infinite}
 .blink{animation:blink 1.1s step-end infinite}
 .flow{stroke-dasharray:4 8;animation:dash-flow 1.6s linear infinite}
 .drift-a{animation:drift-a 16s ease-in-out infinite}
@@ -483,7 +489,10 @@ export const FULL_GUTTER = 16
  * layer shows whenever the image is narrower than PHONE_MAX px.
  */
 export const PHONE_MAX = 600
-export const PHONE_CSS = `.ph{display:none}@media (max-width:${PHONE_MAX}px){.dt{display:none}.ph{display:inline}}`
+// The phone layer always carries a short load-time animation: Firefox lays an
+// SVG image out at its small size first, and if the visible layer has no
+// running animation it never advances the desktop layer's entrance animations.
+export const PHONE_CSS = `.ph{display:none;animation:fade-in .6s ease both}@media (max-width:${PHONE_MAX}px){.dt{display:none}.ph{display:inline}}`
 
 /**
  * Shrink the outlined-glyph definitions of a finished SVG without changing a

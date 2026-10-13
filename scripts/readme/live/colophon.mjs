@@ -4,18 +4,21 @@
 // of the sites the issue links to, made from the Actions runner while it
 // printed (live/uptime.mjs): HTTP status and response time per site.
 //
-//  desktop: COLOPHON · Set in … — reprinted daily by GitHub Actions ……… date
+//  desktop: COLOPHON · Set in … — reprinted daily by GitHub Actions …… TUE 13 OCT · 08:47 IST
 //           ───────────────────────────────────────────────────────────────
 //           ● 4/4 up                │ dualmindlab.tech │ arena.… │ docs.… │ pixelproof.…
 //           checked from GitHub Actions  200 · 293 ms …
-//  phone (.ph, drawn at ~0.41×): two lines of ~27-unit type.
+//  phone (.ph, drawn at ~0.41×): two lines of ~27-unit type — "Reprinted daily
+//           by GitHub Actions  13 OCT · 08:47 IST" / "● 4/4 sites up · <the sites>".
+//
+// The date is set exactly as in the card footers (kit.mjs dateline, KICK caps).
 //
 // A site that is down shows calmly in red; it never fails the build.
 
 import { createDoc, PHONE_CSS, r1 } from '../lib/svg.mjs'
 import { editorial, paper, hairline, liveDot, runs } from '../lib/editorial.mjs'
 import { LAYOUT } from '../lib/theme.mjs'
-import { P, KICK, ist, istStamp, fit, fade } from './kit.mjs'
+import { P, KICK, ist, istStamp, dateline, fit, fade } from './kit.mjs'
 
 export const W = LAYOUT.full // 850
 export const H = 116
@@ -83,11 +86,11 @@ export function renderColophon(theme, data) {
       { x: P + 22, y: B1, size: 17 },
     )
     dt.push(lead.svg)
-    const stamp = istStamp(data.fetchedAt)
-    const DATE = { font: 'mono-400', size: 11.5 }
-    const sw = d.measure(stamp, DATE)
+    // same dateline and type as the card footers (monospaced, so a fixed width)
+    const stamp = dateline(data.fetchedAt)
+    const sw = d.measure(stamp, KICK)
     if (lead.x + 24 > R - sw) throw new Error('colophon: first line overflows')
-    dt.push(d.text(stamp, { x: R, y: B1, ...DATE, fill: t.muted, anchor: 'end' }))
+    dt.push(d.text(stamp, { x: R, y: B1, ...KICK, fill: t.muted, anchor: 'end' }))
     dt.push(hairline(d, P, R, 54))
 
     const B2 = 80
@@ -143,7 +146,8 @@ export function renderColophon(theme, data) {
       const s = ist(data.fetchedAt)
       return `${s.day} ${s.mon} · ${s.hh}:${s.mm} IST`
     })()
-    const WHEN = { font: 'mono-400', size: 25 }
+    // the desktop dateline's caps, at the phone floor (≥ 26 units)
+    const WHEN = { font: 'mono-500', size: 27, tracking: 0.04, upper: true }
     const ww = d.measure(when, WHEN)
     const TX = P + 34 // text column, after the registration mark / status dot
     ph.push(registration(d, P + 10, B1 - 10, 8, { width: 1.8 }))
@@ -152,10 +156,12 @@ export function renderColophon(theme, data) {
     if (sites.length) {
       const down = sites.filter((s) => !s.ok)
       const dot = allUp ? liveDot(d, P + 10, B2 - 9, 7) : `<circle cx="${P + 10}" cy="${B2 - 9}" r="7" fill="${t.red}"/>`
+      // line 1 already says GitHub Actions: here, name what was checked
+      // (or what is down), in the sites' short names
       const segs = [
         { text: `${up}/${sites.length} sites up`, font: 'sans-600', fill: allUp ? t.green : t.fg, after: 14 },
         { text: '·', fill: t.faint, after: 14 },
-        down.length ? { text: `${down.map((s) => s.label).join(', ')} down`, fill: t.red } : { text: 'checked from GitHub Actions', fill: t.muted },
+        down.length ? { text: `${down.map((s) => s.short ?? s.label).join(', ')} down`, fill: t.red } : { text: sites.map((s) => s.short ?? s.label).join(', '), fill: t.muted },
       ]
       const line = runs(d, segs, { x: TX, y: B2, size: 27, font: 'sans-400' })
       if (line.x > R) {
@@ -164,7 +170,11 @@ export function renderColophon(theme, data) {
       } else ph.push(dot, line.svg)
     }
   }
-  d.add(`<g class="ph">${ph.join('')}</g>`)
+  // The phone layer must carry a load-time animation of its own whatever the
+  // status (the live dot only pulses when every site is up): Firefox otherwise
+  // treats the image as static and freezes the desktop layer's entrance on
+  // its first frame, hiding the status row.
+  d.add(`<g class="ph"><g class="fade-in">${ph.join('')}</g></g>`)
   return d.end()
 }
 

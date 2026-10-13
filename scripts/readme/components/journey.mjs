@@ -2,22 +2,26 @@
 //
 //   journey  "Line 1 · Vadodara → anywhere": JOURNEY drawn as a printed
 //            route map. A thick ink line runs through the stations (rings for
-//            the big ones), the three hackathon builds sit on a turmeric
-//            loop that leaves and rejoins the line at 45°, "Now" is the terra
-//            YOU ARE HERE marker, and the road ahead (Next → Anywhere) is
-//            dashed, ending in a globe terminus. The line draws itself in.
+//            the big ones), the three things built at events (two hackathons
+//            and a workshop) sit on a turmeric loop that leaves and rejoins
+//            the line at 45°, "Now" is the terra YOU ARE HERE marker, and the
+//            road ahead (Next → Anywhere) is dashed, ending in a globe
+//            terminus. The line draws itself in. Now / Next / Anywhere carry
+//            station names only: the facing /now page says what they mean.
 //   now      "/now — what I'm doing now": NOW as three labelled notes with
 //            small Lucide icons, then the "open to work" box (green dot, the
-//            four work types, remote-friendly · Vadodara) and the hiring hook,
-//            signed "— Harsh". The whole image links to the hiring email.
+//            four work types, remote-friendly · Vadodara). The hiring hook and
+//            the signature live in the letter (No. 5), not here. The whole
+//            image links to the hiring email.
 //
 // Both pages share the publication grid — P = 28, kicker row at 40, headline
-// baseline at 100, footer rule at H − 50 — like the Arena spread above them.
+// baseline at 100 (both headlines 38), footer rule at H − 50 — like the Arena
+// spread above them.
 
 import { createDoc, r1 } from '../lib/svg.mjs'
 import { editorial, paper, doubleRule, hairline, highlighter, liveDot, status, runs, assertFits, inkPath } from '../lib/editorial.mjs'
 import { LAYOUT } from '../lib/theme.mjs'
-import { JOURNEY, NOW, PROFILE, LINKS, CTA } from '../content.mjs'
+import { JOURNEY, NOW, PROFILE, LINKS } from '../content.mjs'
 
 const W = LAYOUT.half // 415
 const H = 680
@@ -72,6 +76,12 @@ function drawLines(d, ls, { x, y, size, lh, mark, label }) {
 const cap = (d, font, size) => d.metrics(font, size).capHeight
 const nb = (s) => s.replace(/ /g, '\u00a0') // keep a phrase on one line
 
+/** Blend two #rrggbb theme tokens (k = share of `a`). */
+function mix(a, b, k) {
+  const ch = (h, i) => parseInt(h.slice(1 + i * 2, 3 + i * 2), 16)
+  return `#${[0, 1, 2].map((i) => Math.round(ch(a, i) * k + ch(b, i) * (1 - k)).toString(16).padStart(2, '0')).join('')}`
+}
+
 /** Polyline with rounded corners (transit-map bends). */
 function bends(pts, rad) {
   let s = `M${r1(pts[0][0])} ${r1(pts[0][1])}`
@@ -92,7 +102,9 @@ function bends(pts, rad) {
 
 // ── journey ─────────────────────────────────────────────────────────────────
 
-const HACKS = JOURNEY.filter((j) => j.kind === 'hackathon')
+// builds made at events: two hackathons and the Cursor workshop
+const HACKS = JOURNEY.filter((j) => j.kind === 'hackathon' || j.kind === 'event')
+if (HACKS.length !== 3) throw new Error(`journey: the event loop is drawn for 3 stations, got ${HACKS.length}`)
 const NOW_J = JOURNEY.find((j) => j.kind === 'now')
 const NEXT_J = JOURNEY.find((j) => j.kind === 'next')
 const END_J = JOURNEY.find((j) => j.kind === 'end')
@@ -104,10 +116,11 @@ const JOURNEY_ALT = [
   'Line 1, Vadodara → anywhere: my route so far, drawn as a transit map.',
   `Stations: ${START_J.title} (${START_J.detail});`,
   ...MAJORS.map((j) => `${j.title} (${j.detail});`),
-  `a hackathon loop — ${HACKS.map((j) => `${j.title} (${j.detail})`).join(', ')};`,
-  `you are here — ${NOW_J.title} (${NOW_J.detail});`,
-  `the road ahead — ${NEXT_J.title} (${NEXT_J.detail});`,
-  `terminus: ${END_J.title} (${END_J.detail}).`,
+  `a loop of things built at events — ${HACKS.map((j) => `${j.title} (${j.detail})`).join(', ')};`,
+  // Now / Next / Anywhere are drawn as names only (the /now page explains them)
+  `you are here — ${NOW_J.title};`,
+  `the road ahead — ${NEXT_J.title};`,
+  `terminus: ${END_J.title}.`,
 ].join(' ')
 
 function renderJourney(theme) {
@@ -151,19 +164,19 @@ function renderJourney(theme) {
 
   // station centres (y); the gaps are tuned so every label block clears the next
   const ys = {}
-  // pitches: 52 between the big stations, 44 inside the hackathon loop (a tight
+  // pitches: 56 between the big stations, 46 inside the event loop (a tight
   // group reads as one branch), extra room where the loop bends and above the
-  // YOU ARE HERE sticker
-  const PITCH = [['start', 0], ['labs', 54], ['arena', 54], ['h0', 62], ['h1', 44], ['h2', 44], ['now', 72], ['next', 54], ['end', 56]]
-  let y = 138
+  // YOU ARE HERE sticker; the road ahead carries names only, so it runs tighter
+  const PITCH = [['start', 0], ['labs', 56], ['arena', 56], ['h0', 62], ['h1', 46], ['h2', 46], ['now', 76], ['next', 50], ['end', 54]]
+  let y = 144
   for (const [k, dy] of PITCH) ys[k] = y += dy
 
-  // the hackathon loop: leaves below Arena, rejoins above Now, 45° bends
+  // the event loop: leaves below Arena, rejoins above Now, 45° bends
   const DX = BX - LX
   const s1 = ys.arena + 15
   const e1 = ys.now - 26
   const loop = bends([[LX, s1], [LX, s1 + 2], [BX, s1 + 2 + DX], [BX, e1 - 2 - DX], [LX, e1 - 2], [LX, e1]], 7)
-  if (s1 + 2 + DX > ys.h0 - 12 || e1 - 2 - DX < ys.h2 + 12) throw new Error('hackathon stations must sit on the straight part of the loop')
+  if (s1 + 2 + DX > ys.h0 - 12 || e1 - 2 - DX < ys.h2 + 12) throw new Error('event stations must sit on the straight part of the loop')
 
   // timing: the main line draws top → Now; things appear as it reaches them
   const T0 = 0.15
@@ -175,8 +188,12 @@ function renderJourney(theme) {
   const loopAt = (yy) => loopT0 + LOOP_DUR * ((yy - s1) / (e1 - s1))
   const FUTURE = 0.95
 
+  // the branch colour sits between the highlighter yellow and the turmeric
+  // text, so line, rings and labels read as one ochre (on paper the bare
+  // highlighter is a pale lemon next to olive rings)
+  const BRANCH = mix(t.turmeric, t.turmericFill, 0.35)
   const art = []
-  art.push(inkPath(d, loop.d, { len: loop.len, stroke: t.turmericFill, width: LINE - 0.5, delay: loopT0, dur: LOOP_DUR, extra: ' stroke-linejoin="round"' }))
+  art.push(inkPath(d, loop.d, { len: loop.len, stroke: BRANCH, width: LINE - 0.5, delay: loopT0, dur: LOOP_DUR, extra: ' stroke-linejoin="round"' }))
   art.push(inkPath(d, `M${LX} ${ys.start}V${ys.now}`, { len: span, stroke: t.fg, width: LINE, delay: T0, dur: DUR }))
   // the road ahead: dashed
   art.push(`<g class="st" style="animation-delay:${FUTURE}s"><path d="M${LX} ${ys.now}V${ys.end}" stroke="${t.fg}" stroke-width="${LINE - 1}" stroke-dasharray="6 5" opacity=".55"/></g>`)
@@ -198,6 +215,7 @@ function renderJourney(theme) {
       right = tr.x + 10 + a.w
     }
     assertFits(`${name} title`, right, R)
+    if (!detail) return { svg: out.join(''), top: base - cap(d, tFont, tSize), bottom: base + 5 }
     // detail: one line, or broken at " · " when it is too long
     const parts = Array.isArray(detail) ? [detail] : detail.split(' · ')
     const dl = []
@@ -254,7 +272,7 @@ function renderJourney(theme) {
     blocks.push(group(ring(LX, cy, 7.5, t.fg) + l.svg, at(cy)))
     check.push([l.top, l.bottom])
   }
-  // the hackathon loop
+  // the event loop (two hackathons, one workshop)
   HACKS.forEach((j, i) => {
     const cy = ys[`h${i}`]
     const l = label(cy, j.title, j.detail, { tSize: 13.5, dFill: t.turmeric, dFont: 'sans-500', name: `hack ${i + 1}` })
@@ -265,13 +283,16 @@ function renderJourney(theme) {
   {
     const cy = ys.now
     const mark =
-      `<circle class="pulse" cx="${LX}" cy="${cy}" r="7" fill="${t.terraFill}" opacity=".55"/>` +
+      // the dimming sits on a wrapper: pulse-ring animates the circle's own opacity
+      `<g opacity=".55"><circle class="pulse" cx="${LX}" cy="${cy}" r="7" fill="${t.terraFill}"/></g>` +
       `<circle cx="${LX}" cy="${cy}" r="11.5" fill="${fill}" stroke="${t.terra}" stroke-width="1.5"/>` +
       `<circle cx="${LX}" cy="${cy}" r="7" fill="${t.terra}"/>`
-    const l = label(cy, [{ text: 'Now', font: 'serif-400i', size: 20, fill: t.terra, after: 7 }, { text: strip(NOW_J.title, 'Now') }], NOW_J.detail, { name: 'now' })
-    // the sticker above the title
-    const sy = cy + tCap / 2 - tCap - 27
-    const tag = d.pill('You are here', { x: TX, y: sy, h: 18, font: 'mono-500', size: 10, tracking: 0.12, upper: true, padX: 7, r: 3, fg: t.surfaceTop, bg: t.terra, border: null })
+    // Now / Next / Anywhere: names only — the facing /now page carries the sentences
+    const l = label(cy, [{ text: 'Now', font: 'serif-400i', size: 20, fill: t.terra, after: 7 }, { text: strip(NOW_J.title, 'Now') }], null, { name: 'now' })
+    // the sticker above the title (bottom edge 9 units above the title's cap line)
+    const TAG_H = 20
+    const sy = cy + tCap / 2 - tCap - 9 - TAG_H
+    const tag = d.pill('You are here', { x: TX, y: sy, h: TAG_H, font: 'mono-500', size: 11.5, tracking: 0.12, upper: true, padX: 8, r: 3, fg: t.surfaceTop, bg: t.terra, border: null })
     blocks.push(group(mark + l.svg, at(cy)))
     blocks.push(`<g class="stamp" style="animation-delay:${at(cy).toFixed(2)}s">${tag.svg}</g>`)
     check.push([sy, l.bottom]) // the sticker is this block's top
@@ -280,7 +301,7 @@ function renderJourney(theme) {
   {
     const cy = ys.next
     const svg = `<circle cx="${LX}" cy="${cy}" r="7" fill="${fill}" stroke="${t.fg}" stroke-width="2.2" stroke-dasharray="3.2 2.3"/>`
-    const l = label(cy, [{ text: 'Next', font: 'serif-400i', size: 20, fill: t.muted, after: 7 }, { text: strip(NEXT_J.title, 'Next'), fill: t.fg2 }], NEXT_J.detail, { name: 'next' })
+    const l = label(cy, [{ text: 'Next', font: 'serif-400i', size: 20, fill: t.muted, after: 7 }, { text: strip(NEXT_J.title, 'Next'), fill: t.fg2 }], null, { name: 'next' })
     blocks.push(group(svg + l.svg, FUTURE + 0.1))
     check.push([l.top, l.bottom])
   }
@@ -288,7 +309,7 @@ function renderJourney(theme) {
   {
     const cy = ys.end
     const svg = ring(LX, cy, 13, t.fg, 3) + d.icon('globe', { x: LX - 8, y: cy - 8, size: 16, color: t.fg, stroke: 1.8 })
-    const l = label(cy, END_J.title, END_J.detail, { tFont: 'serif-400', tSize: 25, name: 'end' })
+    const l = label(cy, END_J.title, null, { tFont: 'serif-400', tSize: 25, name: 'end' })
     blocks.push(group(svg + l.svg, FUTURE + 0.2))
     check.push([l.top, l.bottom])
   }
@@ -308,11 +329,11 @@ function renderJourney(theme) {
   const sw = (x, kind) => {
     const yy = FOOT_Y - 4
     if (kind === 'main') return `<path d="M${x} ${yy}h16" stroke="${t.fg}" stroke-width="${LINE}"/>`
-    if (kind === 'loop') return `<path d="M${x} ${yy}h16" stroke="${t.turmericFill}" stroke-width="${LINE - 0.5}"/>`
+    if (kind === 'loop') return `<path d="M${x} ${yy}h16" stroke="${BRANCH}" stroke-width="${LINE - 0.5}"/>`
     return `<path d="M${x} ${yy}h17" stroke="${t.fg}" stroke-width="${LINE - 1}" stroke-dasharray="6 5" opacity=".55"/>`
   }
   let lx = P
-  for (const [kind, text] of [['main', 'travelled'], ['loop', 'hackathon builds'], ['ahead', 'ahead']]) {
+  for (const [kind, text] of [['main', 'travelled'], ['loop', 'built at events'], ['ahead', 'ahead']]) {
     d.add(sw(lx, kind))
     lx += 23
     d.add(d.text(text, { x: lx, y: FOOT_Y, ...LEG }))
@@ -332,13 +353,14 @@ const ROWS = [
   { icon: 'graduation-cap', ...NOW[2], strong: 'Computer Science' },
 ]
 // NOW[3] ("Open to") is set as the "open to work" box below the three notes.
-const OPEN_NOTE = `${PROFILE.openTo.note} · ${PROFILE.city} (${PROFILE.timezone.replace(/ \(/, ', ').replace(/\)$/, '')})`
+// The pin note names the place; the time zone sits in the footer by the email link.
+const OPEN_NOTE = `${PROFILE.openTo.note} · ${PROFILE.city}, ${PROFILE.location.split(', ').at(-1)}` // … · Vadodara, India
 
 const NOW_ALT = [
   '/now — what I’m doing now.',
   ...NOW.slice(0, 3).map((n) => `${n.label}: ${n.text}.`),
   `${PROFILE.openTo.headline} — ${PROFILE.openTo.detail}: ${PROFILE.openTo.types.join(', ')}; ${OPEN_NOTE}.`,
-  `${PROFILE.hiringHook} ${LINKS.hire.label}: ${PROFILE.email}. ${CTA.signoff}`,
+  `${LINKS.hire.label}: ${PROFILE.email} · ${PROFILE.timezone}.`,
 ].join(' ')
 
 function renderNow(theme) {
@@ -351,7 +373,7 @@ function renderNow(theme) {
   d.add(`<circle cx="${P + 5}" cy="36" r="5" fill="none" stroke="${t.terra}" stroke-width="1.2"/><circle cx="${P + 5}" cy="36" r="2.6" fill="${t.terra}"/>`)
   kicker(d, '/now', '· from my desk', { lead: 17 })
 
-  const HL = { font: 'serif-400', size: 40 }
+  const HL = { font: 'serif-400', size: 38 } // = the journey headline across the spread
   d.add(d.text('What I’m doing now', { x: P - 1, y: HEAD_Y, ...HL, fill: t.fg, cls: 'fade-up' }))
   assertFits('now headline', P + d.measure('What I’m doing now', HL), R)
 
@@ -362,7 +384,7 @@ function renderNow(theme) {
   const TW = R - TX
   const SIZE = 14.5
   const LH = 22
-  const TEXT_Y = 22 // label baseline → first text baseline
+  const TEXT_Y = 24 // label baseline → first text baseline
   const LABEL_CAP = cap(d, 'mono-500', 11)
   const rows = ROWS.map((r, i) => {
     const segs = []
@@ -375,10 +397,7 @@ function renderNow(theme) {
   })
 
   const CHIP = { h: 30, font: 'sans-500', size: 13, padX: 12, r: 15, fg: t.fg, bg: t.surfaceRaised, border: t.borderStrong }
-  const HOOK = { font: 'serif-400i', size: 28, lh: 32 }
-  const hookCap = cap(d, HOOK.font, HOOK.size)
-  const hookLines = lines(d, PROFILE.hiringHook.replace(/ or (\S+)$/, (m, w) => ` ${nb(`or ${w}`)}`), { font: HOOK.font, size: HOOK.size, width: R - P, fill: t.fg, label: 'hook' })
-  const OPEN_LINE = { font: 'serif-400', size: 28 }
+  const OPEN_LINE = { font: 'serif-400', size: 30 } // the card's closing line, well under the 38 headline
 
   // each block: gap units above it, its height (top → bottom), and how to draw it
   const blocks = []
@@ -401,8 +420,8 @@ function renderNow(theme) {
   })
   // the "open to work" box (NOW[3], set as the four work types)
   const OK_Y = 22 // double rule → kicker baseline
-  const LINE_Y = OK_Y + 39 // → serif line baseline
-  const CHIP_Y = LINE_Y + 17 // → chips top
+  const LINE_Y = OK_Y + 41 // → serif line baseline
+  const CHIP_Y = LINE_Y + 18 // → chips top
   const NOTE_Y = CHIP_Y + CHIP.h + 26 // → note baseline
   blocks.push({
     gap: 1.6,
@@ -426,20 +445,14 @@ function renderNow(theme) {
       assertFits('open note', note.x, R)
     },
   })
-  // the hiring hook, set as a pull line that leads into the footer's link
-  blocks.push({
-    gap: 1.6,
-    h: hookCap + (hookLines.length - 1) * HOOK.lh + 7,
-    draw(top) {
-      d.add(`<g class="fade-up" style="animation-delay:.7s">${drawLines(d, hookLines, { x: P - 1, y: top + hookCap, size: HOOK.size, lh: HOOK.lh, label: 'hook' })}</g>`)
-    },
-  })
   const END_GAP = 1.1
   const start = HEAD_Y + 9 // headline descenders
   const units = blocks.reduce((a, b) => a + b.gap, 0) + END_GAP
   const g = (FOOT_RULE - start - blocks.reduce((a, b) => a + b.h, 0)) / units
   if (g < 12) throw new Error(`now card too full (gap unit ${g.toFixed(1)})`)
-  if (g > 22) throw new Error(`now card too empty (gap unit ${g.toFixed(1)})`)
+  // no pull line any more (the hiring hook lives in the letter), so the notes
+  // breathe wider than the other cards
+  if (g > 33) throw new Error(`now card too empty (gap unit ${g.toFixed(1)})`)
   let y = start
   for (const b of blocks) {
     if (b.rule) d.add(hairline(d, P, R, y + (b.gap * g) / 2))
@@ -448,13 +461,14 @@ function renderNow(theme) {
     y += b.h
   }
 
-  // footer: the card's one link + the signature
+  // footer: the card's one link + the time zone a reply comes from (the
+  // hiring hook and the "— Harsh" signature belong to the letter, No. 5)
   d.add(hairline(d, P, R, FOOT_RULE))
   const cta = runs(d, [{ text: LINKS.hire.label, after: 7 }, { text: '→' }], { x: P, y: FOOT_Y, size: 14, font: 'sans-600', fill: t.terra })
   d.add(cta.svg)
-  const sig = CTA.signoff
-  d.add(d.text(sig, { x: R, y: FOOT_Y + 1, font: 'serif-400i', size: 24, fill: t.terra, anchor: 'end' }))
-  assertFits('footer', cta.x + 16, R - d.measure(sig, { font: 'serif-400i', size: 24 }))
+  const tz = PROFILE.timezone
+  d.add(d.text(tz, { x: R, y: FOOT_Y, ...KICK, fill: t.muted, anchor: 'end' }))
+  assertFits('footer', cta.x + 16, R - d.measure(tz, KICK))
   return d.end()
 }
 

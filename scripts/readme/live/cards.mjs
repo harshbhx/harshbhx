@@ -23,7 +23,7 @@
 import { createDoc, r1 } from '../lib/svg.mjs'
 import { editorial, paper, inkPath } from '../lib/editorial.mjs'
 import { LAYOUT } from '../lib/theme.mjs'
-import { P, int, plural, yearOf, fmtDay, monthYear, fmtRange, fmtShare, ist, partOfDay, safe, fit, sizeToFit, kickerRow, footer, leaders, fade } from './kit.mjs'
+import { P, int, plural, yearOf, fmtDay, monthYear, fmtRange, fmtShare, dateline, partOfDay, safe, fit, sizeToFit, kickerRow, footer, leaders, fade } from './kit.mjs'
 
 export const W = LAYOUT.half // 415
 export const H = 326
@@ -43,11 +43,6 @@ const SUB = { font: 'mono-500', size: 10.5, tracking: 0.14, upper: true }
 const GUT = 28
 const COL_L = 190
 const COL_R = R - P - GUT - COL_L // 141
-
-const dateline = (iso) => {
-  const t = ist(iso)
-  return `${t.weekday} ${t.day} ${t.mon} · ${t.hh}:${t.mm} IST`
-}
 
 /** Big figure + a two-line serif-italic caption beside it, bottoms aligned. */
 function figure(d, value, [line1, line2], { delay = 0.05 } = {}) {
@@ -178,13 +173,26 @@ export function renderNumbers(theme, data) {
 function inks(t) {
   // the night edition's navy is a pale periwinkle: knocked back a little so
   // the lead language (terracotta) stays the loudest segment
+  if (t.name === 'dark') {
+    return [
+      [t.terraFill, 1],
+      [t.ink, 0.78],
+      [t.turmericFill, 1],
+      [t.terraFill, 0.45],
+      [t.ink, 0.45],
+      [t.turmericFill, 0.5],
+    ]
+  }
+  // on paper, light tints all but vanish (turmeric at 50% is 1.2:1): the tints
+  // are stronger (≥ 2:1 against the paper) and the sixth ink is the turmeric
+  // text ochre, since the highlighter yellow has no lighter tint to give
   return [
     [t.terraFill, 1],
-    [t.ink, t.name === 'dark' ? 0.78 : 1],
+    [t.ink, 1],
     [t.turmericFill, 1],
-    [t.terraFill, 0.45],
-    [t.ink, 0.45],
-    [t.turmericFill, 0.5],
+    [t.terraFill, 0.65],
+    [t.ink, 0.6],
+    [t.turmeric, 0.5],
   ]
 }
 

@@ -1,8 +1,8 @@
 // Contents tabs — five small paper pills under the masthead, each linking to
 // its section anchor (README.md adds the links; see readme.mjs → PAGE).
 //
-// Every tab is exactly 156×44 so the five sit on one row on desktop
-// (5 × 156 + 4 spaces ≈ 798 px of the 846 px column) and wrap 2-2-1 on a
+// Every tab is exactly 159×44 so the five sit on one row on desktop
+// (5 × 159 + 4 spaces ≈ 813 px: the row lines up with the card edges) and wrap 2-2-1 on a
 // phone, where they are drawn at their own size (no phone layer needed).
 // Content is left-aligned on a shared grid — number, label, then a quiet ↓ at
 // the right edge — so the row reads like the contents column of a magazine.
@@ -11,7 +11,7 @@ import { createDoc } from '../lib/svg.mjs'
 import { editorial, paper, assertFits } from '../lib/editorial.mjs'
 import { SECTIONS } from '../content.mjs'
 
-const W = 156
+const W = 159
 const H = 44
 
 function render(theme, s) {

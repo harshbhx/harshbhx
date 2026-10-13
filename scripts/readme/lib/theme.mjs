@@ -98,7 +98,7 @@ const dark = {
   terraFill: '#D4825C',
   turmeric: '#F2C25A', // 10.9:1
   turmericFill: '#E0A93A',
-  ink: '#A9B8F2', // 8.6:1
+  ink: '#A3B0D0', // navy-suit tint, kept dusty so it never reads lavender; 8.2:1
   green: '#7CCB94', // 9.3:1
   red: '#FF8A7A',
   rule: '#F5EDE0',
@@ -111,13 +111,13 @@ const dark = {
   violet: '#F0875A',
   violetStrong: '#D4825C',
   violetSoft: '#F5A37E',
-  cyan: '#A9B8F2',
-  sky: '#A9B8F2',
+  cyan: '#A3B0D0',
+  sky: '#A3B0D0',
   pink: '#F0875A',
   amber: '#F2C25A',
   gradText: ['#F5EDE0', '#F5EDE0'],
   gradAccent: ['#D4825C', '#F2C25A'],
-  gradBorder: ['#D4825C', '#F2C25A', '#A9B8F2'],
+  gradBorder: ['#D4825C', '#F2C25A', '#A3B0D0'],
   glowViolet: ['#D4825C', 0],
   glowCyan: ['#F2C25A', 0],
   glowPink: ['#D4825C', 0],
@@ -126,7 +126,7 @@ const dark = {
   chipBg: '#231D18',
   chipBorder: '#4A3D31',
   chipFg: '#F5EDE0',
-  code: { prompt: '#7CCB94', command: '#F5EDE0', keyword: '#F0875A', string: '#A9B8F2', number: '#F2C25A', comment: '#6E6257', punct: '#A49683' },
+  code: { prompt: '#7CCB94', command: '#F5EDE0', keyword: '#F0875A', string: '#A3B0D0', number: '#F2C25A', comment: '#6E6257', punct: '#A49683' },
   logoTile: '#231D18',
   logoTileBorder: '#33291F',
 }

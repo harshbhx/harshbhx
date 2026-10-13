@@ -1,7 +1,7 @@
 // README.md template. Images are referenced by absolute raw.githubusercontent
 // URLs because GitHub does not rewrite relative paths inside <picture srcset>.
 
-import { PROFILE, LINKS, SECTIONS, ARENA, WORK, PRINCIPLES, JOURNEY, NOW, STACK, CTA, REAL_TEXT } from './content.mjs'
+import { PROFILE, LINKS, SECTIONS, ARENA, WORK, PRINCIPLES, JOURNEY, NOW, STACK, CTA } from './content.mjs'
 import { LAYOUT } from './lib/theme.mjs'
 import { PAIR_GUTTER, FULL_GUTTER } from './lib/svg.mjs'
 
@@ -19,10 +19,10 @@ export const OUTPUT_BASE = `https://raw.githubusercontent.com/${REPO}/output/`
 export const PAGE = [
   ['full', 'masthead'],
   ['tabs', ...SECTIONS.map((s) => `tab-${s.key}`)],
-  ['text', 'open-to-work'],
-  ['section', 'work'],
+  ['text', 'links'],
+  ['section', 'arena'],
   ['pair', 'arena-story', 'arena-figure'],
-  ['section', 'projects'],
+  ['section', 'work'],
   ['pair', 'feature-pixelproof', 'feature-modvigil'],
   ['pair', 'feature-builder', 'feature-agent'],
   ['pair', 'feature-mealmind', 'house-rules'],
@@ -39,10 +39,14 @@ export const PAGE = [
   ['live-full', 'colophon'],
 ]
 
-// Alt text for the images built in CI (static text: the numbers change daily).
+// Alt text for the images built in CI. README.md is static while the images
+// change daily, so these must stay true whatever the data, the time of the run
+// (the card's kicker says "this morning" / "this evening") or the token (with
+// a STATS_TOKEN private repositories count too). Each SVG's own <desc> carries
+// the exact figures.
 export const LIVE_ALT = {
-  numbers: 'GitHub, this morning: contributions, commits, pull requests, issues and streaks, refreshed daily',
-  languages: 'Languages across my public repositories by code size, refreshed daily',
+  numbers: 'My GitHub numbers: all-time contributions; commits, pull requests, issues and repositories over the last 12 months; and streaks, refreshed daily',
+  languages: 'Languages across my repositories by code size, as counted by GitHub, refreshed daily',
   calendar: 'My GitHub contribution calendar for the last 12 months, refreshed daily',
   colophon: 'Colophon: reprinted daily by GitHub Actions, with a live status check of dualmindlab.tech, the Arena, the docs and PixelProof',
 }
@@ -81,7 +85,6 @@ export function displayWidth(name) {
 }
 
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;')
-const nb = (s) => s.replace(/-/g, '‑') // non-breaking hyphens for real text
 
 function picture(base, name, alt, width) {
   return [
@@ -96,12 +99,18 @@ function picture(base, name, alt, width) {
 const linked = (html, href) => (href ? `<a href="${esc(href)}">${html}</a>` : html)
 const a = (label, href) => `<a href="${esc(href)}">${label}</a>`
 
-// Real-text blocks
+// Real-text blocks: the secondary links the images cannot carry (one link per
+// image), as real, selectable text. The pitch itself lives in the images
+// (masthead, /now, letter), so these rows are links only. Every line is short
+// enough for a 358px phone column, and breaks are explicit, so no line ever
+// ends on a dangling '·'.
 const TEXT = {
-  'open-to-work': () =>
-    `<p align="center">\n<b>${REAL_TEXT.line.split(' — ')[0]}</b> — ${nb(REAL_TEXT.line.split(' — ')[1])}<br>\n<sub>${PROFILE.location} · ${PROFILE.timezone} · ${a('Email', LINKS.hire.href)} · ${a('LinkedIn', LINKS.linkedin.href)} · ${a(LINKS.website.value, LINKS.website.href)}</sub>\n</p>`,
+  // under the contents tabs: the hiring email (role template), then the two places to look me up
+  links: () => `<p align="center">\n${[a('<b>Email me</b>', LINKS.hire.href), a('LinkedIn', LINKS.linkedin.href), a(LINKS.website.value, LINKS.website.href)].join(' · ')}\n</p>`,
+  // under the letter (which links to the role template): the plain address for anything else.
+  // No GitHub link: the reader is already on the profile.
   'contact-links': () =>
-    `<p align="center">\n${a(`<b>${PROFILE.email}</b>`, LINKS.hire.href)}<br>\n${[a('LinkedIn', LINKS.linkedin.href), a('GitHub', LINKS.github.href), a('Dev.to', LINKS.devto.href), a(LINKS.website.value, LINKS.website.href), `Discord: ${LINKS.discord.value}`].join(' · ')}\n</p>`,
+    `<p align="center">\n${a(`<b>${PROFILE.email}</b>`, LINKS.email.href)}<br>\n${[a('LinkedIn', LINKS.linkedin.href), a('Dev.to', LINKS.devto.href), `Discord:&nbsp;${LINKS.discord.value}`].join(' · ')}\n</p>`,
   map: () =>
     [
       '<details>',
@@ -167,6 +176,9 @@ function plainText() {
   const L = LINKS
   const S = Object.fromEntries(SECTIONS.map((s) => [s.key, s]))
   const links = (w) => (w.links.length ? ` — ${w.links.map((l) => `[${l.label}](${l.href})`).join(' · ')}` : '')
+  // a detail that is just a domain becomes a link; a one-word value ("Docs") takes a colon
+  const detail = (s) => (/^[a-z0-9.-]+\.[a-z]{2,}$/i.test(s) ? `[${s}](https://${s})` : s)
+  const proof = (x) => `- **${x.value}${/^[A-Z][a-z]+$/.test(x.value) ? ':' : ''}** ${x.label} — ${detail(x.detail)}`
   const lines = [
     '<details>',
     '<summary>Plain-text version</summary>',
@@ -181,20 +193,20 @@ function plainText() {
     `- **${PROFILE.openTo.headline}:** ${PROFILE.openTo.types.join(', ')} · ${PROFILE.openTo.note}`,
     `- **Based in:** ${PROFILE.location} · ${PROFILE.timezone}`,
     '',
-    `**No. ${S.work.no} — ${S.work.title}: ${ARENA.name}** (live at [${ARENA.url}](${ARENA.href}))`,
+    `**No. ${S.arena.no} — ${S.arena.title}: ${ARENA.name}** (live at [${ARENA.url}](${ARENA.href}))`,
     '',
     `${ARENA.problem} ${ARENA.approach}`,
     '',
-    ...ARENA.proof.map((x) => `- **${x.value}** ${x.label} — ${x.detail}`),
+    ...ARENA.proof.map(proof),
     ...ARENA.decisions.map((x) => `- **${x.title}:** ${x.why}`),
     `- **Stack:** ${ARENA.stack.join(', ')}`,
     `- **Request path:** ${ARENA.diagram.join(' → ')}`,
     `- **Next:** ${ARENA.next}`,
     '',
-    `**No. ${S.projects.no} — ${S.projects.title}**`,
+    `**No. ${S.work.no} — ${S.work.title}**`,
     '',
     ...WORK.flatMap((w) => [
-      `- **${w.name}** — ${w.kind}${w.event ? ` · built for ${w.event}` : ''}${links(w)}`,
+      `- **${w.name}** — ${w.kind}${w.event ? ` · built ${w.eventPhrase || `for ${w.event}`}` : ''}${links(w)}`,
       `  - ${w.summary}`,
       ...(w.pipeline ? [`  - ${w.pipeline.map((s) => `${s.step} (${s.tool})`).join(' → ')}`] : []),
       ...(w.rules ? w.rules.map((r) => `  - **${r.rule}:** ${r.detail}`) : []),
@@ -217,9 +229,11 @@ function plainText() {
     '',
     ...STACK.map((g) => `- **${g.group}:** ${g.items.map(([, label]) => label).join(', ')}`),
     '',
-    `**No. ${S.contact.no} — ${S.contact.title}** ${CTA.kicker} ${CTA.body}`,
+    `**No. ${S.contact.no} — ${S.contact.title}**`,
     '',
-    [`Email: [${L.email.value}](${L.hire.href})`, `[LinkedIn](${L.linkedin.href})`, `[GitHub](${L.github.href})`, `[Dev.to](${L.devto.href})`, `[${L.website.value}](${L.website.href})`, `Discord: ${L.discord.value}`].join(' · '),
+    `${CTA.kicker} ${CTA.body} [${L.hire.label}](${L.hire.href}).`,
+    '',
+    [`Email: [${L.email.value}](${L.email.href})`, `[LinkedIn](${L.linkedin.href})`, `[GitHub](${L.github.href})`, `[Dev.to](${L.devto.href})`, `[${L.website.value}](${L.website.href})`, `Discord: ${L.discord.value}`].join(' · '),
     '',
     '</details>',
   ]

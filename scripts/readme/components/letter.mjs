@@ -270,8 +270,7 @@ function render(theme) {
   const short = runs(
     d,
     [
-      { text: 'Open to work ', font: 'sans-600', fill: t.fg },
-      { text: 'worldwide', font: 'sans-600', fill: t.fg, after: 14 },
+      { text: PROFILE.openTo.headline, font: 'sans-600', fill: t.fg, after: 14 },
       { text: '·', fill: t.faint, after: 14 },
       { text: PROFILE.openTo.note, fill: t.fg2 },
     ],

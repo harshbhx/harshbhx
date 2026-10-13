@@ -159,7 +159,6 @@ function renderStory(theme) {
     ops.push(doubleRule(d, P, R, yy, { heavy: 1.2, gap: 2.5 }))
     yy += 21
     ops.push(d.text('Box score', { x: P, y: yy, ...KICK, fill: t.terra }))
-    ops.push(d.text('in production', { x: R, y: yy, ...KICK, fill: t.muted, anchor: 'end' }))
     yy += 4
     PROOF.forEach((p, i) => {
       if (i) ops.push(hairline(d, P, R, yy))
@@ -203,12 +202,12 @@ function renderStory(theme) {
 
 const CALLOUTS = [
   { label: 'User prompt', sub: 'one real prompt, two models' },
-  { label: 'Cloudflare CDN', sub: 'absorbs traffic spikes', logo: 'cloudflare' },
+  { label: 'Cloudflare CDN', sub: 'absorbs traffic spikes' },
   { label: '.NET Web API', sub: 'stateless · scales out' },
   { label: 'Cloudflare AI Gateway', sub: 'rate limits · cache · logs' },
   { label: 'Model A / Model B', sub: 'identities hidden' },
   { label: 'Community vote', sub: 'on the two answers' },
-  { label: 'Supabase · PostgreSQL', sub: 'the live leaderboard', logo: 'supabase' },
+  { label: 'Supabase · PostgreSQL', sub: 'the live leaderboard' },
 ]
 // which callouts each decision explains
 const WHY_REFS = [[2, 3], [4], [7]]
@@ -365,13 +364,13 @@ function renderFigure(theme) {
   // where the request touches each element
   const landings = [s2.cy, s3.cy, s4.cy, dy].map((yy) => `<circle cx="${cx}" cy="${r1(yy)}" r="2.4" fill="${ink}"/>`).join('')
 
-  // callouts: leader → numbered circle → label / sub (+ a small brand mark)
+  // callouts: leader → numbered circle → label / sub (ink only, no brand marks:
+  // the bold labels name the vendors; logos live in the Toolbox)
   const notes = []
   anchors.forEach(([ax, ay], i) => {
     const c = CALLOUTS[i]
     if (i && ay - anchors[i - 1][1] < 38) throw new Error(`callouts ${i} and ${i + 1} are too close`)
     lines.push(inkPath(d, `M${r1(ax + 5)} ${r1(ay)}H${CX - 10}`, { len: CX - 10 - ax, stroke: t.muted, width: 0.9, delay: 0.35 + i * 0.11, dur: 0.3 }))
-    const lw = d.measure(c.label, { font: 'sans-600', size: 13 })
     const g = [
       `<circle cx="${r1(ax + 5)}" cy="${r1(ay)}" r="1.8" fill="${t.muted}"/>`,
       `<circle cx="${CX}" cy="${r1(ay)}" r="9.5" fill="${t.surfaceRaised}" stroke="${t.terra}" stroke-width="1"/>`,
@@ -379,8 +378,7 @@ function renderFigure(theme) {
       d.text(c.label, { x: CX + 17, y: ay - 1.5, font: 'sans-600', size: 13, fill: t.fg }),
       d.text(c.sub, { x: CX + 17, y: ay + 14.5, font: 'sans-400', size: 12, fill: t.muted }),
     ]
-    if (c.logo) g.push(d.logo(c.logo, { x: CX + 17 + lw + 6, y: ay - 13, size: 13, color: t.muted }))
-    assertFits(`callout ${i + 1} label`, CX + 17 + lw + (c.logo ? 19 : 0), R)
+    assertFits(`callout ${i + 1} label`, CX + 17 + d.measure(c.label, { font: 'sans-600', size: 13 }), R)
     assertFits(`callout ${i + 1} sub`, CX + 17 + d.measure(c.sub, { font: 'sans-400', size: 12 }), R)
     notes.push(`<g class="cin" style="animation-delay:${(0.4 + i * 0.11).toFixed(2)}s">${g.join('')}</g>`)
   })

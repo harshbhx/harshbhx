@@ -7,12 +7,14 @@
 // caption. A contents strip ("In this issue") closes the page; it is set as
 // plain type because the whole image carries one link (dualmindlab.tech).
 //
-// Grid (desktop, 850 wide): 36 side margins; text column 36–550; portrait
-// column 588–814. The portrait's top edge sits on the kicker's cap height,
-// and its two-line caption shares its baselines with the "open to work" line
-// and the work-types line beside it.
+// Grid (desktop, 850 wide): 28 side margins — the card padding, so the text
+// and the right edge line up with the cards below; text column 28–542;
+// portrait column 596–822. The portrait's top edge sits on the kicker's cap
+// height, and its two-line caption shares its baselines with the "open to
+// work" line and the work-types line beside it.
 //
-// Phone (.ph, the image is drawn at ~0.41× on a 358 px column): portrait on
+// Phone (.ph, the image is drawn at ~0.41× on a 358 px column; 36 side
+// margins, ≈ 15 px there, since 28 would leave only ≈ 12 px): portrait on
 // the left, the name stacked at 100 units, the deck at 40, the open-to-work
 // line at 30 and a role line at 28 — all ≥ 11 px on the phone.
 
@@ -23,8 +25,10 @@ import { PROFILE, SECTIONS, LINKS, ARENA } from '../content.mjs'
 
 const W = LAYOUT.full // 850
 const H = 516
-const P = 36
+const P = 28 // desktop side margin = card padding (DESIGN.md)
 const R = W - P
+const PP = 36 // phone side margin (the layer is drawn at ~0.41×)
+const PR = W - PP
 
 
 /** Double rule whose two strokes draw themselves in, left to right. */
@@ -195,11 +199,11 @@ function render(theme) {
   // ───────────────────────── phone ─────────────────────────
   const ph = []
   const pmb = 50
-  ph.push(d.text(PROFILE.handle, { x: P - 1, y: pmb, font: 'serif-400i', size: 48, fill: t.fg }))
-  ph.push(d.text(`${PROFILE.city}, India · IST`, { x: R, y: pmb - 2, font: 'mono-500', size: 26, tracking: 0.06, upper: true, fill: t.muted, anchor: 'end' }))
-  ph.push(inkRule(d, P, R, 70, { heavy: 3, gap: 5 }))
+  ph.push(d.text(PROFILE.handle, { x: PP - 1, y: pmb, font: 'serif-400i', size: 48, fill: t.fg }))
+  ph.push(d.text(`${PROFILE.city}, India · IST`, { x: PR, y: pmb - 2, font: 'mono-500', size: 26, tracking: 0.06, upper: true, fill: t.muted, anchor: 'end' }))
+  ph.push(inkRule(d, PP, PR, 70, { heavy: 3, gap: 5 }))
 
-  const ppx = P + 8
+  const ppx = PP + 8
   const ppy = 106
   const ppw = 254
   const pplate = place(ppx, ppy, ppw, { r: 4 })
@@ -214,23 +218,23 @@ function render(theme) {
   const [first, last] = PROFILE.name.split(' ')
   ph.push(d.text(first, { x: RX - 4, y: n1, font: 'serif-400', size: pName, fill: t.fg }))
   ph.push(d.text(last, { x: RX - 4, y: n2, font: 'serif-400', size: pName, fill: t.fg }))
-  assertFits('phone name', RX - 4 + d.measure(last, { font: 'serif-400', size: pName }), R)
+  assertFits('phone name', RX - 4 + d.measure(last, { font: 'serif-400', size: pName }), PR)
   const pd = 40
   const pd1 = n2 + 54
   const pd2 = pd1 + 44
   ph.push(d.text(hlLead.trim(), { x: RX, y: pd1, font: 'serif-400i', size: pd, fill: t.fg }))
   const pdl = deckLine(d, { lead: '', hl: PROFILE.deckHighlight, x: RX, y: pd2, size: pd, style: 'animation-delay:.35s' })
   ph.push(pdl.svg)
-  assertFits('phone deck', RX + pdl.w, R)
+  assertFits('phone deck', RX + pdl.w, PR)
 
   const pob = Math.round(pBottom)
   ph.push(liveDot(d, RX + 8, pob - 10.5, 7.5))
   const pow = d.measure(PROFILE.openTo.headline, { font: 'sans-600', size: 30 })
   ph.push(d.text(PROFILE.openTo.headline, { x: RX + 28, y: pob, font: 'sans-600', size: 30, fill: t.fg }))
-  assertFits('phone open to work', RX + 28 + pow, R)
+  assertFits('phone open to work', RX + 28 + pow, PR)
 
   const prule = Math.round(pBottom + 28)
-  ph.push(hairline(d, P, R, prule).replace('stroke-width="1"', 'stroke-width="2"'))
+  ph.push(hairline(d, PP, PR, prule).replace('stroke-width="1"', 'stroke-width="2"'))
   const pl = runs(
     d,
     [
@@ -240,10 +244,10 @@ function render(theme) {
       { text: '·', fill: t.faint, after: 16 },
       { text: `CS, ${PROFILE.university}`, fill: t.fg2 },
     ],
-    { x: P, y: prule + 40, size: 28, font: 'sans-400' },
+    { x: PP, y: prule + 40, size: 28, font: 'sans-400' },
   )
   ph.push(pl.svg)
-  assertFits('phone role line', pl.x, R)
+  assertFits('phone role line', pl.x, PR)
   assertFits('phone height', prule + 40 + 14, H)
   d.add(`<g class="ph">${ph.join('')}</g>`)
 

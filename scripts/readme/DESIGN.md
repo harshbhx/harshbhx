@@ -42,7 +42,7 @@ rules and whitespace — like a well-set magazine.
 |---|---|
 | Cards | `paper()` — matte gradient + grain + hairline border, radius 14 |
 | Rules | `doubleRule()` under mastheads/section titles, `hairline()` between items |
-| Emphasis | `highlighter()` swash behind one phrase per card at most |
+| Emphasis | `highlighter()` swash behind one phrase per card at most (night edition: a marker underline below the baseline at body sizes) |
 | Figures | crop marks, "Fig." captions in serif italic, thin ink lines |
 | Status | `status(d, 'live' | 'built' | text)` mono caps chip |
 | Accents | `terra` (primary accent, numbers, kickers), `turmeric` (highlighter, hackathon tags), `ink` navy (links, data), `green` only for live/open/up, `red` only for down |
@@ -82,12 +82,19 @@ on a 358px column (i.e. ≥ 26 units in an 850-wide SVG).
 
 Quiet and print-like: the portrait develops (fade), the highlighter swipes
 in, ink lines draw themselves (`inkPath`), stamps land, live dots pulse.
-Everything settles within ~1.6s; loops only for live/status signals. The
+Everything settles within ~1.6s. Live dots (`.pulse`) pulse four times and
+then rest: any running animation makes the browser re-rasterise the whole
+image every frame, so a page full of endless loops never goes idle on a phone.
+`.pulse-live` / `liveDot(…, { loop: true })` loops forever — at most one small
+signal per page. The
 fully drawn state is the base state (animations only run *towards* it), no
 `var()` inside `@keyframes`, never animate an element that has `transform=`,
 and `prefers-reduced-motion` disables everything (handled in BASE_CSS).
 
 ## Rules
+
+- Contents tabs print `SECTIONS[].tab`, a short form of the section `title`
+  they jump to ("Work" → "Selected work"), never a different name.
 
 - Only `d.text` / `d.paragraph` / `runs()` for text; no `<text>`, `<foreignObject>`,
   `<script>`, remote images or external URLs inside SVGs. The portrait is

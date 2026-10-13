@@ -7,7 +7,7 @@
 // All six share one template and one height, so every pair is identical in
 // size and the section reads as one run of magazine pages:
 //
-//     40  kicker row     FEATURE · NO. 01 ………………………………… [BUILT]
+//     40  kicker row     FEATURE · 1 OF 5 ………………………………… [BUILT]
 //     54  hairline
 //     84  figure head    Fig. 3  How a scan works          (serif italic)
 //  102–272 the drawing   a real explanation of the product, in ink lines
@@ -15,7 +15,9 @@
 //    346  title          serif 40
 //         deck           serif italic 20, one phrase under the highlighter
 //         summary        sans 13.5 / 21
-//         stack          mono chips; spare height goes 40 / 60 above / below them
+//         stack          mono chips, last row 20 above the footer rule in every
+//                        card, so the rows line up across each pair; spare
+//                        height falls between the summary and the chips
 //   H-50  footer rule
 //   H-26  footer         the card's one link ↗ · serif-italic note
 //
@@ -42,7 +44,9 @@ const FOOT_RULE = H - 50
 const FOOT_Y = H - 26
 
 const KICK = { font: 'mono-500', size: 11, tracking: 0.14, upper: true }
-const TAG = { font: 'mono-500', size: 10.5, tracking: 0.1, upper: true }
+// data-bearing mono (stack chips, cadence tags): 11.5 → ≈9.5px at the phone's 0.83×
+const DATA = 11.5
+const TAG = { font: 'mono-500', size: DATA, tracking: 0.1, upper: true }
 const nb = (s) => s.replace(/ /g, ' ')
 const fade = (svg, delay, cls = 'fade-in') => `<g class="${cls}" style="animation-delay:${delay.toFixed(2)}s">${svg}</g>`
 const BY = Object.fromEntries(WORK.map((w) => [w.key, w]))
@@ -103,13 +107,12 @@ function setText(d, str, { x, y, width, font = 'sans-400', size = 13.5, lh = 21,
   return { svg: marks.join('') + text.join(''), lines: lines.length, last: y + (lines.length - 1) * lh }
 }
 
-/** "Fig. 3  How a scan works" — the figure's own header line, optional mono note on the right. */
-function figHeader(d, no, caption, right) {
+/** "Fig. 3  How a scan works" — the figure's own header line. */
+function figHeader(d, no, caption) {
   const t = d.t
   const f = runs(d, [{ text: `Fig. ${no}`, fill: t.terra, after: 9 }, { text: caption, fill: t.fg }], { x: P, y: FIG_Y, font: 'serif-400i', size: 18 })
   d.add(f.svg)
-  if (right) d.add(d.text(right, { x: R, y: FIG_Y - 1, ...TAG, fill: t.muted, anchor: 'end' }))
-  assertFits('fig header', f.x + (right ? 16 + d.measure(right, TAG) : 0), R)
+  assertFits('fig header', f.x, R)
 }
 
 /** Numbered callout circle (terra outline, serif-italic numeral), as in Fig. 2. */
@@ -203,7 +206,9 @@ function figPixelProof(d, w) {
   for (const [cx, sx] of [[ix - g, 1], [ix + iw + g, -1]])
     for (const [cy, sy] of [[iy - g, 1], [iy + ih + g, -1]]) vf.push(`M${cx} ${cy + sy * L}V${cy}H${cx + sx * L}`)
   out.push(`<path d="${vf.join('')}" fill="none" stroke="${t.terra}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>`)
-  const badge = d.pill('Likely AI', { x: ix + 6, y: iy + ih - 25, h: 19, font: 'mono-500', size: 10.5, tracking: 0.08, upper: true, padX: 7, gap: 5, r: 3, fg: t.terra, bg: t.surfaceRaised, border: t.terra, dot: t.terraFill })
+  // the product's own verdict wording ("AI GENERATED"), no confidence figure
+  const badge = d.pill('AI generated', { x: ix + 6, y: iy + ih - 25, h: 19, font: 'mono-500', size: 10.5, tracking: 0.06, upper: true, padX: 6, r: 3, fg: t.terra, bg: t.surfaceRaised, border: t.terra })
+  assertFits('verdict badge', ix + 6 + badge.w, ix + iw - 5)
   out.push(`<g class="stamp">${badge.svg}</g>`)
 
   // PixelProof's panels: the "why" (Gemini) and the fact check
@@ -233,13 +238,15 @@ function figPixelProof(d, w) {
 }
 
 // ── Fig. 4 · ModVigil ──────────────────────────────────────────────────────
-// "Rules in force": its four automations as a ledger, each with its switch on.
+// "What it automates": its four automations as a ledger, each marked with a
+// plain icon for what it watches (no on/off switches: content.mjs describes
+// the automations, not a deployment or a settings screen).
 
 const MV_RULES = [
-  { tag: 'every 15 min', detail: 'modmail when removals hit 3× the hourly baseline' },
-  { tag: '3 steps', detail: 'educational note → final warning → human review' },
-  { tag: '30+ days', detail: 'surfaces moderators who have gone inactive' },
-  { tag: 'Mondays', detail: 'a week-over-week report' },
+  { icon: 'activity', tag: 'every 15 min', detail: 'modmail when removals hit 3× the hourly baseline' },
+  { icon: 'message-square-warning', tag: '3 steps', detail: 'educational note → final warning → human review' },
+  { icon: 'ghost', tag: '30+ days', detail: 'surfaces moderators who have gone inactive' },
+  { icon: 'newspaper', tag: 'Mondays', detail: 'a week-over-week report' },
 ]
 // (detail lines are content.mjs wording, shortened; the tag column carries the numbers)
 
@@ -248,21 +255,22 @@ function figModVigil(d, w) {
   const out = []
   const top = DRAW_TOP + 2
   const rh = (DRAW_BOT - top) / 4
+  const TX = P + 32
   out.push(doubleRule(d, P, R, DRAW_TOP - 1, { heavy: 1.2, gap: 2.5 }))
   w.rules.forEach((rule, i) => {
     const y = top + i * rh
     const m = MV_RULES[i]
     const nameY = y + rh / 2 - 2.5
-    const sy = nameY - 11
+    const cy = nameY - 4.6 // centred on the rule name, as the numbered callouts are
     const row = [
-      `<rect x="${P}" y="${r1(sy)}" width="24" height="13" rx="6.5" fill="${t.terraFill}"/>`,
-      `<circle cx="${P + 17.5}" cy="${r1(sy + 6.5)}" r="4.6" fill="${t.surfaceRaised}"/>`,
-      d.text(rule.rule, { x: P + 36, y: nameY, font: 'sans-600', size: 13, fill: t.fg }),
+      `<circle cx="${P + 10.5}" cy="${r1(cy)}" r="10.5" fill="${t.surfaceRaised}" stroke="${t.terra}" stroke-width="1"/>`,
+      d.icon(m.icon, { x: P + 4, y: cy - 6.5, size: 13, color: t.terra, stroke: 2 }),
+      d.text(rule.rule, { x: TX, y: nameY, font: 'sans-600', size: 13, fill: t.fg }),
       d.text(m.tag, { x: R, y: nameY, ...TAG, fill: t.muted, anchor: 'end' }),
-      d.text(m.detail, { x: P + 36, y: nameY + 16.5, font: 'sans-400', size: 12, fill: t.fg2 }),
+      d.text(m.detail, { x: TX, y: nameY + 16.5, font: 'sans-400', size: 12, fill: t.fg2 }),
     ]
-    assertFits(`rule ${i + 1} detail`, P + 36 + d.measure(m.detail, { font: 'sans-400', size: 12 }), R)
-    assertFits(`rule ${i + 1} name + tag`, P + 36 + d.measure(rule.rule, { font: 'sans-600', size: 13 }) + 16 + d.measure(m.tag, TAG), R)
+    assertFits(`rule ${i + 1} detail`, TX + d.measure(m.detail, { font: 'sans-400', size: 12 }), R)
+    assertFits(`rule ${i + 1} name + tag`, TX + d.measure(rule.rule, { font: 'sans-600', size: 13 }) + 16 + d.measure(m.tag, TAG), R)
     out.push(fade(row.join(''), 0.25 + i * 0.12, 'fade-up'))
     out.push(hairline(d, P, R, r1(y + rh)))
   })
@@ -372,7 +380,7 @@ function figAgent(d, w) {
     `<circle cx="${ax}" cy="${cy}" r="${ar - 5}" fill="none" stroke="${t.fg}" stroke-opacity=".22" stroke-dasharray="2 3"/>`,
     d.icon('bot', { x: ax - 11, y: cy - 11.5, size: 22, color: t.fg, stroke: 1.6 }),
   )
-  const tagStyle = { h: 19, font: 'mono-500', size: 10.5, padX: 6, r: 3, fg: t.ink, bg: 'none', border: t.ink }
+  const tagStyle = { h: 21, font: 'mono-500', size: DATA, padX: 6, r: 3, fg: t.ink, bg: 'none', border: t.ink }
   const cw = ['intent', 'urgency'].map((s) => d.pill(s, tagStyle).w)
   const chipsX = ax - (cw[0] + 5 + cw[1]) / 2
   const chips = [d.pill('intent', { ...tagStyle, x: chipsX, y: cy + ar + 42 }), d.pill('urgency', { ...tagStyle, x: chipsX + cw[0] + 5, y: cy + ar + 42 })]
@@ -479,20 +487,27 @@ function figMealMind(d, w) {
 
 // ── the feature card ───────────────────────────────────────────────────────
 
+// Footer notes say something the card does not already say (PixelProof's
+// comes from content.mjs `highlights`); a card without a link prints the
+// second half of its `kind` (the rubric carries the first half).
 const FEATURES = [
-  { key: 'pixelproof', fig: 3, caption: 'How a scan works', draw: figPixelProof, mark: 'Is this image real?', note: 'Chrome extension' },
-  { key: 'modvigil', fig: 4, caption: 'Rules in force', figRight: 'all on', draw: figModVigil, mark: 'second pair of eyes', note: 'read the source' },
-  { key: 'builder', fig: 5, caption: 'From prompt to preview', draw: figBuilder, mark: 'plain English' },
-  { key: 'agent', fig: 6, caption: 'How a query is routed', draw: figAgent, mark: 'with context', rubric: 'Support automation', note: 'Claude / GPT-4o, function calling' },
+  { key: 'pixelproof', fig: 3, caption: 'How a scan works', draw: figPixelProof, mark: 'Is this image real?', note: 'the whole page in one click' },
+  { key: 'modvigil', fig: 4, caption: 'What it automates', draw: figModVigil, mark: 'second pair of eyes', note: 'read the source' },
+  { key: 'builder', fig: 5, caption: 'From prompt to preview', draw: figBuilder, mark: 'plain English', note: 'read the source' },
+  { key: 'agent', fig: 6, caption: 'How a query is routed', draw: figAgent, mark: 'with context', rubric: 'Support automation', note: 'function calling' },
   { key: 'mealmind', fig: 7, caption: 'One payment, every screen', draw: figMealMind, figAlt: ' — reaching the customer, chef and admin apps in under a second', mark: 'under a second', rubric: 'Restaurant ecosystem', note: '3 Flutter apps, one Firebase backend' },
 ]
 
 const linkLabel = (href) => href.replace(/^https?:\/\//, '').replace(/\/$/, '')
+// printed label: a GitHub repo reads as its path ("harshbhx/modvigil"), the note says "read the source"
+const footLabel = (href) => linkLabel(href).replace(/^github\.com\//, '')
+// "No." is reserved for the issue's sections (No. 1–5); features count within No. 2
+const ordinal = (no) => `${no} of ${FEATURES.length}`
 
 function featureAlt(f, w, no) {
-  const parts = [`Feature No. ${String(no).padStart(2, '0')}: ${w.name} — ${w.kind}. Status: built${w.event ? `, for ${w.event}` : ''}.`, w.deck, w.summary]
+  const parts = [`Feature ${ordinal(no)}: ${w.name} — ${w.kind}. Status: built${w.event ? `, for ${w.event}` : ''}.`, w.deck, w.summary]
   if (w.pipeline) parts.push(`Fig. ${f.fig}, ${f.caption.toLowerCase()}: ${w.pipeline.map((s, i) => `${i + 1}. ${s.step} — ${s.tool}`).join('; ')}${f.figAlt || ''}.`)
-  if (w.rules) parts.push(`Fig. ${f.fig}, rules in force (all switched on): ${w.rules.map((r) => `${r.rule} — ${r.detail}`).join('; ')}.`)
+  if (w.rules) parts.push(`Fig. ${f.fig}, ${f.caption.toLowerCase()}: ${w.rules.map((r) => `${r.rule} — ${r.detail}`).join('; ')}.`)
   parts.push(`Stack: ${w.stack.join(', ')}.`)
   if (w.links[0]) parts.push(`Link: ${linkLabel(w.links[0].href)}.`)
   return parts.join(' ')
@@ -506,12 +521,12 @@ function renderFeature(theme, f, no) {
   const t = d.t
   d.add(paper(d))
 
-  const kx = kicker(d, 'Feature', `· No. ${String(no).padStart(2, '0')}`)
+  const kx = kicker(d, 'Feature', `· ${ordinal(no)}`)
   const st = status(d, w.status, { x: R, y: 25, anchor: 'end' })
   d.add(st.svg)
   assertFits('kicker', kx + 12, R - st.w)
 
-  figHeader(d, f.fig, f.caption, f.figRight)
+  figHeader(d, f.fig, f.caption)
   f.draw(d, w)
 
   // rubric: the event in turmeric, or what kind of thing it is
@@ -527,16 +542,16 @@ function renderFeature(theme, f, no) {
   const sum = setText(d, w.summary, { x: P, y: deck.last + 28, width: R - P, size: 13.5, lh: 21, label: `${w.key} summary` })
   d.add(sum.svg)
 
-  // stack chips: 24 under the summary at the least; spare height goes 40/60 above/below
-  const make = (label, p) => d.chip(label, { ...p, h: 22, size: 10.5, padX: 8, r: 4 })
+  // stack chips, set on the footer: the last row sits 20 above the footer rule
+  // in every card, so the rows line up across each pair; 24 under the summary at the least
+  const make = (label, p) => d.chip(label, { ...p, h: 22, size: DATA, padX: 8, r: 4 })
   const probe = d.flow(w.stack, { x: P, y: 0, width: R - P, gap: 6, rowGap: 6, make })
   const minTop = sum.last + 24
-  const maxTop = FOOT_RULE - 20 - probe.height
-  if (maxTop < minTop) throw new Error(`${w.key}: card too short by ${(minTop - maxTop).toFixed(1)}`)
-  const cy = Math.round(minTop + (maxTop - minTop) * 0.4)
+  const cy = FOOT_RULE - 20 - probe.height
+  if (cy < minTop) throw new Error(`${w.key}: card too short by ${(minTop - cy).toFixed(1)}`)
   d.add(d.flow(w.stack, { x: P, y: cy, width: R - P, gap: 6, rowGap: 6, make }).svg)
 
-  footer(d, { link: href && linkLabel(href), note: f.note })
+  footer(d, { link: href && footLabel(href), note: f.note })
   return d.end()
 }
 

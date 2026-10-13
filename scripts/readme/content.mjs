@@ -48,14 +48,16 @@ export const LINKS = {
   actions: { label: 'GitHub Actions', value: 'actions', href: 'https://github.com/harshbhx/harshbhx/actions' },
 }
 
-// Section order and numbering. `anchor` is the in-page link target used by the
-// contents tabs (README links to #user-content-<anchor>).
+// Section order and numbering. `key` names the assets (section-<key>, tab-<key>)
+// and the in-page anchor the contents tabs link to (#user-content-<key>).
+// `tab` is the short form of `title` printed on the contents tab, so the tabs
+// and the department heads they jump to always agree.
 export const SECTIONS = [
-  { key: 'work', no: 1, tab: 'Work', title: 'The Arena story', note: 'what we run in production' },
-  { key: 'projects', no: 2, tab: 'Projects', title: 'Selected work', note: 'what I built, and why' },
-  { key: 'journey', no: 3, tab: 'Journey', title: 'The route so far', note: 'Vadodara → anywhere' },
-  { key: 'stack', no: 4, tab: 'Stack', title: 'The toolbox', note: 'what I ship with' },
-  { key: 'contact', no: 5, tab: 'Contact', title: 'Write to me', note: 'open to work, worldwide' },
+  { key: 'arena', no: 1, tab: 'Arena', title: 'The Arena story', note: 'what we run in production' },
+  { key: 'work', no: 2, tab: 'Work', title: 'Selected work', note: 'what I built, and why' },
+  { key: 'journey', no: 3, tab: 'Route', title: 'The route so far', note: 'where I’ve been, where I’m headed' },
+  { key: 'stack', no: 4, tab: 'Toolbox', title: 'The toolbox', note: 'what I ship with, and how often' },
+  { key: 'contact', no: 5, tab: 'Letters', title: 'Letters', note: 'by email, from anywhere' },
 ]
 
 // No. 1 — DualMind Arena (live product)
@@ -91,6 +93,7 @@ export const WORK = [
     name: 'PixelProof',
     status: 'built',
     event: 'Next Byte Hacks V2',
+    eventPhrase: 'for Next Byte Hacks V2', // reads after “built …” in running text
     kind: 'Chrome extension · AI image detection',
     deck: 'Is this image real? A Chrome extension that answers while you browse.',
     summary: 'Flags AI-generated and manipulated images on any page, explains the verdict in plain English and cross-checks the claim against live fact-check data.',
@@ -112,6 +115,7 @@ export const WORK = [
     name: 'ModVigil',
     status: 'built',
     event: 'Reddit Mod Tools Hackathon 2026',
+    eventPhrase: 'for the Reddit Mod Tools Hackathon 2026',
     kind: 'Reddit moderation automation · Devvit',
     deck: 'A second pair of eyes for Reddit moderators.',
     summary: 'Turns a subreddit’s raw mod log into a live dashboard and runs the routine safety work automatically — humans still make every final call.',
@@ -129,6 +133,7 @@ export const WORK = [
     name: 'AI Component Builder',
     status: 'built',
     event: 'Cursor workshop, Rajkot',
+    eventPhrase: 'at a Cursor workshop in Rajkot',
     kind: 'Generative UI · Cursor SDK',
     deck: 'Describe a component in plain English; get working React back.',
     summary: 'A chat panel streams generated React components from the Cursor SDK into a live preview with syntax-highlighted code.',
@@ -216,9 +221,4 @@ export const CTA = {
   title: 'Write to me.',
   body: 'I’m open to work worldwide — full-time, internships, freelance or contract, remote-friendly. Tell me what you’re building.',
   signoff: '— Harsh',
-}
-
-// The plain-text summary under the hero (real, selectable Markdown text).
-export const REAL_TEXT = {
-  line: 'Open to work, worldwide — full-time, internships, freelance or contract · remote-friendly',
 }

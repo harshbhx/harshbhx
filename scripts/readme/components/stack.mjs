@@ -6,9 +6,9 @@
 // Not a logo wall: each group is an index heading (serif 26, the group's note
 // in serif italic), a rule, then its entries A–Z in two newspaper columns,
 // read top-to-bottom like a real index. An entry is a small brand mark, the
-// tool's name and — where the tool appears in this issue — dot leaders to
-// the figure numbers it appears in (Fig. 2 the Arena, Figs. 3–7 the feature
-// cards), so every tool points at the work that proves it. stack-b carries
+// tool's name and dot leaders to the figure numbers it appears in (Fig. 2
+// the Arena, Figs. 3–7 the feature cards), so a tool points at the work that
+// proves it; "–" when no figure in this issue shows it. stack-b carries
 // the key to those numbers in the space its shorter lists leave free.
 //
 // Both cards share one grid, so side by side every row sits on the same line:
@@ -21,16 +21,24 @@
 //   H-50  footer rule
 //   H-26  footer          entries · serif-italic note
 //
-// Figure references are built from content.mjs: a reference is only printed
-// when the named evidence (a stack entry or a phrase of the summary) is found
-// in that project's copy, so the index can never claim more than the issue
-// says.
+// Figure references are built from content.mjs and checked against the
+// figures themselves: the named evidence (a stack entry or a phrase of the
+// summary) must be in that project's content.mjs copy (a typo fails the
+// build), and the reference is only printed when that evidence is also on
+// the figure it points at (read from the figure's alt text, which carries
+// everything the image shows). So the index can never send a reader to a
+// figure that doesn't show the tool; an entry with no figure ends in "–".
+//
+// The marks are printed in one ink, like a printed index (and like the marks
+// in Fig. 2): brand colours would bring back the violet/cyan the palette
+// excludes and the green/red that only mean live/down.
 
 import { createDoc, r1 } from '../lib/svg.mjs'
 import { editorial, paper, hairline, runs, assertFits, inkPath } from '../lib/editorial.mjs'
-import { contrast } from '../lib/icons.mjs'
 import { LAYOUT } from '../lib/theme.mjs'
 import { STACK, ARENA, WORK } from '../content.mjs'
+import ARENA_PAGES from './arena.mjs'
+import FEATURE_CARDS from './features.mjs'
 
 const W = LAYOUT.half // 415
 const P = 28
@@ -55,30 +63,42 @@ const REF = { font: 'serif-400i', size: 15 }
 const LOGO = 16
 const LABEL_X = 26 // logo → label
 
-// ── figures in this issue (mirrors arena.mjs: Fig. 2, features.mjs: Figs. 3–7) ──
+// ── figures in this issue (arena.mjs: Fig. 2, features.mjs: Figs. 3–7) ──
+// `copy` is what content.mjs says about the project; `shown` is what its
+// figure prints (the component's alt text).
+const altOf = (list, name) => {
+  const c = list.find((x) => x.name === name)
+  if (!c) throw new Error(`stack: no "${name}" figure to point at`)
+  return c.alt
+}
 const PROJECTS = [
-  { key: 'arena', fig: 2, short: 'Arena', name: ARENA.name, copy: [...ARENA.stack, ARENA.kind, ARENA.approach].join(' | ') },
+  { key: 'arena', fig: 2, short: 'Arena', name: ARENA.name, copy: [...ARENA.stack, ...ARENA.diagram, ARENA.kind, ARENA.approach].join(' | '), shown: altOf(ARENA_PAGES, 'arena-figure') },
   ...WORK.map((w) => ({
     key: w.key,
     fig: { pixelproof: 3, modvigil: 4, builder: 5, agent: 6, mealmind: 7 }[w.key],
     short: { builder: 'Builder', agent: 'Agent' }[w.key] || w.name,
     name: w.name,
     copy: [...w.stack, w.kind, w.summary].join(' | '),
+    shown: altOf(FEATURE_CARDS, `feature-${w.key}`),
   })),
 ]
-for (const p of PROJECTS) if (!p.fig) throw new Error(`stack: no figure number for "${p.key}"`)
+for (const p of PROJECTS) {
+  if (!p.fig) throw new Error(`stack: no figure number for "${p.key}"`)
+  if (!p.shown.includes(`Fig. ${p.fig}`)) throw new Error(`stack: ${p.name}'s figure is not Fig. ${p.fig}`)
+}
 const BY_KEY = Object.fromEntries(PROJECTS.map((p) => [p.key, p]))
 
 // Where each tool appears: project → the words in that project's copy that
-// show it. C# is read from ".NET Web API" and Dart from "Flutter" (the
-// languages those frameworks are written in).
+// show it. Dart is read from "Flutter" (Flutter apps are written in Dart).
+// C# has no entry: content.mjs names the Arena's ".NET Web API", not its
+// language. Azure, GitHub Actions and Vanilla JS are in ARENA.stack, which
+// Fig. 2 does not draw, so those Arena references stay unprinted until it does.
 const EVIDENCE = {
   'AI Gateway': { arena: 'Cloudflare AI Gateway' },
   Claude: { agent: 'Claude' },
   'Cursor SDK': { builder: 'Cursor SDK' },
   Gemini: { pixelproof: 'Gemini' },
   OpenAI: { agent: 'GPT-4o' },
-  'C#': { arena: '.NET Web API' },
   Dart: { mealmind: 'Flutter' },
   Flutter: { mealmind: 'Flutter' },
   JavaScript: { arena: 'Vanilla JS', pixelproof: 'Vanilla JS' },
@@ -98,7 +118,7 @@ const EVIDENCE = {
   'GitHub Actions': { arena: 'GitHub Actions' },
 }
 
-/** Projects (sorted by figure) a tool appears in; throws if the evidence is not in the copy. */
+/** Figures (sorted) whose drawing shows the tool; throws if the evidence is not in content.mjs. */
 function usedIn(label) {
   const ev = EVIDENCE[label] || {}
   return Object.entries(ev)
@@ -106,13 +126,15 @@ function usedIn(label) {
       const p = BY_KEY[key]
       if (!p) throw new Error(`stack: unknown project "${key}" for ${label}`)
       if (!p.copy.includes(needle)) throw new Error(`stack: "${needle}" not found in ${p.name}'s copy (evidence for ${label})`)
-      return p
+      return p.shown.includes(needle) ? p : null
     })
+    .filter(Boolean)
     .sort((a, b) => a.fig - b.fig)
 }
 
-// Full names for the alt text where the index label is a short form.
-const LONG = { 'AI Gateway': 'Cloudflare AI Gateway', Workers: 'Cloudflare Workers', Devvit: 'Reddit Devvit', Gemini: 'Google Gemini' }
+// Maker of a short-form index label, added in parentheses in the alt text
+// ("AI Gateway (Cloudflare)") so it keeps the A–Z order the image shows.
+const MAKER = { 'AI Gateway': 'Cloudflare', Workers: 'Cloudflare', Devvit: 'Reddit', Gemini: 'Google' }
 
 // A–Z, ignoring leading punctuation (".NET" files under N, as in a printed index)
 const sortKey = (s) => s.replace(/^[^A-Za-z0-9]+/, '').toLowerCase()
@@ -138,68 +160,30 @@ const FOOT_RULE = H - 50
 const FOOT_Y = H - 26
 const TOTAL = CARDS.reduce((a, c) => a + c.groups.reduce((b, g) => b + g.entries.length, 0), 0)
 
-// ── logo colour ─────────────────────────────────────────────────────────────
+// ── marks ───────────────────────────────────────────────────────────────────
 
-// Monochrome marks: always the ink colour.
-const MONO = new Set(['openai', 'cursor', 'nextdotjs'])
-// Solid plates with knocked-out letters (24-unit grid): a backing shape fills
-// the cut-outs so the letters read in the official colour on both papers.
-const PLATE = {
-  javascript: { x: 1, y: 1, w: 22, h: 22, r: 0, ink: 'dark' },
-  typescript: { x: 1, y: 1, w: 22, h: 22, r: 1, ink: 'light' },
-  csharp: { x: 5, y: 7, w: 14, h: 10, r: 0, ink: 'light' },
-}
-// Wordmarks set the way the brand sets its own app icon: knocked out of a
-// brand-coloured rounded square ([x, y, w, h] = the mark's box on the 24 grid).
+// Wordmarks set the way the brand sets its own app icon: knocked out of an
+// ink rounded square ([x, y, w, h] = the mark's box on the 24 grid).
 const TILE = { dotnet: { box: [0, 7.53, 24, 8.81], fit: 0.74, r: 3.5 } }
 // Optical size: wide marks and hairline marks look smaller than solid squares.
 const OPTICAL = { cloudflare: 1.15, postgresql: 1.06 }
 
-const rgb = (hex) => {
-  const n = parseInt(hex.slice(1), 16)
-  return [(n >> 16) & 255, (n >> 8) & 255, n & 255]
-}
-const toHex = (c) => '#' + c.map((v) => Math.round(v).toString(16).padStart(2, '0')).join('')
-const mix = (a, b, k) => toHex(rgb(a).map((v, i) => v + (rgb(b)[i] - v) * k))
-
-/** Brand colour, deepened (paper) or lifted (espresso) just enough to read; ink for marks that vanish. */
-function logoColor(d, slug) {
-  const t = d.t
-  const b = d.brand(slug).hex
-  if (MONO.has(slug)) return t.fg
-  if (PLATE[slug]) return b
-  const on = mix(t.surfaceTop, t.surfaceBottom, 0.5)
-  const target = 3
-  const c0 = contrast(b, on)
-  if (c0 >= target) return b
-  if (c0 < 1.6 && t.name === 'dark') return t.fg
-  const toward = t.fg // cream on espresso (lifts), ink on paper (deepens)
-  for (let k = 0.05; k < 1; k += 0.05) {
-    const c = mix(b, toward, k)
-    if (contrast(c, on) >= target) return c
-  }
-  return t.fg
-}
-
-/** Brand mark centred on (cx, cy), LOGO units (optically adjusted), with its plate backing. */
+/** Brand mark centred on (cx, cy), LOGO units (optically adjusted), in the index's one ink. */
 function mark(d, slug, cx, cy) {
   const t = d.t
+  const ink = t.muted
   const size = LOGO * (OPTICAL[slug] || 1)
   const x = cx - size / 2
   const y = cy - size / 2
-  const k = size / 24
   if (TILE[slug]) {
     const { box: [bx, by, bw, bh], fit, r } = TILE[slug]
     const s = (size * fit) / bw
     const tx = x + (size - bw * s) / 2 - bx * s
     const ty = y + (size - bh * s) / 2 - by * s
-    return `<rect x="${r1(x)}" y="${r1(y)}" width="${size}" height="${size}" rx="${r}" fill="${d.brand(slug).hex}"/>` + `<path transform="translate(${r1(tx)} ${r1(ty)}) scale(${s.toFixed(4)})" fill="${t.name === 'dark' ? t.fg : t.surfaceTop}" d="${d.brand(slug).path}"/>`
+    return `<rect x="${r1(x)}" y="${r1(y)}" width="${size}" height="${size}" rx="${r}" fill="${ink}"/>` + `<path transform="translate(${r1(tx)} ${r1(ty)}) scale(${s.toFixed(4)})" fill="${t.surfaceTop}" d="${d.brand(slug).path}"/>`
   }
-  const p = PLATE[slug]
-  const ink = p && (p.ink === 'light' ? t.surfaceTop : t.name === 'dark' ? t.inset : t.fg)
-  const inkFill = p && p.ink === 'light' && t.name === 'dark' ? t.fg : ink
-  const back = p ? `<rect x="${r1(x + p.x * k)}" y="${r1(y + p.y * k)}" width="${r1(p.w * k)}" height="${r1(p.h * k)}"${p.r ? ` rx="${r1(p.r * k)}"` : ''} fill="${inkFill}"/>` : ''
-  return back + d.logo(slug, { x, y, size, color: logoColor(d, slug) })
+  // plates (JS, TS, C#) knock their letters out to the paper itself
+  return d.logo(slug, { x, y, size, color: ink })
 }
 
 // ── drawing ─────────────────────────────────────────────────────────────────
@@ -216,15 +200,14 @@ function entry(d, e, x, cellTop, label) {
   out.push(d.text(e.label, { x: x + LABEL_X, y: base, ...LABEL, fill: t.fg }))
   const lx = x + LABEL_X + d.measure(e.label, LABEL)
   const right = x + COL_W
-  if (e.refs.length) {
-    const refs = e.refs.map((p) => p.fig).join(', ')
-    const rw = d.measure(refs, REF)
-    out.push(d.text(refs, { x: right, y: base, ...REF, fill: t.terra, anchor: 'end' }))
-    const a = Math.ceil(lx + 7)
-    const b = Math.floor(right - rw - 6)
-    assertFits(`${label}: leaders`, a + 8, b)
-    out.push(`<path d="M${a} ${r1(base - 0.5)}H${b}" stroke="${t.faint}" stroke-width="1.15" stroke-linecap="round" stroke-dasharray="0 4"/>`)
-  } else assertFits(label, lx, right)
+  // figure numbers in terra; an entry no figure shows ends in a muted "–" (none)
+  const refs = e.refs.length ? e.refs.map((p) => p.fig).join(', ') : '–'
+  const rw = d.measure(refs, REF)
+  out.push(d.text(refs, { x: right, y: base, ...REF, fill: e.refs.length ? t.terra : t.muted, anchor: 'end' }))
+  const a = Math.ceil(lx + 7)
+  const b = Math.floor(right - rw - 6)
+  assertFits(`${label}: leaders`, a + 8, b)
+  out.push(`<path d="M${a} ${r1(base - 0.5)}H${b}" stroke="${t.faint}" stroke-width="1.15" stroke-linecap="round" stroke-dasharray="0 4"/>`)
   return out.join('')
 }
 
@@ -320,7 +303,7 @@ function render(theme, card) {
 
 function alt(card) {
   const g = card.groups
-    .map((g) => `${g.group} (${g.note}): ${g.entries.map((e) => `${LONG[e.label] || e.label}${e.refs.length ? ` — in ${e.refs.map((p) => `${p.name} (Fig. ${p.fig})`).join(' and ')}` : ''}`).join('; ')}.`)
+    .map((g) => `${g.group} (${g.note}): ${g.entries.map((e) => `${e.label}${MAKER[e.label] ? ` (${MAKER[e.label]})` : ''}${e.refs.length ? ` — in ${e.refs.map((p) => `${p.name} (Fig. ${p.fig})`).join(' and ')}` : ''}`).join('; ')}.`)
     .join(' ')
   return `The toolbox — index, part ${card.part} of 2, A–Z: every tool I ship with, and the work in this issue it appears in. ${g}`
 }

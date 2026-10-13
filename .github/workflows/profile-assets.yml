@@ -7,7 +7,8 @@ name: Update profile assets
 #   hot-linking public services avoids rate limits and paused deployments.
 # verify: on every push and pull request that touches the generator, checks
 #   that the committed assets/ and README.md are what scripts/readme builds,
-#   and that the daily images still render.
+#   that the daily images still render, and that the GraphQL queries the
+#   daily run sends are valid against GitHub's published schema.
 
 on:
   schedule:
@@ -72,6 +73,22 @@ jobs:
         working-directory: scripts/readme
         run: node live.mjs --out "$RUNNER_TEMP/live-preview" --mock
 
+      # The steps above ran without dev dependencies, which proves the renderer
+      # needs none; this one adds them for the `graphql` validator. A query
+      # typo would otherwise only surface in the first publish run after merge.
+      # If GitHub's schema cannot be downloaded the check is skipped with a
+      # warning instead of failing the job.
+      - name: Check the GraphQL queries against GitHub's schema
+        working-directory: scripts/readme
+        run: |
+          npm ci
+          schema="$RUNNER_TEMP/schema.docs.graphql"
+          if ! curl -fsSL --retry 3 --max-time 60 -o "$schema" https://docs.github.com/public/fpt/schema.docs.graphql; then
+            echo "::warning::Could not download GitHub's GraphQL schema, so the queries in scripts/readme/live/github.mjs were not checked."
+            exit 0
+          fi
+          node live.mjs --validate-schema "$schema"
+
   publish:
     name: Build and publish live images
     if: github.event_name != 'pull_request'
@@ -106,8 +123,8 @@ jobs:
       # live.mjs exits non-zero when the GitHub API fails, which stops the job
       # before publishing, so the previously published images stay in place.
       # The colophon's site check (one GET per site from this runner, 15 s
-      # timeout) never fails the job: a site that is down is printed in red
-      # and flagged with a warning on the run.
+      # timeout, one retry after 3 s) never fails the job: a site that is down
+      # is printed in red and flagged with a warning on the run.
       - name: Numbers, languages, calendar and colophon
         working-directory: scripts/readme
         # The profile repo itself is excluded so the generator code does not skew languages.

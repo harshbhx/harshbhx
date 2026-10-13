@@ -123,6 +123,8 @@ async function main() {
     data.uptime = await checkSites({ log: console.log })
     const down = data.uptime.sites.filter((s) => !s.ok)
     if (down.length) annotate('warning', `site check: ${down.map((s) => `${s.host} (${s.status ? `HTTP ${s.status}` : s.error})`).join(', ')} down — shown in the colophon`)
+    const away = data.uptime.sites.filter((s) => s.turnedAway)
+    if (away.length) annotate('notice', `site check: ${away.map((s) => `${s.host} (HTTP ${s.status})`).join(', ')} answered with a challenge or rate limit — counted as up, status code printed in the colophon`)
   }
   console.log(
     `  ${data.total} contributions since ${data.since} · streak ${data.streak.current.days}d (longest ${data.streak.longest.days}d) · ` +

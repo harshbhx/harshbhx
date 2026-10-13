@@ -72,7 +72,16 @@ export function ist(iso) {
     hour: t.getUTCHours(),
   }
 }
-/** "Tue 13 Oct 2026, 08:47 IST" */
+/**
+ * "Tue 13 Oct · 08:47 IST": the dateline of this printing, set in KICK caps
+ * wherever an image shows it (card footers, colophon) so the issue is dated
+ * one way throughout.
+ */
+export const dateline = (iso) => {
+  const t = ist(iso)
+  return `${t.weekday} ${t.day} ${t.mon} · ${t.hh}:${t.mm} IST`
+}
+/** "Tue 13 Oct 2026, 08:47 IST" (alt text, where the year is worth reading out) */
 export const istStamp = (iso) => {
   const t = ist(iso)
   return `${t.weekday} ${t.day} ${t.mon} ${t.year}, ${t.hh}:${t.mm} IST`

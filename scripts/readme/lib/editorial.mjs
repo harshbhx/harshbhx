@@ -65,17 +65,34 @@ export function cropMarks(d, x, y, w, h, { len = 10, gap = 5, color = d.t.faint 
   return `<path d="${p.join('')}" stroke="${color}" stroke-width=".9" fill="none"/>`
 }
 
-/** Marker-highlighter swash behind a phrase (slightly irregular, like a real pen). */
+/**
+ * Marker-highlighter swash behind a phrase (slightly irregular, like a real pen).
+ * (x, y, w, h) is the phrase's box; callers start it ~1.5 left of the phrase.
+ */
 export function highlighter(d, x, y, w, h, { color = d.t.highlighterFill, opacity = d.t.highlighterOpacity, style } = {}) {
-  // On espresso a full-height swash turns muddy; the night edition uses a
-  // brighter marker stroke across the lower part of the phrase instead.
-  if (d.t.name === 'dark') {
-    y += h * 0.58
-    h *= 0.42
+  let path
+  if (d.t.name === 'dark' && h < 18) {
+    // Night edition, body text: a marker underline entirely below the
+    // baseline (a band across the letters reads as struck through at 1×),
+    // flush with the phrase's left edge so a mark that starts a line does
+    // not poke out of the text column.
+    const top = y + h * 0.8
+    const hh = h * 0.24
+    const k = hh * 0.18
+    const x0 = x + 1.5
+    path = `M${r1(x0)} ${r1(top + k)}Q${r1(x + w * 0.5)} ${r1(top - k * 0.4)} ${r1(x + w - 0.5)} ${r1(top + k * 0.3)}L${r1(x + w + 1)} ${r1(top + hh - k * 0.6)}Q${r1(x + w * 0.45)} ${r1(top + hh + k * 0.5)} ${r1(x0)} ${r1(top + hh - k * 0.2)}Z`
     opacity = 0.78
+  } else {
+    // On espresso a full-height swash turns muddy; at display sizes the night
+    // edition uses a brighter marker stroke across the lower part instead.
+    if (d.t.name === 'dark') {
+      y += h * 0.58
+      h *= 0.42
+      opacity = 0.78
+    }
+    const k = h * 0.18
+    path = `M${r1(x + 2)} ${r1(y + k)}Q${r1(x + w * 0.5)} ${r1(y - k * 0.4)} ${r1(x + w - 1)} ${r1(y + k * 0.3)}L${r1(x + w + 3)} ${r1(y + h - k * 0.6)}Q${r1(x + w * 0.45)} ${r1(y + h + k * 0.5)} ${r1(x - 2)} ${r1(y + h - k * 0.2)}Z`
   }
-  const k = h * 0.18
-  const path = `M${r1(x + 2)} ${r1(y + k)}Q${r1(x + w * 0.5)} ${r1(y - k * 0.4)} ${r1(x + w - 1)} ${r1(y + k * 0.3)}L${r1(x + w + 3)} ${r1(y + h - k * 0.6)}Q${r1(x + w * 0.45)} ${r1(y + h + k * 0.5)} ${r1(x - 2)} ${r1(y + h - k * 0.2)}Z`
   return `<g class="swipe"${style ? ` style="${style}"` : ''}><path d="${path}" fill="${color}" opacity="${opacity}"/></g>`
 }
 
@@ -99,9 +116,13 @@ export function portrait(d) {
   }
 }
 
-/** Pulsing status dot (green = live / open / up). */
-export function liveDot(d, cx, cy, r = 3.6, color = d.t.green) {
-  return `<circle class="pulse" cx="${r1(cx)}" cy="${r1(cy)}" r="${r}" fill="${color}"/><circle cx="${r1(cx)}" cy="${r1(cy)}" r="${r}" fill="${color}"/>`
+/**
+ * Pulsing status dot (green = live / open / up). It pulses a few times, then
+ * rests as a solid dot; `loop: true` keeps it pulsing (class pulse-live) for
+ * the one signal that should never stop — use sparingly, see BASE_CSS.
+ */
+export function liveDot(d, cx, cy, r = 3.6, color = d.t.green, { loop = false } = {}) {
+  return `<circle class="${loop ? 'pulse-live' : 'pulse'}" cx="${r1(cx)}" cy="${r1(cy)}" r="${r}" fill="${color}"/><circle cx="${r1(cx)}" cy="${r1(cy)}" r="${r}" fill="${color}"/>`
 }
 
 /**
@@ -113,7 +134,7 @@ export function status(d, kind, { x = 0, y = 0, anchor = 'start', label } = {}) 
   const text = (label || kind).toUpperCase()
   const color = kind === 'live' ? t.green : kind === 'built' ? t.ink : t.terra
   return d.pill(text, {
-    x, y, anchor, h: 22, font: 'mono-500', size: 10.5, tracking: 0.12, padX: 9, gap: 6, r: 4,
+    x, y, anchor, h: 22, font: 'mono-500', size: 11, tracking: 0.12, padX: 9, gap: 6, r: 4, // 11 = the kicker it sits beside
     fg: color, bg: 'none', border: color, dot: kind === 'live' ? t.green : null, pulse: kind === 'live',
   })
 }

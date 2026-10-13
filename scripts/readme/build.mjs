@@ -4,8 +4,13 @@
 //   npm run build                 build everything
 //   node build.mjs hero section   build only components/hero.mjs and components/section.mjs
 //                                 (README.md is only rewritten on a full build)
+//
+// A full build fails when README.md references an asset no component
+// produced, and deletes generated assets (<name>-{dark,light}.svg) that no
+// component produces any more, so CI's "committed output is stale" check
+// catches renamed or removed components. Nothing is deleted after a failure.
 
-import { readdirSync, writeFileSync, mkdirSync, existsSync } from 'node:fs'
+import { readdirSync, writeFileSync, mkdirSync, unlinkSync } from 'node:fs'
 import { THEMES } from './lib/theme.mjs'
 import { readme, pairSide, isFull } from './readme.mjs'
 import { padForPair, padForFull } from './lib/svg.mjs'
@@ -21,6 +26,7 @@ const files = readdirSync(COMPONENTS)
 
 mkdirSync(ASSETS, { recursive: true })
 const registry = new Map()
+const written = new Set()
 let failed = 0
 for (const file of files) {
   let entries
@@ -44,6 +50,7 @@ for (const file of files) {
         const side = pairSide(entry.name)
         const out = side ? padForPair(svg, side) : isFull(entry.name) ? padForFull(svg) : svg
         writeFileSync(new URL(`${entry.name}-${theme}.svg`, ASSETS), out)
+        written.add(`${entry.name}-${theme}.svg`)
         console.log(`✓ ${entry.name}-${theme}.svg  ${(svg.length / 1024).toFixed(1)} KB`)
       } catch (e) {
         console.error(`✗ ${entry.name} (${theme}): ${e.stack || e}`)
@@ -56,9 +63,19 @@ for (const file of files) {
 
 if (!only.length) {
   const { markdown, missing } = readme(registry)
-  if (missing.length) console.warn(`! README references assets that no component produced: ${missing.join(', ')}`)
+  if (missing.length) {
+    // readme() leaves such a block out, so the page would silently lose a section
+    console.error(`✗ README.md references assets that no component produced: ${missing.join(', ')}`)
+    failed++
+  }
   writeFileSync(new URL('README.md', ROOT), markdown)
   console.log('✓ README.md')
+  if (!failed) {
+    for (const f of readdirSync(ASSETS).filter((f) => /-(dark|light)\.svg$/.test(f) && !written.has(f))) {
+      unlinkSync(new URL(f, ASSETS))
+      console.log(`✓ removed stale ${f}`)
+    }
+  }
 }
 if (failed) {
   console.error(`${failed} failure(s)`)

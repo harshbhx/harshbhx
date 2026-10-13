@@ -3,9 +3,10 @@
 //
 //   node preview.mjs <out-dir> [--live <dir>]
 //
-// --live: folder holding locally rendered activity-*/snake SVGs (the files the
-//         workflow publishes to the `output` branch). Missing ones show as a
-//         dashed placeholder.
+// --live: folder holding the daily images rendered by live.mjs (numbers,
+//         languages, calendar, colophon — the files the workflow publishes to
+//         the `output` branch), e.g. from `node live.mjs --out <dir> --mock`.
+//         Missing ones show as a dashed placeholder of the real image's size.
 // Writes desktop-dark.png, desktop-light.png, phone-dark.png, phone-light.png
 // plus <name>-<n>.png slices of each (≤1500px tall) for easy viewing.
 
@@ -13,10 +14,12 @@ import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { createRequire } from 'node:module'
 import { marked } from 'marked'
-import { chromium } from 'playwright'
-import { ASSET_BASE, OUTPUT_BASE } from './readme.mjs'
-import { LAYOUT } from './lib/theme.mjs'
-import { PAIR_GUTTER } from './lib/svg.mjs'
+import { chromium, firefox } from 'playwright'
+import { ASSET_BASE, OUTPUT_BASE, pairSide, isFull } from './readme.mjs'
+import { PAIR_GUTTER, FULL_GUTTER } from './lib/svg.mjs'
+import { CARDS } from './live/cards.mjs'
+import { CALENDAR } from './live/calendar.mjs'
+import { COLOPHON } from './live/colophon.mjs'
 
 const require = createRequire(import.meta.url)
 const args = process.argv.slice(2)
@@ -29,10 +32,14 @@ const root = new URL('../../', import.meta.url).pathname
 const assets = `${root}assets/`
 let md = readFileSync(`${root}README.md`, 'utf8')
 
-// Dashed stand-in with the same transparent side margins as the real image.
+// Dashed stand-in with the real image's size and transparent side margins.
+const LIVE = new Map([...CARDS, CALENDAR, COLOPHON].map((c) => [c.name, c]))
 const placeholder = (file) => {
-  const snake = file.startsWith('snake')
-  const [w, h, g] = snake ? [880, 192, 16] : [LAYOUT.half + 2 * PAIR_GUTTER, 288, PAIR_GUTTER]
+  const name = file.replace(/-(dark|light)\.svg$/, '')
+  const img = LIVE.get(name)
+  if (!img) throw new Error(`README links to ${file} on the output branch, but live/ renders no "${name}"`)
+  const g = pairSide(name) ? PAIR_GUTTER : isFull(name) ? FULL_GUTTER : 0
+  const [w, h] = [img.width + 2 * g, img.height]
   return (
     'data:image/svg+xml;utf8,' +
     encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}"><rect x="${g + 1}" y="1" width="${w - 2 * g - 2}" height="${h - 2}" rx="16" fill="none" stroke="#888" stroke-dasharray="6 6"/><text x="${w / 2}" y="${h / 2 + 5}" text-anchor="middle" font-family="monospace" font-size="13" fill="#888">${file} (built in CI)</text></svg>`)
@@ -57,7 +64,10 @@ body{margin:0;background:${theme === 'dark' ? '#0d1117' : '#ffffff'}}
 .markdown-body img{max-width:100%;box-sizing:content-box}
 </style></head><body><div class="box"><article class="markdown-body">${body}</article></div></body></html>`
 
-const browser = await chromium.launch({ executablePath: process.env.CHROMIUM || '/opt/pw-browsers/chromium' })
+// FIREFOX=/path/to/firefox renders with Firefox instead (cross-browser check)
+const browser = process.env.FIREFOX
+  ? await firefox.launch({ executablePath: process.env.FIREFOX })
+  : await chromium.launch({ executablePath: process.env.CHROMIUM || '/opt/pw-browsers/chromium' })
 for (const [name, theme, width] of [
   ['desktop-dark', 'dark', 1280],
   ['desktop-light', 'light', 1280],
