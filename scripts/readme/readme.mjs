@@ -10,7 +10,7 @@ export const OUTPUT_BASE = `https://raw.githubusercontent.com/${REPO}/output/`
 // Order of blocks on the page. 'pair' = two half-width images that sit side
 // by side on desktop and stack on phones. 'live' = images rebuilt daily by
 // .github/workflows/profile-assets.yml on the `output` branch.
-const PAGE = [
+export const PAGE = [
   ['full', 'hero'],
   ['pair', 'about-terminal', 'about-now'],
   ['full', 'section-proof'],
@@ -31,6 +31,17 @@ const PAGE = [
   ['row', 'btn-email', 'btn-linkedin', 'btn-github', 'btn-devto', 'btn-website', 'btn-discord'],
   ['full', 'footer'],
 ]
+
+// Which side of a pair each asset sits on (build.mjs pads the inner edge).
+export function pairSide(name) {
+  for (const [kind, a, b] of PAGE) if (kind === 'pair') {
+    if (name === a) return 'left'
+    if (name === b) return 'right'
+  }
+  if (name === 'activity-stats') return 'left'
+  if (name === 'activity-langs') return 'right'
+  return null
+}
 
 export const LIVE = [
   { name: 'activity-stats', width: 415, alt: 'GitHub stats: contributions, commits, pull requests, issues and streaks' },

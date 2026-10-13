@@ -30,7 +30,8 @@ if (!names.length) {
 const PHONE = 358 // README content width on a 390px-wide phone
 
 const browser = await chromium.launch({ executablePath: process.env.CHROMIUM || '/opt/pw-browsers/chromium' })
-const page = await browser.newPage({ deviceScaleFactor: 2, viewport: { width: 1000, height: 800 } })
+// Tall viewport: Chromium does not run animations in off-screen SVG images.
+const page = await browser.newPage({ deviceScaleFactor: 2, viewport: { width: 1000, height: 4000 } })
 for (const name of names) {
   const files = { dark: join(ASSETS, `${name}-dark.svg`), light: join(ASSETS, `${name}-light.svg`) }
   const w = Number(readFileSync(files.dark, 'utf8').match(/width="([\d.]+)"/)[1])

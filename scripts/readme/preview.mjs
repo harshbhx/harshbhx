@@ -62,17 +62,23 @@ for (const [name, theme, width] of [
   const broken = []
   p.on('requestfailed', (r) => broken.push(r.url().slice(0, 120)))
   await p.goto(`file://${file}`, { waitUntil: 'load' })
-  await p.waitForTimeout(4000)
+  // Grow the viewport to the whole page: Chromium does not run animations in
+  // off-screen SVG images, so they would be captured at their first frame.
+  await p.waitForTimeout(500)
+  const fullH = await p.evaluate(() => document.documentElement.scrollHeight)
+  await p.setViewportSize({ width, height: fullH })
+  await p.reload({ waitUntil: 'load' })
+  await p.waitForTimeout(4500)
   const info = await p.evaluate(() => ({
     height: document.documentElement.scrollHeight,
     overflow: document.documentElement.scrollWidth > window.innerWidth,
     broken: [...document.images].filter((i) => i.complete && i.naturalWidth === 0).map((i) => (i.currentSrc || i.src).slice(0, 120)),
   }))
-  await p.screenshot({ path: `${outDir}/${name}.png`, fullPage: true })
+  await p.screenshot({ path: `${outDir}/${name}.png` })
   // slices
   const sliceH = width < 600 ? 1400 : 1500
   for (let i = 0, y = 0; y < info.height; i++, y += sliceH) {
-    await p.screenshot({ path: `${outDir}/${name}-${i}.png`, clip: { x: 0, y, width, height: Math.min(sliceH, info.height - y) }, fullPage: true })
+    await p.screenshot({ path: `${outDir}/${name}-${i}.png`, clip: { x: 0, y, width, height: Math.min(sliceH, info.height - y) } })
   }
   console.log(name, JSON.stringify({ ...info, failed: broken }))
   await p.close()

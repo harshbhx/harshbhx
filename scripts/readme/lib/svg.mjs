@@ -429,3 +429,16 @@ function tokenize(content, base) {
   if (cur) groups.push(cur)
   return groups
 }
+
+/**
+ * Add a transparent gutter on the inner side of a half-width image so two
+ * images placed side by side in the README get a visible gap (inline images
+ * are otherwise separated only by one space). side: 'left' | 'right'.
+ */
+export function padForPair(svg, side, gutter = PAIR_GUTTER) {
+  return svg.replace(/^<svg([^>]*?) width="([\d.]+)" height="([\d.]+)" viewBox="0 0 ([\d.]+) ([\d.]+)"/, (_, pre, w, h, vw, vh) => {
+    const W = Number(w) + gutter
+    return `<svg${pre} width="${W}" height="${h}" viewBox="${side === 'right' ? -gutter : 0} 0 ${Number(vw) + gutter} ${vh}"`
+  })
+}
+export const PAIR_GUTTER = 8
