@@ -31,10 +31,10 @@ export const QUERIES = {
           totalRepositoriesWithContributedPullRequests
           totalRepositoriesWithContributedIssues
           totalRepositoriesWithContributedPullRequestReviews
-          commitContributionsByRepository { repository { nameWithOwner } }
-          pullRequestContributionsByRepository { repository { nameWithOwner } }
-          issueContributionsByRepository { repository { nameWithOwner } }
-          pullRequestReviewContributionsByRepository { repository { nameWithOwner } }
+          commitContributionsByRepository(maxRepositories: 100) { repository { nameWithOwner } }
+          pullRequestContributionsByRepository(maxRepositories: 100) { repository { nameWithOwner } }
+          issueContributionsByRepository(maxRepositories: 100) { repository { nameWithOwner } }
+          pullRequestReviewContributionsByRepository(maxRepositories: 100) { repository { nameWithOwner } }
           contributionCalendar {
             totalContributions
             weeks { contributionDays { date contributionCount } }

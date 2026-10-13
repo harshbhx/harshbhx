@@ -99,7 +99,7 @@ const PROOF = ARENA.proof.map((p) => ({
 }))
 
 const STORY_ALT = [
-  `Cover story, DualMind Labs: ${ARENA.name}, live. ${ARENA.kind}.`,
+  `Cover story, DualMind Labs: ${ARENA.name}, ${ARENA.status}. ${ARENA.kind}.`,
   ARENA.problem,
   ARENA.approach,
   `Box score: ${ARENA.proof.map((p) => `${p.value} ${p.label} (${p.detail})`).join('; ')}.`,
@@ -114,7 +114,7 @@ function renderStory(theme) {
   d.add(paper(d))
 
   const kx = kicker(d, 'Cover story', '· DualMind Labs')
-  const live = status(d, 'live', { x: R, y: 25, anchor: 'end' })
+  const live = status(d, ARENA.status, { x: R, y: 25, anchor: 'end' })
   d.add(live.svg)
   assertFits('kicker', kx + 12, R - live.w)
 
@@ -135,6 +135,7 @@ function renderStory(theme) {
   const p1 = setText(d, ARENA.problem.slice(1), { x: P, y, width: R - P, size, lh, indent: { w: capW, lines: 2 }, label: 'problem' })
   d.add(p1.svg)
   y += p1.height + 4
+  if (!ARENA.approach.includes('names hidden')) throw new Error('arena: highlight "names hidden" not found in ARENA.approach')
   const mark = nb('names hidden')
   const p2 = setText(d, ARENA.approach.replace('names hidden', mark), { x: P, y, width: R - P, size, lh, indent: { w: 18, lines: 1 }, mark, label: 'approach' })
   d.add(p2.svg)

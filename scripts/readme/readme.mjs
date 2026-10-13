@@ -209,6 +209,7 @@ function plainText() {
     '',
     ...WORK.flatMap((w) => [
       `- **${w.name}** — ${w.kind}${w.event ? ` · built ${w.eventPhrase || `for ${w.event}`}` : ''}${links(w)}`,
+      `  - ${w.deck}`,
       `  - ${w.summary}`,
       ...(w.pipeline ? [`  - ${w.pipeline.map((s) => `${s.step} (${s.tool})`).join(' → ')}`] : []),
       ...(w.rules ? w.rules.map((r) => `  - **${r.rule}:** ${r.detail}`) : []),

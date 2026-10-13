@@ -63,7 +63,7 @@ async function liveData() {
     ['GITHUB_TOKEN', process.env.GITHUB_TOKEN],
   ].filter(([, v]) => v)
   if (!tokens.length) throw new Error('neither STATS_TOKEN nor GITHUB_TOKEN is set (or pass --mock for a preview)')
-  if (tokens[0][0] !== 'STATS_TOKEN') annotate('notice', 'STATS_TOKEN is not set: the numbers and languages count public repositories and public contributions only.')
+  if (tokens[0][0] !== 'STATS_TOKEN') annotate('notice', 'STATS_TOKEN is not set: the numbers, calendar and languages count public repositories and public contributions only.')
   const exclude = args.exclude.split(',').map((s) => s.trim()).filter(Boolean)
   for (const [i, [name, token]] of tokens.entries()) {
     try {

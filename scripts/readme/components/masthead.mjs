@@ -86,6 +86,7 @@ function render(theme) {
   d.css(PHONE_CSS)
   const t = d.t
   const place = portrait(d) // one embedded plate, placed in both layers
+  if (!PROFILE.deck.includes(PROFILE.deckHighlight)) throw new Error('masthead: PROFILE.deckHighlight is not part of PROFILE.deck')
   const [hlLead, hlTail] = PROFILE.deck.split(PROFILE.deckHighlight) // "I build " · " — and the products around them."
   d.add(paper(d))
 
@@ -200,7 +201,7 @@ function render(theme) {
   const ph = []
   const pmb = 50
   ph.push(d.text(PROFILE.handle, { x: PP - 1, y: pmb, font: 'serif-400i', size: 48, fill: t.fg }))
-  ph.push(d.text(`${PROFILE.city}, India · IST`, { x: PR, y: pmb - 2, font: 'mono-500', size: 26, tracking: 0.06, upper: true, fill: t.muted, anchor: 'end' }))
+  ph.push(d.text(`${PROFILE.city}, India · ${PROFILE.timezone.split(' ')[0]}`, { x: PR, y: pmb - 2, font: 'mono-500', size: 28, tracking: 0.06, upper: true, fill: t.muted, anchor: 'end' }))
   ph.push(inkRule(d, PP, PR, 70, { heavy: 3, gap: 5 }))
 
   const ppx = PP + 8

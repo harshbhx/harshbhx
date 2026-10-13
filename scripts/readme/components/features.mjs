@@ -145,7 +145,7 @@ function stepRow(d, steps, { cols, y, anchors, delay = 1 }) {
     const g = [`<circle cx="${r1(cx)}" cy="${r1(ay)}" r="1.9" fill="${t.fg}"/>`, stepLabel(d, x, y, i + 1, s.step, s.tool)]
     assertFits(`step ${i + 1} label`, x + 25 + d.measure(s.step, { font: 'sans-600', size: 13 }), limit - (i < 2 ? 26 : 0))
     assertFits(`step ${i + 1} sub`, x + d.measure(s.tool, { font: 'sans-400', size: 12 }), limit - (i < 2 ? 10 : 0))
-    if (i < 2) g.push(d.text('→', { x: cols[i + 1] - 10, y: y + 4.6, font: 'sans-400', size: 13, fill: t.faint, anchor: 'end' }))
+    if (i < 2) g.push(d.text('→', { x: cols[i + 1] - 10, y: y + 4.6, font: 'sans-400', size: 13, fill: t.muted, anchor: 'end' }))
     out.push(fade(g.join(''), delay + 0.1 + i * 0.12))
   })
   return out.join('')
@@ -505,7 +505,7 @@ const footLabel = (href) => linkLabel(href).replace(/^github\.com\//, '')
 const ordinal = (no) => `${no} of ${FEATURES.length}`
 
 function featureAlt(f, w, no) {
-  const parts = [`Feature ${ordinal(no)}: ${w.name} — ${w.kind}. Status: built${w.event ? `, for ${w.event}` : ''}.`, w.deck, w.summary]
+  const parts = [`Feature ${ordinal(no)}: ${w.name} — ${w.kind}. Status: built${w.event ? ` ${w.eventPhrase || `for ${w.event}`}` : ''}.`, w.deck, w.summary]
   if (w.pipeline) parts.push(`Fig. ${f.fig}, ${f.caption.toLowerCase()}: ${w.pipeline.map((s, i) => `${i + 1}. ${s.step} — ${s.tool}`).join('; ')}${f.figAlt || ''}.`)
   if (w.rules) parts.push(`Fig. ${f.fig}, ${f.caption.toLowerCase()}: ${w.rules.map((r) => `${r.rule} — ${r.detail}`).join('; ')}.`)
   parts.push(`Stack: ${w.stack.join(', ')}.`)

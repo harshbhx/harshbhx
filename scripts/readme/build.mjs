@@ -19,13 +19,14 @@ const COMPONENTS = new URL('./components/', import.meta.url)
 const ASSETS = new URL('../../assets/', import.meta.url)
 const ROOT = new URL('../../', import.meta.url)
 
-const only = process.argv.slice(2)
+const only = [...new Set(process.argv.slice(2).map((n) => n.replace(/\.mjs$/, '')))]
 const files = readdirSync(COMPONENTS)
   .filter((f) => f.endsWith('.mjs'))
   .filter((f) => !only.length || only.includes(f.replace(/\.mjs$/, '')))
-if (only.length && files.length < only.length) {
-  const found = files.map((f) => f.replace(/\.mjs$/, ''))
-  console.error(`✗ no component file matches: ${only.filter((n) => !found.includes(n)).join(', ')}`)
+const found = files.map((f) => f.replace(/\.mjs$/, ''))
+const unknown = only.filter((n) => !found.includes(n))
+if (unknown.length) {
+  console.error(`✗ no component file matches: ${unknown.join(', ')}`)
   process.exit(1)
 }
 
@@ -70,11 +71,12 @@ if (!only.length) {
   const { markdown, missing } = readme(registry)
   if (missing.length) {
     // readme() leaves such a block out, so the page would silently lose a section
-    console.error(`✗ README.md references assets that no component produced: ${missing.join(', ')}`)
+    console.error(`✗ README.md references assets that no component produced: ${missing.join(', ')} (README.md not written)`)
     failed++
+  } else {
+    writeFileSync(new URL('README.md', ROOT), markdown)
+    console.log('✓ README.md')
   }
-  writeFileSync(new URL('README.md', ROOT), markdown)
-  console.log('✓ README.md')
   if (!failed) {
     for (const f of readdirSync(ASSETS).filter((f) => /-(dark|light)\.svg$/.test(f) && !written.has(f))) {
       unlinkSync(new URL(f, ASSETS))
