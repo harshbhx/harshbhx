@@ -54,8 +54,16 @@ const PLATE = {
   css: { x: 1, y: 1, w: 22, h: 22, r: 3, ink: 'light' },
   csharp: { x: 5, y: 7, w: 14, h: 10, r: 0, ink: 'light' },
 }
-// Optical size: wide wordmarks fill less of the box than square marks.
-const OPTICAL = { mysql: 1.3, dotnet: 1.15 }
+// Optical size: wide wordmarks fill less of the box than square marks, and
+// hairline outline marks (PostgreSQL's elephant) look lighter than solid ones.
+const OPTICAL = { dotnet: 1.15, postgresql: 1.1 }
+// Marks drawn from part of their Simple Icons path. MySQL's is the dolphin over
+// a "MySQL" wordmark, an illegible smudge at tile size: keep only the dolphin
+// (the subpaths that start above the lettering, which begins at y≈13.1) and
+// fit its box [x, y, w, h] to the 24-unit grid like a square mark. Its lines
+// are hairlines, so a same-colour stroke (path units) brings them up to the
+// weight of the other outline marks (Firebase, PostgreSQL).
+const CROP = { mysql: { keep: ([, y]) => y < 13, count: 2, box: [14.17, 3.85, 9.83, 9.65], weight: 0.25 } }
 // Names for the alt text where the tile label alone would be ambiguous.
 const LONG = { cloudflare: { 'AI Gateway': 'Cloudflare AI Gateway' }, githubactions: { Actions: 'GitHub Actions' } }
 const longName = (slug, label) => LONG[slug]?.[label] || label
@@ -104,7 +112,7 @@ function logoColor(d, slug) {
   const b = d.brand(slug).hex
   if (MONO.has(slug)) return t.fg
   if (PLATE[slug]) return b // solid plate: the shape itself carries the contrast
-  const target = t.name === 'dark' ? 4.2 : 2.6
+  const target = t.name === 'dark' ? 4.2 : 3 // light: WCAG 1.4.11 non-text contrast
   const c0 = contrast(b, t.logoTile)
   if (c0 >= target) return b
   if (c0 < 1.5) return t.fg
@@ -131,6 +139,25 @@ function band(d) {
   )
 }
 
+const NUM = /-?(?:\d+\.?\d*|\.\d+)(?:e-?\d+)?/g
+
+/** The CROP part of a brand path: its kept subpaths, each restarted with an absolute moveto. */
+function cropPath(d, slug) {
+  const { keep, count } = CROP[slug]
+  let start = [0, 0]
+  const parts = d.brand(slug).path.split(/(?=[Mm])/).map((sub) => {
+    const head = sub.match(new RegExp(`^([Mm])\\s*(${NUM.source})[\\s,]*(${NUM.source})\\s*(?=[A-Za-z])`))
+    // a relative moveto after "z" is relative to the previous subpath's start
+    if (!head || !/[Zz]\s*$/.test(sub)) throw new Error(`stack: cannot crop the "${slug}" logo (path format changed)`)
+    const [mx, my] = [+head[2], +head[3]]
+    start = head[1] === 'm' ? [start[0] + mx, start[1] + my] : [mx, my]
+    return { start, d: `M${+start[0].toFixed(3)} ${+start[1].toFixed(3)}${sub.slice(head[0].length)}` }
+  })
+  const kept = parts.filter((p) => keep(p.start))
+  if (kept.length !== count) throw new Error(`stack: cropping the "${slug}" logo kept ${kept.length} subpaths, expected ${count}`)
+  return kept.map((p) => p.d).join('')
+}
+
 /** Brand logo centred in a TILE-sized box at (x, y), with its plate backing if it has one. */
 function logo(d, slug, x, y) {
   const t = d.t
@@ -138,6 +165,15 @@ function logo(d, slug, x, y) {
   const lx = x + (TILE - size) / 2
   const ly = y + (TILE - size) / 2
   const k = size / 24
+  if (CROP[slug]) {
+    const { box: [bx, by, bw, bh], weight } = CROP[slug]
+    const s = (24 / Math.max(bw, bh)) * k
+    const tx = lx + (size - bw * s) / 2 - bx * s
+    const ty = ly + (size - bh * s) / 2 - by * s
+    const c = logoColor(d, slug)
+    const stroke = weight ? ` stroke="${c}" stroke-width="${weight}" stroke-linejoin="round"` : ''
+    return `<path transform="translate(${r1(tx)} ${r1(ty)}) scale(${s.toFixed(4)})" fill="${c}"${stroke} d="${cropPath(d, slug)}"/>`
+  }
   const p = PLATE[slug]
   const ink = p && (p.ink === 'light' ? (t.name === 'dark' ? t.fg : t.surfaceRaised) : t.name === 'dark' ? t.inset : t.fg)
   const back = p ? `<rect x="${r1(lx + p.x * k)}" y="${r1(ly + p.y * k)}" width="${r1(p.w * k)}" height="${r1(p.h * k)}"${p.r ? ` rx="${r1(p.r * k)}"` : ''} fill="${ink}"/>` : ''
@@ -161,7 +197,7 @@ function render(t, card) {
   d.add(
     d.icon(card.icon, { x: PAD, y: BAND / 2 - 7.5, size: 15, color: t.violet, stroke: 1.9 }),
     d.kicker(card.label, { x: PAD + 24, y: BAND_BASE - 0.5, fill: t.fg2 }),
-    d.text(`${total} tools`, { x: W - PAD, y: BAND_BASE - 0.5, font: 'mono-500', size: 11, tracking: 0.08, fill: t.faint, anchor: 'end' }),
+    d.text(`${total} tools`, { x: W - PAD, y: BAND_BASE - 0.5, font: 'mono-500', size: 11, tracking: 0.08, fill: t.muted, anchor: 'end' }),
   )
 
   // shared paint servers

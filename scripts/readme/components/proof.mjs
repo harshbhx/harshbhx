@@ -6,6 +6,7 @@
 //
 // Every tile follows the same anatomy: accent icon tile + value, label,
 // detail. Illustrations are abstract (no fake data or numbers).
+// Accents alternate violet / cyan only; green stays reserved for the live dot.
 
 import { createDoc, r1 } from '../lib/svg.mjs'
 import { LAYOUT } from '../lib/theme.mjs'
@@ -23,12 +24,10 @@ const R = 12 // tile radius
 
 const item = Object.fromEntries(PROOF.map((p) => [p.key, p]))
 
-// one accent per tile
+// one accent per tile (DESIGN.md: violet primary, cyan secondary)
 const ACCENTS = {
   violet: (t) => ({ c: t.violet, hi: t.violetSoft, glow: t.glowViolet }),
   cyan: (t) => ({ c: t.cyan, hi: t.sky, glow: t.glowCyan }),
-  green: (t) => ({ c: t.green, hi: t.green, glow: [t.green, t.name === 'dark' ? 0.14 : 0.12] }),
-  pink: (t) => ({ c: t.pink, hi: t.pink, glow: t.glowPink }),
 }
 
 // deterministic pseudo-random numbers for the illustrations
@@ -119,8 +118,8 @@ function place(x, y, delay, inner) {
 function packet(path, { r = 1.8, fill, dur, begin }) {
   return (
     `<circle class="packet" r="${r}" fill="${fill}" opacity="0">` +
-    `<animateMotion dur="${dur}s" begin="${begin}s" repeatCount="indefinite" path="${path}"/>` +
-    `<animate attributeName="opacity" values="0;1;1;0" keyTimes="0;.15;.8;1" dur="${dur}s" begin="${begin}s" repeatCount="indefinite"/></circle>`
+    `<animateMotion dur="${+dur.toFixed(2)}s" begin="${+begin.toFixed(2)}s" repeatCount="indefinite" path="${path}"/>` +
+    `<animate attributeName="opacity" values="0;1;1;0" keyTimes="0;.15;.8;1" dur="${+dur.toFixed(2)}s" begin="${+begin.toFixed(2)}s" repeatCount="indefinite"/></circle>`
   )
 }
 
@@ -155,8 +154,9 @@ function featureText(d, it, acc) {
   ].join('')
 }
 
-/** Small uppercase mono label used inside illustrations (decoration). */
-const tag = (d, s, o) => d.text(s, { font: 'mono-500', size: 10, tracking: 0.14, upper: true, fill: d.t.faint, ...o })
+/** Small uppercase mono label used inside illustrations (11px: the mono floor for half-width cards). */
+const TAG = { font: 'mono-500', size: 11, tracking: 0.14, upper: true }
+const tag = (d, s, o) => d.text(s, { ...TAG, fill: d.t.muted, ...o })
 
 // traffic: request dots stream in from the left, the edge absorbs them, one thin line reaches origin
 function trafficArt(d, acc) {
@@ -170,7 +170,7 @@ function trafficArt(d, acc) {
 
   // origin: a quiet node at the far right
   const pill = { h: 26, padX: 9, icon: 13, gap: 6 }
-  const ptw = d.measure('origin', { font: 'mono-500', size: 10, tracking: 0.14, upper: true })
+  const ptw = d.measure('origin', TAG)
   const pw = pill.padX * 2 + pill.icon + pill.gap + ptw
   const px = TW - FP - pw
   const barX = px - 74 // the edge sits a short hop before the origin
@@ -188,6 +188,7 @@ function trafficArt(d, acc) {
   const dots = []
   const start = -10
   const end = barX - 2
+  const travel = end - start // the same for every dot, so one literal keyframe serves all of them
   for (const y of lanes) {
     const n = 2 + (rand() > 0.45 ? 1 : 0)
     for (let i = 0; i < n; i++) {
@@ -197,15 +198,15 @@ function trafficArt(d, acc) {
       const r = 1.3 + rand() * 0.9
       const len = 8 + rand() * 12
       const x0 = 40 + rand() * (end - 60) // resting spot (no-motion fallback)
-      // one shared keyframe; each dot carries its own travel range so it can rest mid-lane without motion
+      // drawn at the lane start; the inline transform parks it mid-lane, the running animation overrides it
       dots.push(
-        `<g class="rq" style="--a:${r1(start - x0)}px;--b:${r1(end - x0)}px;animation-duration:${dur.toFixed(2)}s;animation-delay:${delay.toFixed(2)}s" opacity=".7">` +
-          `<rect x="${r1(x0 - len)}" y="${r1(y - r * 0.7)}" width="${r1(len)}" height="${r1(r * 1.4)}" rx="${r1(r * 0.7)}" fill="url(#${tail})"/>` +
-          `<circle cx="${r1(x0)}" cy="${y}" r="${r1(r)}" fill="${acc.hi}"/></g>`,
+        `<g class="rq" style="transform:translateX(${r1(x0 - start)}px);animation-duration:${dur.toFixed(2)}s;animation-delay:${delay.toFixed(2)}s" opacity=".7">` +
+          `<rect x="${r1(start - len)}" y="${r1(y - r * 0.7)}" width="${r1(len)}" height="${r1(r * 1.4)}" rx="${r1(r * 0.7)}" fill="url(#${tail})"/>` +
+          `<circle cx="${start}" cy="${y}" r="${r1(r)}" fill="${acc.hi}"/></g>`,
       )
     }
   }
-  d.css('@keyframes rq{0%{transform:translateX(var(--a))}90%{opacity:.95}100%{transform:translateX(var(--b));opacity:0}}.rq{animation:rq 2s linear infinite}')
+  d.css(`@keyframes rq{0%{transform:translateX(0)}90%{opacity:.95}100%{transform:translateX(${r1(travel)}px);opacity:0}}.rq{animation:rq 2s linear infinite}`)
   out.push(`<g mask="url(#${fadeM})">${dots.join('')}</g>`)
 
   // the edge: a glowing bar that absorbs everything
@@ -216,7 +217,7 @@ function trafficArt(d, acc) {
     `<g class="breathe">${d.glow({ cx: bx, cy, r: 56, color: acc.glow })}</g>`,
     `<rect x="${bx - 7}" y="${cy - barH / 2 - 6}" width="14" height="${barH + 12}" rx="7" fill="url(#${halo})"/>`,
     `<rect x="${barX}" y="${cy - barH / 2}" width="${barW}" height="${barH}" rx="${barW / 2}" fill="url(#${core})"/>`,
-    tag(d, 'edge', { x: bx, y: cy + barH / 2 + 15, anchor: 'middle' }),
+    tag(d, 'edge', { x: bx, y: cy + barH / 2 + 16, anchor: 'middle' }),
   )
 
   // one thin line through to the origin
@@ -227,12 +228,13 @@ function trafficArt(d, acc) {
   out.push(
     `<rect x="${r1(px + 0.5)}" y="${cy - pill.h / 2 + 0.5}" width="${r1(pw - 1)}" height="${pill.h - 1}" rx="8" fill="${t.inset}" stroke="${t.borderStrong}"/>`,
     d.icon('server', { x: px + pill.padX, y: cy - pill.icon / 2, size: pill.icon, color: t.fg2, stroke: 1.8 }),
-    tag(d, 'origin', { x: px + pill.padX + pill.icon + pill.gap, y: cy + 3.6, fill: t.fg2 }),
+    tag(d, 'origin', { x: px + pill.padX + pill.icon + pill.gap, y: r1(cy + d.metrics(TAG.font, TAG.size).capHeight / 2), fill: t.fg2 }),
   )
   return out.join('')
 }
 
-// security: three status rows feed a radar with a shield at its centre
+// security: three abstract event rows feed a radar with a shield at its centre
+// (no labels: the detail sentence under the lockup already names the steps)
 function securityArt(d, acc) {
   const t = d.t
   const dark = t.name === 'dark'
@@ -241,15 +243,14 @@ function securityArt(d, acc) {
   const cx = TW - FP - rad
   const out = []
 
-  // connectors + status rows (drawn first, the radar sits on top of their ends)
-  const rows = ['IP capture', 'Risk scoring', 'Owner email alert']
+  // connectors + event rows (drawn first, the radar sits on top of their ends)
+  const rows = [58, 70, 100] // skeleton line lengths
   const gap = 19
   const wire = d.linearGradient([[0, acc.c, 0.06], [1, acc.c, dark ? 0.6 : 0.5]], { x1: 120, y1: 0, x2: cx - rad, y2: 0, units: 'userSpaceOnUse' })
   const PER = 2.7
   d.css(`@keyframes lit{0%,100%{opacity:.35}8%,40%{opacity:1}}`)
-  rows.forEach((label, i) => {
+  rows.forEach((lw, i) => {
     const y = cy + (i - 1) * gap
-    const lw = d.measure(label, { font: 'body-500', size: 12 })
     const sx = FP + 14 + lw + 10
     const th = Math.PI - (i - 1) * 0.26
     const ex = cx + rad * Math.cos(th)
@@ -260,7 +261,7 @@ function securityArt(d, acc) {
       `<path d="${path}" fill="none" stroke="url(#${wire})"/>`,
       packet(path, { fill: acc.hi, dur: PER, begin: begin - PER }),
       `<circle cx="${FP + 3.5}" cy="${y}" r="3.2" fill="${acc.c}" style="animation:lit ${PER}s ease-in-out ${(begin - PER).toFixed(2)}s infinite"/>`,
-      d.text(label, { x: FP + 14, y: y + 4.3, font: 'body-500', size: 12, fill: t.fg2 }),
+      `<rect x="${FP + 14}" y="${y - 2}" width="${lw}" height="4" rx="2" fill="${t.fg2}" opacity="${dark ? 0.3 : 0.24}"/>`,
     )
   })
 
@@ -382,7 +383,7 @@ function payments(d, it, acc) {
   return head.svg + out.join('') + detail.svg
 }
 
-// seo: the site as the first result for the query. Rows sit on the same
+// seo: the site as the first result for the query (proof-a links to it). Rows sit on the same
 // lines as the payments tile next to it (motif centre, then detail baselines).
 function seo(d, it, acc) {
   const t = d.t
@@ -474,9 +475,11 @@ function ownership(d, it, acc) {
 
 // ── cards ────────────────────────────────────────────────────────────────────
 
+/** Screen readers announce "→" as "right arrow" and "·" as "dot": say them as words. */
+const spoken = (s) => s.replace(/\s*→\s*/g, ' to ').replace(/\s+·\s+/g, ', ')
 const altOf = (k) => {
   const it = item[k]
-  return `${it.value} — ${it.label}. ${it.detail.replace(/\.?$/, '.')}`
+  return spoken(`${it.value} — ${it.label}. ${it.detail.replace(/\.?$/, '.')}`)
 }
 
 function card(t, { title, desc, feat, left, right }) {
@@ -499,14 +502,14 @@ export default [
     width: W,
     height: H,
     alt: altA,
-    href: LINKS.arena.href,
+    href: LINKS.website.href, // the only address drawn on this card (the #1 result)
     render: (t) =>
       card(t, {
         title: 'Proof of work — traffic, payments, search',
         desc: altA,
         feat: ['traffic', 'violet', trafficArt],
         left: ['payments', 'cyan', payments],
-        right: ['seo', 'pink', seo],
+        right: ['seo', 'violet', seo],
       }),
   },
   {
@@ -520,8 +523,8 @@ export default [
         title: 'Proof of work — security, docs, ownership',
         desc: altB,
         feat: ['security', 'cyan', securityArt],
-        left: ['docs', 'green', docs],
-        right: ['ownership', 'violet', ownership],
+        left: ['docs', 'violet', docs],
+        right: ['ownership', 'cyan', ownership],
       }),
   },
 ]

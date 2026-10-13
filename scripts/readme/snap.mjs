@@ -3,13 +3,15 @@
 //   node snap.mjs <out-dir> <asset-name-prefix>...      e.g. node snap.mjs /tmp/out hero section-
 //
 // For each matching asset it writes <name>.png: the dark and light renditions
-// on GitHub's page colours, at native size and at phone width.
+// on GitHub's page colours, at the size the README shows them on desktop and
+// at phone width (the phone block is where full-width text gets small).
 // <name>.png is taken once entrance animations have settled (~3.5s);
 // <name>.mid.png is an early frame (0.4s) to check how things animate in.
 
 import { readdirSync, readFileSync, mkdirSync, writeFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 import { chromium } from 'playwright'
+import { displayWidth } from './readme.mjs'
 
 const ASSETS = new URL('../../assets/', import.meta.url).pathname
 const [outDir, ...prefixes] = process.argv.slice(2)
@@ -34,11 +36,12 @@ const browser = await chromium.launch({ executablePath: process.env.CHROMIUM || 
 const page = await browser.newPage({ deviceScaleFactor: 2, viewport: { width: 1000, height: 4000 } })
 for (const name of names) {
   const files = { dark: join(ASSETS, `${name}-dark.svg`), light: join(ASSETS, `${name}-light.svg`) }
-  const w = Number(readFileSync(files.dark, 'utf8').match(/width="([\d.]+)"/)[1])
+  const native = Number(readFileSync(files.dark, 'utf8').match(/width="([\d.]+)"/)[1])
+  const w = displayWidth(name) ?? native // README width on desktop
   const block = (theme, bg, fg) => `
     <div style="background:${bg};padding:20px 24px;color:${fg};font:12px ui-monospace,monospace">
-      <div style="opacity:.6;margin-bottom:8px">${name} · ${theme} · native ${w}px</div>
-      <img src="file://${files[theme]}" style="display:block;max-width:100%">
+      <div style="opacity:.6;margin-bottom:8px">${name} · ${theme} · desktop ${w}px${w !== native ? ` (file ${native})` : ''}</div>
+      <img src="file://${files[theme]}" style="display:block;width:${w}px;max-width:100%">
       <div style="opacity:.6;margin:14px 0 8px">phone (${PHONE}px column)</div>
       <div style="width:${PHONE}px"><img src="file://${files[theme]}" style="display:block;max-width:100%"></div>
     </div>`

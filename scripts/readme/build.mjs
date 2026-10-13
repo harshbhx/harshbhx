@@ -7,8 +7,8 @@
 
 import { readdirSync, writeFileSync, mkdirSync, existsSync } from 'node:fs'
 import { THEMES } from './lib/theme.mjs'
-import { readme, pairSide } from './readme.mjs'
-import { padForPair } from './lib/svg.mjs'
+import { readme, pairSide, isFull } from './readme.mjs'
+import { padForPair, padForFull } from './lib/svg.mjs'
 
 const COMPONENTS = new URL('./components/', import.meta.url)
 const ASSETS = new URL('../../assets/', import.meta.url)
@@ -40,8 +40,10 @@ for (const file of files) {
         if (!m || Number(m[1]) !== entry.width || Number(m[2]) !== entry.height) {
           throw new Error(`size mismatch: entry says ${entry.width}×${entry.height}, svg is ${m && `${m[1]}×${m[2]}`}`)
         }
+        // transparent side margins so every card edge lines up in the README (see readme.mjs)
         const side = pairSide(entry.name)
-        writeFileSync(new URL(`${entry.name}-${theme}.svg`, ASSETS), side ? padForPair(svg, side) : svg)
+        const out = side ? padForPair(svg, side) : isFull(entry.name) ? padForFull(svg) : svg
+        writeFileSync(new URL(`${entry.name}-${theme}.svg`, ASSETS), out)
         console.log(`✓ ${entry.name}-${theme}.svg  ${(svg.length / 1024).toFixed(1)} KB`)
       } catch (e) {
         console.error(`✗ ${entry.name} (${theme}): ${e.stack || e}`)

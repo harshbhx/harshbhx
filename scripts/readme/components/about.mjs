@@ -1,9 +1,11 @@
-// About pair: a terminal window ("whoami") and a "Right now" status card.
-// Both share the same window header band so they read as one matched pair.
+// About pair: a terminal window ("whoami" + about.txt + focus.txt) and a
+// "Right now" status card. Both share the same window header band so they read
+// as one matched pair. The terminal carries the bio (PROFILE.summary) so it does
+// not repeat the hero or the status card next to it.
 
 import { createDoc, r1 } from '../lib/svg.mjs'
 import { LAYOUT } from '../lib/theme.mjs'
-import { PROFILE, LINKS } from '../content.mjs'
+import { PROFILE, LINKS, WORKING_STYLE } from '../content.mjs'
 
 const W = LAYOUT.half
 const H = 336
@@ -15,7 +17,7 @@ const HEAD_BASE = 26 // header text baseline (both cards)
 const lower = (s) => s.toLowerCase()
 const [buildName, buildWhatRaw] = PROFILE.now.building.split(/\s+—\s+/)
 const buildWhat = buildWhatRaw ? buildWhatRaw.charAt(0).toUpperCase() + buildWhatRaw.slice(1) : ''
-const nextShort = PROFILE.now.next.replace(/^Expanding DualMind into\s+/i, '')
+const replies = WORKING_STYLE.find((w) => /24 hours/i.test(w)) || WORKING_STYLE[0]
 const host = lower(PROFILE.company.split(' ')[0])
 const user = lower(PROFILE.name.split(' ')[0])
 
@@ -42,7 +44,7 @@ function renderTerminal(t) {
   const c = t.code
   const SIZE = 12.5
   const ADV = d.measure('a', { font: 'mono-400', size: SIZE }) // monospaced advance
-  const LH = 22
+  const LH = 20
   const GAP = 12
   const IND = PAD + ADV * 2 // command / output column (prompt hangs in the gutter)
 
@@ -99,11 +101,10 @@ function renderTerminal(t) {
   }
 
   // output line (rich runs); returns nothing, advances y
-  const output = (runs, { lead } = {}) => {
+  const output = (runs) => {
     const base = y
     let x = IND
     const parts = []
-    if (lead) parts.push(lead(base))
     for (const [str, fill, font = 'mono-400'] of runs) {
       parts.push(d.text(str, { x, y: base, font, size: SIZE, fill }))
       x += d.measure(str, { font, size: SIZE })
@@ -121,44 +122,30 @@ function renderTerminal(t) {
   d.css('@keyframes type{from{opacity:0}to{opacity:1}}.k{animation:type 1ms linear both}')
   d.css('@keyframes out{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}.out{animation:out .4s cubic-bezier(.2,.7,.2,1) both}.pr{animation:fade-in .25s ease both}')
 
-  // 1 · whoami
+  // 1 · whoami — just the name; role and company are in the hero right above
   command([['whoami', c.command]])
-  output([
-    [lower(PROFILE.name), t.fg, 'mono-500'],
-    [' — ', c.punct],
-    [lower(PROFILE.companyRole), t.fg2],
-    [' @ ', c.punct],
-    [lower(PROFILE.company), c.keyword, 'mono-500'],
-  ])
-  output(lower(PROFILE.role).split(/\s*·\s*/).flatMap((r, i) => (i ? [[' · ', c.comment], [r, t.fg2]] : [[r, t.fg2]])))
+  output([[lower(PROFILE.name), t.fg, 'mono-500']])
   gap()
 
-  // 2 · focus
+  // 2 · the bio (PROFILE.summary): first sentence on its own line, company highlighted
+  command([['cat', c.command], [' about.txt', c.string]])
+  const aboutText = PROFILE.summary.replace(/^(.*?\.)\s+/, '$1\n')
+  const aboutRuns = aboutText.split(PROFILE.company).flatMap((s, i) => (i ? [{ text: PROFILE.company, font: 'mono-500', fill: c.keyword }, s] : [s]))
+  for (const ln of d.wrap(aboutRuns, { font: 'mono-400', size: SIZE, width: W - PAD - IND, fill: t.fg2 })) {
+    output(ln.runs.map((r) => [r.text, r.fill, r.font]))
+  }
+  gap()
+
+  // 3 · focus
   command([['cat', c.command], [' focus.txt', c.string]])
   const [f0, ...fRest] = PROFILE.focus.map(lower)
   output([[f0, t.fg2]])
   output(fRest.flatMap((f, i) => (i ? [[' · ', c.comment], [f, t.fg2]] : [[f, t.fg2]])))
   gap()
 
-  // 3 · status
-  command([['status', c.command], [' --now', c.keyword]])
-  const keyCol = IND + ADV * 12
-  output([], {
-    lead: (base) =>
-      `<circle class="pulse" cx="${r1(IND + ADV / 2)}" cy="${r1(base - 4)}" r="3" fill="${t.green}"/><circle cx="${r1(IND + ADV / 2)}" cy="${r1(base - 4)}" r="3" fill="${t.green}"/>` +
-      d.text('building', { x: IND + ADV * 2, y: base, font: 'mono-400', size: SIZE, fill: c.punct }) +
-      d.text(lower(buildName), { x: keyCol, y: base, font: 'mono-500', size: SIZE, fill: t.fg }),
-  })
-  output([], {
-    lead: (base) =>
-      d.text('→', { x: IND, y: base, font: 'mono-500', size: SIZE, fill: c.string }) +
-      d.text('next', { x: IND + ADV * 2, y: base, font: 'mono-400', size: SIZE, fill: c.punct }) +
-      d.text(lower(nextShort), { x: keyCol, y: base, font: 'mono-400', size: SIZE, fill: t.fg2 }),
-  })
-  gap()
-
   // 4 · idle prompt with a blinking caret
   const base = y
+  if (caretY(base) + caretH > H - 18) throw new Error(`about-terminal: script overflows the card (caret ends at ${r1(caretY(base) + caretH)} of ${H}); shorten PROFILE.summary`)
   d.add(
     `<g class="pr" style="animation-delay:${clock.toFixed(2)}s">${d.text('›', { x: PAD - 0.5, y: base + 0.5, font: 'mono-700', size: 14, fill: c.prompt })}` +
       `<rect class="blink" x="${r1(IND)}" y="${r1(caretY(base))}" width="${r1(ADV - 0.5)}" height="${caretH}" rx="1" fill="${t.violet}" opacity=".85"/></g>`,
@@ -166,10 +153,7 @@ function renderTerminal(t) {
   return d.end()
 }
 
-const terminalAlt =
-  `Terminal window. whoami: ${PROFILE.name} — ${PROFILE.companyRole} @ ${PROFILE.company}, ${PROFILE.role}. ` +
-  `Focus: ${PROFILE.focus.join(', ')}. ` +
-  `Status now: building ${buildName}; next: ${nextShort}.`
+const terminalAlt = `Terminal window. whoami: ${PROFILE.name}. about.txt: ${PROFILE.summary} focus.txt: ${PROFILE.focus.join(', ')}.`
 
 // ── about-now ────────────────────────────────────────────────────────────────
 
@@ -271,18 +255,20 @@ function renderNow(t) {
     row(cy - 6 - top, tile('briefcase', top) + label('Open to', top) + parts.join(''))
   }
   divider()
-  // Based in
+  // Replies — goes with the email in the header (location + timezone already sit in the hero kicker)
   {
     const top = y
-    const p = d.paragraph([{ text: PROFILE.location, font: 'body-500', fill: t.fg }, { text: ` · ${PROFILE.timezone}`, fill: t.muted }], { x: TX, y: top + 31, width: TW, font: 'body-400', size: 13.5 })
-    row(35, tile('map-pin', top) + label('Based in', top) + p.svg)
+    const m = replies.match(/^Replies\s+within\s+(.+)$/i)
+    const runs = m ? ['Within ', { text: m[1], font: 'body-600', fill: t.fg }] : [replies]
+    const p = d.paragraph(runs, { x: TX, y: top + 31, width: TW, font: 'body-400', size: 13.5, fill: t.fg2 })
+    row(35, tile('message-square-reply', top) + label(m ? 'Replies' : 'How I work', top) + p.svg)
   }
   return d.end()
 }
 
 const nowAlt =
   `Right now. Building: ${PROFILE.now.building}. Next: ${PROFILE.now.next}. ` +
-  `Open to: ${PROFILE.openTo.join(', ')}. Based in: ${PROFILE.location} · ${PROFILE.timezone}. Email: ${PROFILE.email}.`
+  `Open to: ${PROFILE.openTo.join(', ')}. ${replies}. Email: ${PROFILE.email}.`
 
 export default [
   { name: 'about-terminal', width: W, height: H, alt: terminalAlt, href: LINKS.github.href, render: renderTerminal },

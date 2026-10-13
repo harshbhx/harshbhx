@@ -62,7 +62,7 @@ function header(d, { icon, label, count }) {
   return [
     d.icon(icon, { x: PAD, y: BAND / 2 - 7.5, size: 15, color: t.violet, stroke: 1.9 }),
     d.kicker(label, { x: PAD + 24, y: BAND_BASE - 0.5, fill: t.fg2 }),
-    d.text(count, { x: W - PAD, y: BAND_BASE - 0.5, font: 'mono-500', size: 11, tracking: 0.08, fill: t.faint, anchor: 'end' }),
+    d.text(count, { x: W - PAD, y: BAND_BASE - 0.5, font: 'mono-500', size: 11, tracking: 0.08, fill: t.muted, anchor: 'end' }),
   ].join('')
 }
 
@@ -81,9 +81,16 @@ function iconTile(d, name, { x, y, size, color, accent = false, iconSize, rx }) 
 }
 
 /** '#rrggbb' + alpha → 'rgba(…)' so accent-tinted fills follow the theme tokens. */
-const alpha = (hex, a) => {
+const rgb = (hex) => {
   const n = parseInt(hex.slice(1), 16)
-  return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${a})`
+  return [(n >> 16) & 255, (n >> 8) & 255, n & 255]
+}
+const alpha = (hex, a) => `rgba(${rgb(hex).join(',')},${a})`
+
+/** Opaque '#rrggbb' of `hex` laid over `base` at alpha `a` (independent of what is drawn beneath). */
+const mix = (hex, base, a) => {
+  const [c, b] = [rgb(hex), rgb(base)]
+  return `#${c.map((v, i) => Math.round(v * a + b[i] * (1 - a)).toString(16).padStart(2, '0')).join('')}`
 }
 
 const stagger = (delay, inner, cls = 'fade-up') => `<g class="${cls}" style="animation-delay:${delay.toFixed(2)}s">${inner}</g>`
@@ -222,13 +229,15 @@ function weekStrip(d, time, { xr, y, w, accent, delay }) {
   const h = 5
   const cw = (w - gap * (MAX_WEEKS - 1)) / MAX_WEEKS
   const x0 = xr - w
-  const cell = (i, fill, op = 1) =>
-    `<rect x="${r1(x0 + i * (cw + gap))}" y="${r1(y)}" width="${r1(cw)}" height="${h}" rx="1.5" fill="${fill}"${op < 1 ? ` opacity="${op}"` : ''}/>`
+  const cell = (i, fill) => `<rect x="${r1(x0 + i * (cw + gap))}" y="${r1(y)}" width="${r1(cw)}" height="${h}" rx="1.5" fill="${fill}"/>`
   const track = Array.from({ length: MAX_WEEKS }, (_, i) => cell(i, t.border)).join('')
+  // Range cells are an opaque tint, so they do not pick up the track beneath them.
+  // In light the tint is laid over the white surface: over the lavender track,
+  // the dark light-theme cyan turns a dull steel grey instead of a light teal.
+  const range = t.name === 'dark' ? mix(accent, t.border, 0.42) : mix(accent, t.surfaceTop, 0.4)
   const fills = []
   for (let i = 0; i < hi; i++) {
-    const op = i < lo ? 1 : t.name === 'dark' ? 0.42 : 0.34
-    fills.push(stagger(delay + 0.1 + i * 0.05, cell(i, accent, op), 'cell'))
+    fills.push(stagger(delay + 0.1 + i * 0.05, cell(i, i < lo ? accent : range), 'cell'))
   }
   return stagger(delay, track, 'fade-in') + fills.join('')
 }

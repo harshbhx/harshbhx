@@ -15,7 +15,7 @@
 
 import { createDoc, r1 } from '../lib/svg.mjs'
 import { LAYOUT } from '../lib/theme.mjs'
-import { PROJECTS, LINKS, PROOF } from '../content.mjs'
+import { PROJECTS, LINKS } from '../content.mjs'
 
 const W = LAYOUT.half // 415
 const H = 460
@@ -318,13 +318,13 @@ function renderDualMind(t) {
   K.frame({ glow: { cx: SX, cy: focusCy, r: 230, color: t.glowViolet }, grid: { cx: SX, cy: focusCy, r: 280 } })
   K.header({ title: p.diagram.title, pill: K.pill(LINKS.docs.value, { icon: 'book-open', trail: 'arrow-up-right' }) })
 
-  const traffic = PROOF.find((x) => x.key === 'traffic').value // "5,000+"
   const kick = d.metrics('mono-500', 11).capHeight / 2
   const layers = [
-    { y: yEdge, label: 'Edge', node: { logo: 'cloudflare', label: 'Cloudflare CDN', sub: `${traffic} req spike absorbed` } },
+    // DECISIONS[0]: "Spikes land on Cloudflare, not the origin" (PROOF does not say which site took the 5,000+ spike)
+    { y: yEdge, label: 'Edge', node: { logo: 'cloudflare', label: 'Cloudflare CDN', sub: 'absorbs traffic spikes' } },
     { y: yApi, label: 'API', node: { logo: 'dotnet', label: '.NET Web API', sub: 'stateless · scales out' } },
     { y: yGw, label: 'Gateway', node: { logo: 'cloudflare', label: 'Cloudflare AI Gateway', sub: 'rate limits · cache · logs' } },
-    { y: yData, label: 'Data', node: { logo: 'supabase', label: 'Supabase · PostgreSQL', sub: 'live leaderboard' } },
+    { y: yData, label: 'Data', node: { logo: 'supabase', label: 'Supabase · PostgreSQL', sub: 'leaderboard ranking' } },
   ]
 
   const zones = []
@@ -477,7 +477,7 @@ function renderMealMind(t) {
   const mid = (a, b) => (a + b) / 2 + 4
   const labels = [
     lab('pays', { x: W / 2, y: y1 + NH / 2 - 7, anchor: 'middle' }),
-    lab('webhook', { x: rc - 9, y: mid(y1 + NH, y2), anchor: 'end' }),
+    lab('webhook', { x: rc + 9, y: mid(y1 + NH, y2) }),
     lab('one write', { x: rc + 9, y: mid(y2 + NH, hubCy) }),
     lab('live', { x: lc + 9, y: mid(y1 + NH, zone.y), fill: t.cyan }),
     lab('live', { x: W / 2 + 9, y: mid(zone.y + ZONE_H, busY), fill: t.cyan }),
@@ -676,15 +676,14 @@ function renderAgent(t) {
 
 // ── alt text ───────────────────────────────────────────────────────────────
 
-const traffic = PROOF.find((x) => x.key === 'traffic')
 const ALT = {
   dualmind:
     `DualMind Arena architecture — ${P.dualmind.diagram.title}, top to bottom. ` +
-    `A user prompt enters the Edge layer at Cloudflare CDN, which absorbed a traffic spike of ${traffic.value} requests; ` +
+    'A user prompt enters the Edge layer at Cloudflare CDN, which absorbs traffic spikes before they reach the origin; ' +
     'then the API layer, a stateless .NET Web API that scales out; ' +
     'then the Gateway layer, Cloudflare AI Gateway, which handles rate limits, caching and per-request logs. ' +
-    'The gateway fans the prompt out to Model A and Model B, head to head (versus), in a blind Models layer where both identities are hidden. ' +
-    'Both answers go to a community vote, and the Data layer — Supabase (PostgreSQL) — stores the result and ranks the live leaderboard. ' +
+    'The gateway fans the prompt out to Model A and Model B, head to head, in a blind Models layer where both identities are hidden. ' +
+    'Both answers go to a community vote, and the Data layer — Supabase (PostgreSQL) — stores the result and ranks the leaderboard. ' +
     `Links to the documentation at ${LINKS.docs.value}.`,
   mealmind:
     `MealMind architecture — ${P.mealmind.diagram.title}. ` +

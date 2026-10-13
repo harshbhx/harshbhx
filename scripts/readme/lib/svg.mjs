@@ -345,17 +345,25 @@ export function createDoc({ width, height, theme, title, desc = '' }) {
 
     // ───────────────────────── icons ─────────────────────────
 
-    /** Lucide stroke icon with its top-left at (x, y). */
+    /**
+     * Lucide stroke icon with its top-left at (x, y). With `cls`/`style` the
+     * icon is wrapped in its own <g>, so a CSS animation's transform does not
+     * replace the translate/scale that positions it.
+     */
     icon(name, { x = 0, y = 0, size = 16, color = t.fg2, stroke = 2, opacity, cls, style } = {}) {
       const s = size / 24
-      return `<g${attrs({ class: cls, style, opacity })} transform="translate(${r1(x)} ${r1(y)}) scale(${r4(s)})" fill="none" stroke="${color}" stroke-width="${stroke}" stroke-linecap="round" stroke-linejoin="round">${lucide(name)}</g>`
+      const g = `<g${attrs({ opacity })} transform="translate(${r1(x)} ${r1(y)}) scale(${r4(s)})" fill="none" stroke="${color}" stroke-width="${stroke}" stroke-linecap="round" stroke-linejoin="round">${lucide(name)}</g>`
+      return cls || style ? `<g${attrs({ class: cls, style })}>${g}</g>` : g
     },
 
     /**
      * Brand logo with its top-left at (x, y). Uses the brand colour unless it
      * would not stand out from `on` (the colour behind it), then falls back to `fallback`.
+     * A slug of the form `lucide:<name>` draws that generic Lucide icon instead
+     * (in `color`, default violet), for links no brand mark fits, e.g. a website.
      */
-    logo(slug, { x = 0, y = 0, size = 22, color, on = t.logoTile, fallback = t.fg, minContrast = 2.2 } = {}) {
+    logo(slug, { x = 0, y = 0, size = 22, color, on = t.logoTile, fallback = t.fg, minContrast = 2.2, stroke = 2 } = {}) {
+      if (slug.startsWith('lucide:')) return d.icon(slug.slice(7), { x, y, size, color: color || t.violet, stroke })
       const b = brand(slug)
       let fill = color || b.hex
       if (!color && on && contrast(b.hex, on) < minContrast) fill = fallback
@@ -431,14 +439,48 @@ function tokenize(content, base) {
 }
 
 /**
- * Add a transparent gutter on the inner side of a half-width image so two
- * images placed side by side in the README get a visible gap (inline images
- * are otherwise separated only by one space). side: 'left' | 'right'.
+ * Widen a rendered SVG by a transparent margin of `gutter` user units on the
+ * left and on the right (the content keeps its coordinates). Throws when the
+ * root tag is not the one createDoc().end() writes, so a format change can
+ * never silently drop the margin.
+ */
+export function padSides(svg, gutter) {
+  let hit = false
+  const out = svg.replace(/^<svg([^>]*?) width="([\d.]+)" height="([\d.]+)" viewBox="0 0 ([\d.]+) ([\d.]+)"/, (_, pre, w, h, vw, vh) => {
+    hit = true
+    return `<svg${pre} width="${Number(w) + 2 * gutter}" height="${h}" viewBox="${-gutter} 0 ${Number(vw) + 2 * gutter} ${vh}"`
+  })
+  if (!hit) throw new Error('padSides: unexpected <svg> header (expected createDoc().end() output)')
+  return out
+}
+
+/**
+ * Half-width image → 8 transparent units on each side (415 → 431). Two halves
+ * side by side get a 2 × 8 gutter between their cards; stacked on a phone,
+ * every half sits centred in the column with the same edges.
+ * `side` is accepted for compatibility and no longer changes anything.
  */
 export function padForPair(svg, side, gutter = PAIR_GUTTER) {
-  return svg.replace(/^<svg([^>]*?) width="([\d.]+)" height="([\d.]+)" viewBox="0 0 ([\d.]+) ([\d.]+)"/, (_, pre, w, h, vw, vh) => {
-    const W = Number(w) + gutter
-    return `<svg${pre} width="${W}" height="${h}" viewBox="${side === 'right' ? -gutter : 0} 0 ${Number(vw) + gutter} ${vh}"`
-  })
+  return padSides(svg, gutter)
 }
 export const PAIR_GUTTER = 8
+
+/**
+ * Full-width image → 16 transparent units on each side (850 → 882): the same
+ * share of the width as the halves' margin (16/882 ≈ 8/431), so on a phone,
+ * where every image is drawn at the column width, all card edges line up.
+ */
+export function padForFull(svg, gutter = FULL_GUTTER) {
+  return padSides(svg, gutter)
+}
+export const FULL_GUTTER = 16
+
+/**
+ * Opt-in phone layer for full-width components (they render at ~0.41× on a
+ * phone). `d.css(PHONE_CSS)`, then put desktop-only content in
+ * `<g class="dt">` and the phone-sized replacement in `<g class="ph">`. An
+ * SVG's own media queries see the size the image is drawn at, so the phone
+ * layer shows whenever the image is narrower than PHONE_MAX px.
+ */
+export const PHONE_MAX = 600
+export const PHONE_CSS = `.ph{display:none}@media (max-width:${PHONE_MAX}px){.dt{display:none}.ph{display:inline}}`

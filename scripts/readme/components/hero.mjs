@@ -1,7 +1,12 @@
 // Hero: name, role, typed tagline and status pills on the left; a small live
 // "system" (hub + six services on an orbit, data packets flowing) on the right.
+//
+// Full-width images render at ~0.41× on phones, so the hero carries a second,
+// phone-sized layer (`.ph`, see PHONE_CSS): name, role, tagline and pills set
+// large enough to read in the 358px column, without the kicker and the
+// illustration (the kicker's handle, location and timezone stay in the alt text).
 
-import { createDoc, r1 } from '../lib/svg.mjs'
+import { createDoc, r1, PHONE_CSS } from '../lib/svg.mjs'
 import { LAYOUT } from '../lib/theme.mjs'
 import { PROFILE, LINKS } from '../content.mjs'
 
@@ -19,13 +24,24 @@ const rgba = (hex, a) => {
 
 const pills = {
   open: 'Open to work',
-  company: `${PROFILE.companyRole} @ ${PROFILE.company} ↗`,
+  company: `${PROFILE.companyRole} @ ${PROFILE.company}`,
 }
 
 const ALT = `${PROFILE.name} (@${PROFILE.handle}) — ${PROFILE.role}. ${PROFILE.companyRole} @ ${PROFILE.company}. “${PROFILE.tagline}” Open to work · ${PROFILE.location} · ${PROFILE.timezone}.`
 
+const NAME_FONT = 'display-700'
+const NAME_TRACK = -0.02
+
+// Pill specs at the size they are drawn (desktop) or before a 2× scale (phone).
+const PILLS_DT = { h: 32, size: 13, font: 'body-600', padX: 13, gap: 8, iconSize: 15, space: 10 }
+const PILLS_PH = { h: 28, size: 13, font: 'body-600', padX: 11, gap: 7, iconSize: 14, space: 8, scale: 2 }
+
 function render(t) {
   const d = createDoc({ width: W, height: H, theme: t, title: `${PROFILE.name} — ${PROFILE.role}`, desc: ALT })
+  d.css(PHONE_CSS)
+  // typed tagline: each character switches on at its moment (CSS only, so
+  // prefers-reduced-motion shows the whole line at once)
+  d.css('@keyframes type{from{opacity:0}to{opacity:1}}.k{animation:type 1ms linear both}')
   const dark = t.name === 'dark'
 
   // ───────────────────────── background ─────────────────────────
@@ -46,150 +62,201 @@ function render(t) {
     `<g clip-path="url(#${clip})">`,
     `<g class="drift-a">${d.glow({ cx: 770, cy: -10, r: 300, color: t.glowViolet })}</g>`,
     `<g class="drift-b">${d.glow({ cx: 90, cy: H + 30, r: 280, color: t.glowCyan })}</g>`,
-    d.pattern({ x: 0, y: 0, w: W, h: H, kind: 'dots', step: 18, fade: { cx, cy, r: 330 } }),
+    // the dot grid sits behind the illustration; the phone layer has text there
+    `<g class="dt">${d.pattern({ x: 0, y: 0, w: W, h: H, kind: 'dots', step: 18, fade: { cx, cy, r: 330 } })}</g>`,
     `</g>`,
     `<path d="M ${R} 1 H ${W - R}" stroke="url(#${sheen})" stroke-width="1"/>`,
     `<path d="M 420 1 H ${W - R - 6}" stroke="url(#${leak})" stroke-width="1.2"/>`,
     `<rect x=".5" y=".5" width="${W - 1}" height="${H - 1}" rx="${R}" fill="none" stroke="${t.border}"/>`,
   )
 
-  // ───────────────────────── left column ─────────────────────────
-  const nameSize = 60
-  const nameTrack = -0.02
-  // vertical rhythm (gaps measured baseline → next cap top)
-  const kickerBase = 77
-  const nameBase = kickerBase + 22 + 42
-  const roleBase = nameBase + 22 + 16
-  const tagBase = roleBase + 28 + 13
-  const pillTop = tagBase + 28
-
-  // kicker
-  const dash = d.linearGradient(t.gradAccent)
-  d.add(
-    `<g class="fade-up">`,
-    `<rect x="${X0}" y="${kickerBase - 5}" width="18" height="2" rx="1" fill="url(#${dash})"/>`,
-    (() => {
-      const o = { font: 'mono-500', size: 12, tracking: 0.14, upper: true }
-      const a = `@${PROFILE.handle}`
-      const b = ` · ${PROFILE.location} · ${PROFILE.timezone}`
-      const x = X0 + 28
-      return d.text(a, { ...o, x, y: kickerBase, fill: t.violet }) + d.text(b, { ...o, x: x + d.measure(a, o) + 0.14 * 12, y: kickerBase, fill: t.muted })
-    })(),
-    `</g>`,
-  )
-
-  // name: gradient text with a slow sheen passing over it
+  // ───────────────────────── desktop layer ─────────────────────────
+  d.add(`<g class="dt">`)
   {
-    const font = 'display-700'
-    const w = d.measure(PROFILE.name, { font, size: nameSize, tracking: nameTrack })
-    const m = d.metrics(font, nameSize)
-    const top = nameBase - m.ascender - 2
-    const hgt = m.ascender + m.descender + 4
-    const grad = d.linearGradient(t.gradText, { x1: X0, y1: 0, x2: X0 + w, y2: 0, units: 'userSpaceOnUse' })
-    const mask = d.uid('m')
-    d.def(`<mask id="${mask}" maskUnits="userSpaceOnUse" x="${X0 - 6}" y="${r1(top)}" width="${r1(w + 12)}" height="${r1(hgt)}">${d.text(PROFILE.name, { x: X0, y: nameBase, font, size: nameSize, tracking: nameTrack, fill: '#fff' })}</mask>`)
-    const shine = d.linearGradient([[0, '#fff', 0], [0.5, '#fff', dark ? 0.55 : 0.7], [1, '#fff', 0]])
-    const travel = Math.round(w + 200)
-    d.css(`@keyframes shine{0%{transform:translateX(0)}16%,100%{transform:translateX(${travel}px)}}.shine{animation:shine 9s cubic-bezier(.45,0,.2,1) 2.4s infinite}`)
+    const nameSize = 60
+    // vertical rhythm (gaps measured baseline → next cap top)
+    const kickerBase = 77
+    const nameBase = kickerBase + 22 + 42
+    const roleBase = nameBase + 22 + 16
+    const tagBase = roleBase + 28 + 13
+    const pillTop = tagBase + 28
+
+    // kicker
+    const dash = d.linearGradient(t.gradAccent)
+    const o = { font: 'mono-500', size: 12, tracking: 0.14, upper: true }
+    const a = `@${PROFILE.handle}`
+    const b = ` · ${PROFILE.location} · ${PROFILE.timezone}`
+    const kx = X0 + 28
     d.add(
-      `<g class="fade-up" style="animation-delay:.1s"><g mask="url(#${mask})">`,
-      `<rect x="${X0 - 6}" y="${r1(top)}" width="${r1(w + 12)}" height="${r1(hgt)}" fill="url(#${grad})"/>`,
-      `<g class="shine"><rect x="${X0 - 150}" y="${r1(top)}" width="90" height="${r1(hgt)}" fill="url(#${shine})" transform="skewX(-18)"/></g>`,
-      `</g></g>`,
+      `<g class="fade-up">`,
+      `<rect x="${X0}" y="${kickerBase - 5}" width="18" height="2" rx="1" fill="url(#${dash})"/>`,
+      d.text(a, { ...o, x: kx, y: kickerBase, fill: t.violet }),
+      d.text(b, { ...o, x: kx + d.measure(a, o) + 0.14 * 12, y: kickerBase, fill: t.muted }),
+      `</g>`,
     )
-  }
 
-  // role line
-  {
-    const size = 22
-    const font = 'body-500'
-    const [a, b] = PROFILE.role.split(' · ')
-    let x = X0
-    const parts = [
-      [a, t.fg],
-      [' · ', t.muted],
-      [b, t.fg],
-    ]
-    const out = parts.map(([s, fill]) => {
-      const svg = d.text(s, { x, y: roleBase, font, size, fill })
-      x += d.measure(s, { font, size })
-      return svg
-    })
-    d.add(`<g class="fade-up" style="animation-delay:.22s">${out.join('')}</g>`)
-  }
-
-  // tagline, typed out
-  {
-    const size = 18
-    const font = 'mono-500'
-    const cw = d.measure('M', { font, size })
-    const tx = X0 + cw * 2
-    const str = PROFILE.tagline
-    // colour runs: everything fg2, the final "Live." in green
-    const liveAt = str.lastIndexOf('Live.')
-    const runs = [
-      [str.slice(0, liveAt), t.fg2],
-      [str.slice(liveAt), t.green],
-    ]
-    let x = tx
-    const glyphs = runs.map(([s, fill]) => {
-      const svg = d.text(s, { x, y: tagBase, font, size, fill })
-      x += d.measure(s, { font, size })
-      return svg
-    })
-    const full = x - tx
-
-    // per-character timeline with short pauses after each full stop
-    const start = 0.55
-    const step = 0.026
-    const times = [0]
-    const widths = [0]
-    let tm = start
-    for (let i = 1; i <= str.length; i++) {
-      times.push(tm)
-      widths.push(i * cw)
-      tm += str[i - 1] === '.' ? 0.18 : step
-    }
-    const end = times[times.length - 1]
-    const kt = times.map((v) => (v / end).toFixed(4)).join(';')
-    const clipId = d.uid('ty')
-    d.def(
-      `<clipPath id="${clipId}"><rect x="${r1(tx - 1)}" y="${tagBase - 20}" width="${r1(full + 2)}" height="28">` +
-        `<animate attributeName="width" dur="${end.toFixed(2)}s" fill="freeze" calcMode="discrete" keyTimes="${kt}" values="${widths.map((w) => r1(w + (w ? 1 : 0))).join(';')}"/>` +
-        `</rect></clipPath>`,
-    )
-    const caretX = (w) => r1(tx + w + 2)
     d.add(
-      `<g class="fade-in" style="animation-delay:.45s">`,
-      d.text('›', { x: X0, y: tagBase, font: 'mono-700', size, fill: t.violet }),
-      `<g clip-path="url(#${clipId})">${glyphs.join('')}</g>`,
-      `<g class="blink" style="animation-delay:${end.toFixed(2)}s"><rect x="${caretX(full)}" y="${tagBase - 15}" width="2" height="19" rx="1" fill="${t.violet}">`,
-      `<animate attributeName="x" dur="${end.toFixed(2)}s" fill="freeze" calcMode="discrete" keyTimes="${kt}" values="${widths.map(caretX).join(';')}"/>`,
-      `</rect></g>`,
+      nameBlock(d, { x: X0, base: nameBase, size: nameSize, key: 'd', dark }),
+      roleLine(d, { x: X0, base: roleBase, size: 22 }),
+      typedLine(d, { x: X0, base: tagBase, size: 18, key: 'd' }),
+      statusPills(d, { x: X0, y: pillTop, spec: PILLS_DT, dark }).svg,
+    )
+
+    drawSystem(d, { cx, cy, orbit, dark })
+  }
+  d.add(`</g>`)
+
+  // ───────────────────────── phone layer ─────────────────────────
+  // Shown when the image is drawn < 600px wide (~0.41× on a phone): every line
+  // is set ≥ 26 units (≈ 10.5 CSS px there); one left column, no illustration.
+  {
+    const size = { name: 88, role: 34, tag: 26 }
+    const gap = { role: 26, tag: 30, pills: 32 } // baseline → next cap top
+    const cap = (font, s) => d.metrics(font, s).capHeight
+    const pillsW = statusPills(d, { x: 0, y: 0, spec: PILLS_PH, dark, measureOnly: true }).w
+    const nameW = d.measure(PROFILE.name, { font: NAME_FONT, size: size.name, tracking: NAME_TRACK })
+    const tagW = (PROFILE.tagline.length + 2) * d.measure('M', { font: 'mono-500', size: size.tag })
+    // centre the widest line, so both side margins match it
+    const x = Math.max(X0, Math.round((W - Math.max(pillsW, nameW, tagW)) / 2))
+    const content =
+      cap(NAME_FONT, size.name) + gap.role + cap('body-500', size.role) + gap.tag + cap('mono-500', size.tag) + gap.pills + PILLS_PH.h * PILLS_PH.scale
+    const nameBase = Math.round((H - content) / 2 + cap(NAME_FONT, size.name))
+    const roleBase = Math.round(nameBase + gap.role + cap('body-500', size.role))
+    const tagBase = Math.round(roleBase + gap.tag + cap('mono-500', size.tag))
+    const pillTop = Math.round(tagBase + gap.pills)
+    d.add(
+      `<g class="ph">`,
+      nameBlock(d, { x, base: nameBase, size: size.name, key: 'p', dark }),
+      roleLine(d, { x, base: roleBase, size: size.role }),
+      typedLine(d, { x, base: tagBase, size: size.tag, key: 'p' }),
+      statusPills(d, { x, y: pillTop, spec: PILLS_PH, dark }).svg,
       `</g>`,
     )
   }
 
-  // pills
-  {
-    const h = 32
-    const common = { h, size: 13, font: 'body-600', padX: 13, gap: 8 }
-    const items = [
-      (p) => d.pill(pills.open, { ...p, ...common, dot: t.green, pulse: true, fg: t.green, bg: rgba(t.green, dark ? 0.1 : 0.07), border: rgba(t.green, dark ? 0.32 : 0.3) }),
-      (p) => d.pill(pills.company, { ...p, ...common, icon: 'building-2', iconColor: t.violet, iconSize: 15 }),
-    ]
-    let x = X0
-    items.forEach((make, i) => {
-      const p = make({ x, y: pillTop })
-      d.add(`<g class="fade-up" style="animation-delay:${(0.5 + i * 0.1).toFixed(2)}s">${p.svg}</g>`)
-      x += p.w + 10
-    })
-  }
-
-  // ───────────────────────── system illustration ─────────────────────────
-  drawSystem(d, { cx, cy, orbit, dark })
-
   return d.end()
+}
+
+// Name: gradient text with a slow sheen passing over it. Returns markup.
+function nameBlock(d, { x, base, size, key, dark }) {
+  const t = d.t
+  const k = size / 60 // sheen geometry was tuned at 60
+  const w = d.measure(PROFILE.name, { font: NAME_FONT, size, tracking: NAME_TRACK })
+  const m = d.metrics(NAME_FONT, size)
+  const top = base - m.ascender - 2
+  const hgt = m.ascender + m.descender + 4
+  const grad = d.linearGradient(t.gradText, { x1: x, y1: 0, x2: x + w, y2: 0, units: 'userSpaceOnUse' })
+  const mask = d.uid('m')
+  d.def(`<mask id="${mask}" maskUnits="userSpaceOnUse" x="${r1(x - 6)}" y="${r1(top)}" width="${r1(w + 12)}" height="${r1(hgt)}">${d.text(PROFILE.name, { x, y: base, font: NAME_FONT, size, tracking: NAME_TRACK, fill: '#fff' })}</mask>`)
+  const shine = d.linearGradient([[0, '#fff', 0], [0.5, '#fff', dark ? 0.55 : 0.7], [1, '#fff', 0]])
+  const travel = Math.round(w + 200 * k)
+  d.css(`@keyframes shine-${key}{0%{transform:translateX(0)}16%,100%{transform:translateX(${travel}px)}}.shine-${key}{animation:shine-${key} 9s cubic-bezier(.45,0,.2,1) 2.4s infinite}`)
+  return [
+    `<g class="fade-up" style="animation-delay:.1s"><g mask="url(#${mask})">`,
+    `<rect x="${r1(x - 6)}" y="${r1(top)}" width="${r1(w + 12)}" height="${r1(hgt)}" fill="url(#${grad})"/>`,
+    `<g class="shine-${key}"><rect x="${r1(x - 150 * k)}" y="${r1(top)}" width="${r1(90 * k)}" height="${r1(hgt)}" fill="url(#${shine})" transform="skewX(-18)"/></g>`,
+    `</g></g>`,
+  ].join('')
+}
+
+// Role line, "a · b" with a muted separator. Returns markup.
+function roleLine(d, { x, base, size }) {
+  const t = d.t
+  const font = 'body-500'
+  const [a, b] = PROFILE.role.split(' · ')
+  const parts = [
+    [a, t.fg],
+    [' · ', t.muted],
+    [b, t.fg],
+  ]
+  const out = parts.map(([s, fill]) => {
+    const svg = d.text(s, { x, y: base, font, size, fill })
+    x += d.measure(s, { font, size })
+    return svg
+  })
+  return `<g class="fade-up" style="animation-delay:.22s">${out.join('')}</g>`
+}
+
+// Tagline typed out after a "›" prompt, short pauses after each full stop; a
+// caret follows the typing and then blinks. Pure CSS: under reduced motion the
+// full line and the caret (parked at its end) show at once. Returns markup.
+function typedLine(d, { x, base, size, key }) {
+  const t = d.t
+  const font = 'mono-500'
+  const k = size / 18 // caret geometry was tuned at 18
+  const cw = d.measure('M', { font, size })
+  const tx = x + cw * 2
+  const str = PROFILE.tagline
+  // colour runs: everything fg2, the final "Live." in green
+  const liveAt = str.lastIndexOf('Live.') < 0 ? str.length : str.lastIndexOf('Live.')
+  const at = [] // moment each character appears
+  let tm = 0.55
+  for (const ch of str) {
+    at.push(tm)
+    tm += ch === '.' ? 0.18 : 0.026
+  }
+  const end = at[at.length - 1]
+  const full = str.length * cw
+  const glyphs = [...str].map((ch, i) =>
+    ch === ' ' ? '' : `<g class="k" style="animation-delay:${at[i].toFixed(3)}s">${d.text(ch, { x: tx + i * cw, y: base, font, size, fill: i >= liveAt ? t.green : t.fg2 })}</g>`,
+  )
+  // the caret is drawn at its final position and translated back while typing
+  const pct = (s) => +((s / end) * 100).toFixed(3)
+  const frames = [`0%{transform:translateX(${r1(-full)}px)}`, ...at.map((s, i) => `${pct(s)}%{transform:translateX(${r1((i + 1) * cw - full)}px)}`)]
+  d.css(`@keyframes caret-${key}{${frames.join('')}}`)
+  return [
+    `<g class="fade-in" style="animation-delay:.45s">`,
+    d.text('›', { x, y: base, font: 'mono-700', size, fill: t.violet }),
+    glyphs.join(''),
+    `<g class="blink" style="animation-delay:${end.toFixed(2)}s"><g style="animation:caret-${key} ${end.toFixed(2)}s step-end both">`,
+    `<rect x="${r1(tx + full + 2 * k)}" y="${r1(base - 15 * k)}" width="${r1(2 * k)}" height="${r1(19 * k)}" rx="${r1(k)}" fill="${t.violet}"/>`,
+    `</g></g>`,
+    `</g>`,
+  ].join('')
+}
+
+// "Open to work" and the company pill (which carries the outbound-link arrow,
+// as every other link on the page does). `spec.scale` draws them enlarged as a
+// whole (dot, icons and border grow with the text). Returns { svg, w }.
+function statusPills(d, { x, y, spec, dark, measureOnly = false }) {
+  const t = d.t
+  const { h, size, font, padX, gap, iconSize, space, scale = 1 } = spec
+  const common = { h, size, font, padX, gap }
+  const items = [
+    (p) => d.pill(pills.open, { ...p, ...common, dot: t.green, pulse: true, fg: t.green, bg: rgba(t.green, dark ? 0.1 : 0.07), border: rgba(t.green, dark ? 0.32 : 0.3) }),
+    (p) => linkPill(d, pills.company, { ...p, ...common, icon: 'building-2', iconColor: t.violet, iconSize }),
+  ]
+  let lx = 0
+  const out = []
+  items.forEach((make, i) => {
+    const p = make({ x: lx, y: 0 })
+    const place = scale === 1 ? `translate(${r1(x)} ${r1(y)})` : `translate(${r1(x)} ${r1(y)}) scale(${scale})`
+    out.push(`<g class="fade-up" style="animation-delay:${(0.5 + i * 0.1).toFixed(2)}s"><g transform="${place}">${p.svg}</g></g>`)
+    lx += p.w + space
+  })
+  const w = (lx - space) * scale
+  return { svg: measureOnly ? '' : out.join(''), w }
+}
+
+// d.pill with a trailing arrow-up-right after the label. Returns { svg, w, h }.
+function linkPill(d, label, o) {
+  const t = d.t
+  const arrow = 12
+  const lead = 4 // label → arrow box (the glyph has ~3.5 units of air inside its box)
+  const trim = 2 // ...and on its right, so the visual end padding matches the start
+  const inner = d.pill(label, { ...o, bg: 'none', border: null })
+  const w = r1(inner.w + lead + arrow - trim)
+  const cy = o.y + o.h / 2
+  const ax = o.x + inner.w - o.padX + lead
+  return {
+    svg: [
+      `<rect x="${r1(o.x)}" y="${r1(o.y)}" width="${w}" height="${o.h}" rx="${r1(o.h / 2)}" fill="${t.chipBg}" stroke="${t.chipBorder}"/>`,
+      inner.svg,
+      d.icon('arrow-up-right', { x: ax, y: cy - arrow / 2, size: arrow, color: t.violet, stroke: 2.2 }),
+    ].join(''),
+    w,
+    h: o.h,
+  }
 }
 
 function drawSystem(d, { cx, cy, orbit, dark }) {

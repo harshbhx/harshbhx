@@ -39,12 +39,26 @@ one component, anything that looks like a stock template.
 | card padding | 24–28 |
 | spacing | multiples of 4; prefer 8 / 12 / 16 / 24 / 32 |
 
-The README column is ~846px on desktop and 358px on phones. Half-width
-components therefore render at ~0.86× on phones, full-width ones at ~0.42×.
+Draw cards edge to edge on the 850 / 415 canvas. At build time every image
+gets a transparent side margin of the same share of its width
+(`padForPair`: 8 units each side → 431; `padForFull`: 16 each side → 882),
+and `readme.mjs` sets the README widths (halves 413, full width 846) so that:
+
+- **desktop** (846px column): all blocks render at ~0.96×, every card edge
+  lines up (a pair's outer edges meet the full-width cards) and the two cards
+  of a pair are ~20px apart;
+- **phone** (358px column, everything stacks): halves render at ~0.83×,
+  full-width blocks at ~0.41×, and every card again has the same edges.
+
+Do not add your own outer margin to a component, and do not change the
+gutters or README widths without re-measuring with `preview.mjs`.
 
 **Legibility floor:** in half-width components no text below 12px (mono
-kickers may be 11px). In full-width components anything that must be readable
-on a phone needs ≥ 20px; smaller text there is decoration only.
+kickers may be 11px) — that is ~10px on a phone. In full-width components
+anything that must be readable on a phone needs ≥ 26px (≈ 10.5 CSS px there;
+headings ≥ 48px to still read as headings); smaller text is decoration only,
+unless the component adds a phone layer (`PHONE_CSS` below) that re-sets it
+at those sizes.
 
 Pairs on the same row **must have identical heights**.
 
@@ -83,10 +97,14 @@ d.kicker('01 · label', { x, y, fill })
 d.pill(label, { x, y, h, dot, pulse, icon, fg, bg, border, anchor })   // → { svg, w, h }
 d.chip(label, { x, y })                              // → { svg, w, h }
 d.flow(labels, { x, y, width, gap, rowGap, make })   // wraps chips/pills → { svg, height, rows }
-d.icon(lucideName, { x, y, size, color, stroke })    // https://lucide.dev/icons
+d.icon(lucideName, { x, y, size, color, stroke, cls, style })   // https://lucide.dev/icons
 d.logo(simpleIconsSlug, { x, y, size, on })          // brand colour, auto-fallback on low contrast
+d.logo('lucide:globe', { x, y, size, color })        // generic icon where no brand mark fits (default violet)
 d.glow({ cx, cy, r, color }) · d.pattern({...}) · d.linearGradient(stops, {x1,y1,x2,y2,units})
 d.def(markup) · d.css(rule) · d.uid(prefix) · d.end()
+
+// phone layer for full-width components: shown when the image is drawn < 600px wide
+d.css(PHONE_CSS)   // import { PHONE_CSS } from '../lib/svg.mjs'; then <g class="dt">desktop-only</g> <g class="ph">phone-sized</g>
 ```
 
 ## Motion
@@ -113,4 +131,8 @@ Moving dots along paths: SMIL `<animateMotion>` inside an element with class
   `alt` must carry the full information of the image for screen readers.
 - Check every component in **both themes and at phone width** with
   `snap.mjs` before calling it done: nothing clipped, overlapping or touching
-  edges, consistent padding, balanced whitespace.
+  edges, consistent padding, balanced whitespace. Read the phone block too —
+  it is drawn at the real 358px column, so it shows what full-width text and
+  any `.ph` layer look like on a phone.
+- After layout changes, run `preview.mjs` and check that card edges still
+  line up down the whole page on desktop and on phone.

@@ -97,3 +97,49 @@ export function mockData() {
   if (!ok) throw new Error(`mock calendar drifted from the snapshot: ${JSON.stringify({ total: data.total, streak: s })}`)
   return data
 }
+
+/**
+ * SYNTHETIC stand-in for Platane/snk's output (preview only), in snk's format:
+ * the last 12 months of the mock calendar as a 7-row grid of 12px cells on a
+ * 16px pitch, levels by quartile like GitHub, and a 4-segment snake that loops
+ * around the ring outside the grid so previews show the area the card keeps.
+ * The real file comes from the Platane/snk action in CI.
+ */
+export function mockSnake(series, theme = 'dark') {
+  const dow = (day) => new Date(`${day}T00:00:00Z`).getUTCDay()
+  const today = series.at(-1).date
+  let first = addDays(today, -365)
+  first = addDays(first, -dow(first)) // GitHub's calendar starts on a Sunday
+  const days = series.filter((x) => x.date >= first)
+  const counts = days.map((x) => x.count).filter(Boolean).sort((a, b) => a - b)
+  const q = [0.25, 0.5, 0.75].map((p) => counts[Math.floor(p * (counts.length - 1))] ?? 1)
+  const level = (n) => (n === 0 ? 0 : n <= q[0] ? 1 : n <= q[1] ? 2 : n <= q[2] ? 3 : 4)
+  const cols = Math.ceil(days.length / 7)
+  const cells = days.map((x, i) => `<rect class="c l${level(x.count)}" x="${2 + 16 * Math.floor(i / 7)}" y="${2 + 16 * dow(x.date)}" rx="2" ry="2"/>`)
+  const gw = cols * 16
+  // ring path: top edge → right → bottom → left, one cell outside the grid
+  const path = [[0, -16], [gw, -16], [gw, 112], [-16, 112], [-16, -16], [0, -16]]
+  const len = path.slice(1).reduce((a, p, i) => a + Math.hypot(p[0] - path[i][0], p[1] - path[i][1]), 0)
+  let acc = 0
+  const frames = path.map((p, i) => {
+    if (i) acc += Math.hypot(p[0] - path[i - 1][0], p[1] - path[i - 1][1])
+    return `${((acc / len) * 100).toFixed(2)}%{transform:translate(${p[0]}px,${p[1]}px)}`
+  })
+  const segs = [14.4, 12.3, 10.8, 9.9]
+  const colors = theme === 'dark' ? '#161b22,#0e4429,#006d32,#26a641,#39d353' : '#ebedf0,#9be9a8,#40c463,#30a14e,#216e39'
+  const [ce, c1, c2, c3, c4] = colors.split(',')
+  const style =
+    `:root{--cb:#1b1f230a;--cs:purple;--ce:${ce};--c0:${ce};--c1:${c1};--c2:${c2};--c3:${c3};--c4:${c4}}` +
+    '.c{shape-rendering:geometricPrecision;fill:var(--ce);stroke-width:1px;stroke:var(--cb);width:12px;height:12px}' +
+    [1, 2, 3, 4].map((l) => `.c.l${l}{fill:var(--c${l})}`).join('') +
+    `@keyframes snake{${frames.join('')}}` +
+    '.s{shape-rendering:geometricPrecision;fill:var(--cs);animation:snake 24s linear infinite}' +
+    segs.map((_, i) => `.s.s${i}{animation-delay:-${((segs.length - 1 - i) * 0.18).toFixed(2)}s}`).join('') // head first +
+    '.u{fill:var(--c2)}'
+  const snake = segs.map((w, i) => `<rect class="s s${i}" x="${(16 - w) / 2}" y="${(16 - w) / 2}" width="${w}" height="${w}" rx="${(w * 0.31).toFixed(1)}" ry="${(w * 0.31).toFixed(1)}"/>`)
+  return (
+    `<svg viewBox="-16 -32 ${gw + 32} 192" width="${gw + 32}" height="192" xmlns="http://www.w3.org/2000/svg">` +
+    `<desc>PREVIEW-ONLY mock in Platane/snk's format</desc><style>${style}</style>${cells.join('')}` +
+    `<rect class="u u0" height="12" width="${(gw * 0.4).toFixed(1)}" x="0.0" y="144"/>${snake.join('')}</svg>`
+  )
+}

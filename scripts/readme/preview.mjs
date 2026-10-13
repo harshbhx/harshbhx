@@ -15,6 +15,8 @@ import { createRequire } from 'node:module'
 import { marked } from 'marked'
 import { chromium } from 'playwright'
 import { ASSET_BASE, OUTPUT_BASE } from './readme.mjs'
+import { LAYOUT } from './lib/theme.mjs'
+import { PAIR_GUTTER } from './lib/svg.mjs'
 
 const require = createRequire(import.meta.url)
 const args = process.argv.slice(2)
@@ -27,9 +29,15 @@ const root = new URL('../../', import.meta.url).pathname
 const assets = `${root}assets/`
 let md = readFileSync(`${root}README.md`, 'utf8')
 
-const placeholder = (name) =>
-  'data:image/svg+xml;utf8,' +
-  encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="415" height="180"><rect x="1" y="1" width="413" height="178" rx="16" fill="none" stroke="#888" stroke-dasharray="6 6"/><text x="207" y="95" text-anchor="middle" font-family="monospace" font-size="13" fill="#888">${name} (built in CI)</text></svg>`)
+// Dashed stand-in with the same transparent side margins as the real image.
+const placeholder = (file) => {
+  const snake = file.startsWith('snake')
+  const [w, h, g] = snake ? [880, 192, 16] : [LAYOUT.half + 2 * PAIR_GUTTER, 288, PAIR_GUTTER]
+  return (
+    'data:image/svg+xml;utf8,' +
+    encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}"><rect x="${g + 1}" y="1" width="${w - 2 * g - 2}" height="${h - 2}" rx="16" fill="none" stroke="#888" stroke-dasharray="6 6"/><text x="${w / 2}" y="${h / 2 + 5}" text-anchor="middle" font-family="monospace" font-size="13" fill="#888">${file} (built in CI)</text></svg>`)
+  )
+}
 
 md = md.replaceAll(ASSET_BASE, `file://${assets}`)
 md = md.replace(new RegExp(OUTPUT_BASE.replace(/[.*+?^${}()|[\]\\/]/g, '\\$&') + '([\\w-]+\\.svg)', 'g'), (_, file) => {

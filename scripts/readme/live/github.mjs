@@ -56,6 +56,7 @@ export const QUERIES = {
           pageInfo { hasNextPage endCursor }
           nodes {
             name
+            isPrivate
             languages(first: 10, orderBy: { field: SIZE, direction: DESC }) {
               edges { size node { name color } }
             }
@@ -68,19 +69,58 @@ export const QUERIES = {
 // ── transport ────────────────────────────────────────────────────────────────
 
 class FatalError extends Error {}
+/** The token was rejected (HTTP 401): live.mjs falls back to the next token. */
+export class AuthError extends FatalError {}
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
+/** One-line excerpt of a response body (keeps CI annotations on one line). */
+const snippet = (body, n = 200) => body.replace(/\s+/g, ' ').trim().slice(0, n)
+
+// GitHub answers some failures with HTTP 200 and a GraphQL `errors` array but
+// no data: "Something went wrong while executing your query. This may be the
+// result of a timeout…" (common for contributionsCollection) and RATE_LIMITED.
+// Those are worth another attempt; anything else (bad query, unknown user) is not.
+const TRANSIENT = /timeout|timed out|something went wrong|try again|temporarily|unavailable/i
+const transientErrors = (errors) => errors.every((e) => e.type === 'RATE_LIMITED' || TRANSIENT.test(e.message ?? ''))
+
+const MAX_WAIT = 5 * 60_000 // the job has 15 minutes; a longer rate-limit wait fails instead
 
 /**
- * POST one GraphQL request. Network errors, timeouts, 5xx and 429 are retried
- * (3 attempts, exponential backoff); auth errors and GraphQL `errors` throw at once.
+ * How long a rate-limited response asks us to wait (ms), or null when it is not
+ * a rate limit. Follows GitHub's guidance: `retry-after`, else
+ * `x-ratelimit-reset` when `x-ratelimit-remaining` is 0, else one minute for a
+ * secondary rate limit.
  */
-export async function graphql(query, variables, { token, tries = 3, log = () => {} } = {}) {
+function rateLimitWait(res, body, now = Date.now()) {
+  const after = Number(res.headers.get('retry-after'))
+  if (after > 0) return after * 1000
+  if (res.headers.get('x-ratelimit-remaining') === '0') {
+    const reset = Number(res.headers.get('x-ratelimit-reset'))
+    if (reset > 0) return Math.max(1000, reset * 1000 - now + 1000)
+  }
+  if (/secondary rate limit|rate limit exceeded|RATE_LIMITED/i.test(body)) return 60_000
+  return null
+}
+
+class Retry extends Error {
+  constructor(message, wait = 0) {
+    super(message)
+    this.wait = wait
+  }
+}
+
+/**
+ * POST one GraphQL request. Network errors, timeouts, 5xx, rate limits and
+ * transient GraphQL errors are retried (4 attempts, exponential backoff, or
+ * the wait a rate limit asks for); a rejected token throws AuthError and any
+ * other error throws at once.
+ */
+export async function graphql(query, variables, { token, tries = 4, log = () => {}, endpoint = ENDPOINT, backoff = 2000 } = {}) {
   if (!token) throw new FatalError('GITHUB_TOKEN is not set')
   let last
   for (let attempt = 1; attempt <= tries; attempt++) {
     try {
-      const res = await fetch(ENDPOINT, {
+      const res = await fetch(endpoint, {
         method: 'POST',
         headers: {
           authorization: `bearer ${token}`,
@@ -91,23 +131,37 @@ export async function graphql(query, variables, { token, tries = 3, log = () => 
         signal: AbortSignal.timeout(30_000),
       })
       const body = await res.text()
-      if (res.status >= 500 || res.status === 429) throw new Error(`HTTP ${res.status}: ${body.slice(0, 200)}`)
-      if (!res.ok) throw new FatalError(`HTTP ${res.status}: ${body.slice(0, 300)}`)
+      if (res.status === 401) throw new AuthError(`HTTP 401 (token rejected): ${snippet(body, 200)}`)
+      if (res.status === 403 || res.status === 429) {
+        const wait = rateLimitWait(res, body)
+        if (wait === null && res.status === 403) throw new FatalError(`HTTP 403: ${snippet(body, 300)}`)
+        if (wait > MAX_WAIT) throw new FatalError(`rate limited for ${Math.round(wait / 60_000)} min: ${snippet(body, 200)}`)
+        throw new Retry(`HTTP ${res.status} rate limited`, wait ?? 0)
+      }
+      if (res.status >= 500) throw new Retry(`HTTP ${res.status}: ${snippet(body, 200)}`)
+      if (!res.ok) throw new FatalError(`HTTP ${res.status}: ${snippet(body, 300)}`)
       let json
       try {
         json = JSON.parse(body)
       } catch {
-        throw new Error(`invalid JSON response: ${body.slice(0, 200)}`)
+        throw new Retry(`invalid JSON response: ${snippet(body, 200)}`)
       }
-      if (json.errors?.length) throw new FatalError(`GraphQL error: ${json.errors.map((e) => e.message).join('; ')}`)
-      if (!json.data) throw new Error('response has no data')
+      if (json.errors?.length) {
+        const msg = `GraphQL error: ${json.errors.map((e) => e.message).join('; ')}`
+        if (!transientErrors(json.errors)) throw new FatalError(msg)
+        const limited = json.errors.some((e) => e.type === 'RATE_LIMITED')
+        const wait = limited ? (rateLimitWait(res, 'RATE_LIMITED') ?? 60_000) : 0
+        if (wait > MAX_WAIT) throw new FatalError(`${msg} (rate limited for ${Math.round(wait / 60_000)} min)`)
+        throw new Retry(msg, wait)
+      }
+      if (!json.data) throw new Retry('response has no data')
       return json.data
     } catch (e) {
       if (e instanceof FatalError) throw e
       last = e
       if (attempt < tries) {
-        const wait = 1500 * 2 ** (attempt - 1)
-        log(`  request failed (${e.message}); retrying in ${wait / 1000}s`)
+        const wait = Math.max(backoff * 2 ** (attempt - 1), e.wait ?? 0)
+        log(`  request failed (${e.message}); retrying in ${Math.round(wait / 1000)}s`)
         await sleep(wait)
       }
     }
@@ -273,5 +327,7 @@ export function summarise(raw) {
     series,
     languages: raw.languages ?? languageShares(raw.repos ?? []),
     repoCount: raw.repos ? raw.repos.filter((r) => r.languages?.edges?.length).length : null,
+    // true when no private repository was counted (e.g. CI without a STATS_TOKEN)
+    publicOnly: raw.repos ? !raw.repos.some((r) => r.isPrivate) : null,
   }
 }

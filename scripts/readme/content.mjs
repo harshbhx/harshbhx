@@ -26,15 +26,15 @@ export const LINKS = {
   linkedin: { label: 'LinkedIn', value: 'harshu-dev', href: 'https://linkedin.com/in/harshu-dev', icon: 'linkedin' },
   devto: { label: 'Dev.to', value: 'harshudev', href: 'https://dev.to/harshudev', icon: 'devdotto' },
   email: { label: 'Email', value: 'bhanushaliharsh434@gmail.com', href: 'mailto:bhanushaliharsh434@gmail.com', icon: 'gmail' },
-  website: { label: 'Website', value: 'dualmindlab.tech', href: 'https://dualmindlab.tech', icon: 'googlechrome' },
+  website: { label: 'Website', value: 'dualmindlab.tech', href: 'https://dualmindlab.tech', icon: 'lucide:globe' },
   discord: { label: 'Discord', value: 'harshu911', href: null, icon: 'discord' },
   arena: { label: 'DualMind Arena', value: 'arena.dualmindlab.tech', href: 'https://arena.dualmindlab.tech' },
   docs: { label: 'Docs', value: 'docs.dualmindlab.tech', href: 'https://docs.dualmindlab.tech' },
 }
 
 export const SECTIONS = {
-  proof: { index: '01', title: 'Proof of work', note: 'real numbers from shipped systems' },
-  projects: { index: '02', title: 'Featured projects', note: 'live products & the systems behind them' },
+  proof: { index: '01', title: 'Proof of work', note: 'from systems I built' },
+  projects: { index: '02', title: 'Featured projects', note: 'what I built & how it works' },
   build: { index: '03', title: 'How I build', note: 'decisions and the reasons behind them' },
   stack: { index: '04', title: 'Tech stack', note: 'what I ship with' },
   services: { index: '05', title: 'Work with me', note: 'what you can hire me for today' },
@@ -44,10 +44,10 @@ export const SECTIONS = {
 // Only claims that are already public on the profile / dualmindlab.tech.
 export const PROOF = [
   { key: 'traffic', icon: 'zap', value: '5,000+', label: 'requests absorbed in one traffic spike', detail: 'Bots + real users. Cloudflare CDN took the load before it reached the origin.' },
-  { key: 'payments', icon: 'credit-card', value: '3 apps', label: 'Razorpay payments synced in real time', detail: 'Webhook → Cloud Function → one Firestore write every app listens to.' },
+  { key: 'payments', icon: 'credit-card', value: '3 apps', label: 'in sync on every Razorpay payment', detail: 'Webhook → Cloud Function → one Firestore write every app listens to.' },
   { key: 'seo', icon: 'trending-up', value: '#1', label: 'on Google for “DualMind Labs”', detail: 'dualmindlab.tech' },
   { key: 'security', icon: 'shield-check', value: 'Real-time', label: 'login anomaly detection', detail: 'IP capture, risk scoring and an email alert to the account owner on every suspicious event.' },
-  { key: 'docs', icon: 'book-open', value: 'Docs', label: 'full user documentation, published', detail: 'docs.dualmindlab.tech' },
+  { key: 'docs', icon: 'book-open', value: 'Docs', label: 'site with full user documentation', detail: 'docs.dualmindlab.tech' },
   { key: 'ownership', icon: 'workflow', value: 'E2E', label: 'design → code → infra → deploy → docs', detail: 'From first commit to a monitored production system.' },
 ]
 
@@ -67,7 +67,7 @@ export const PROJECTS = [
       'Supabase (PostgreSQL) on purpose: leaderboard ranking needs relational SQL',
       'Real-time login anomaly detection with IP capture, risk scoring and owner alerts',
     ],
-    stack: ['Azure', '.NET Web API', 'Vanilla JS', 'Supabase', 'Cloudflare CDN', 'AI Gateway', 'GitHub Actions'],
+    stack: ['Azure', '.NET Web API', 'Vanilla JS', 'Supabase', 'Cloudflare CDN + AI Gateway', 'GitHub Actions'],
     diagram: {
       title: 'Request path',
       nodes: ['User prompt', 'Cloudflare CDN', '.NET Web API (stateless)', 'Cloudflare AI Gateway', 'Model A (hidden)', 'Model B (hidden)', 'Community vote', 'Supabase · PostgreSQL leaderboard'],
@@ -107,7 +107,7 @@ export const PROJECTS = [
       'Classifies intent and urgency for every inbound query',
       'Routine queries: auto-reply + logged to the CRM',
       'Needs judgment: human review with context pre-drafted',
-      'Multi-model with function calling and webhooks',
+      'Multi-model, with webhook integrations',
     ],
     stack: ['Node.js', 'Claude', 'GPT-4o', 'Supabase', 'Function calling', 'Webhooks'],
     diagram: {
@@ -119,31 +119,31 @@ export const PROJECTS = [
 
 export const DECISIONS = [
   { title: 'CDN first, stateless API', why: 'Spikes land on Cloudflare, not the origin. Scaling the .NET API out is a config change.' },
-  { title: 'Supabase here, Firebase there', why: 'Leaderboards need real SQL. Real-time sync across three apps is exactly Firestore’s job.' },
+  { title: 'Supabase here, Firebase there', why: 'Leaderboards need relational queries. Live sync across three apps is exactly Firestore’s job.' },
   { title: 'AI Gateway over direct calls', why: 'One place for rate limits, caching and per-request logs across every model provider.' },
-  { title: 'Observability from day one', why: 'Login alerts, gateway logs, webhook and function traces ship with the product.' },
+  { title: 'Observability from day one', why: 'Gateway logs, webhook and function traces ship with the product.' },
   { title: 'Security by design', why: 'Anomaly detection and owner alerts were part of the launch, not a patch after a breach.' },
 ]
 
 export const PRINCIPLES = [
   { title: 'Ship early', why: 'Real users surface problems planning never will.' },
-  { title: 'Design for scale on day one', why: 'Stateless APIs, CDN first, SQL where queries get complex.' },
-  { title: 'Observability is architecture', why: 'Logs, alerts and dashboards ship with the product.' },
+  { title: 'Design for scale up front', why: 'Pick architectures that grow by configuration, not rewrites.' },
+  { title: 'Observability is architecture', why: 'If you can’t see it in production, it isn’t done.' },
   { title: 'Pick the right tool', why: 'The trade-off matters more than familiarity.' },
   { title: 'Own the outcome', why: 'The deliverable is the running, monitored system — not the commit.' },
   { title: 'Communicate clearly', why: 'Async first, unprompted updates, no surprises.' },
 ]
 
-// slug = Simple Icons slug (or icons/extra)
+// [slug, label, full name when the label is shortened]; slug = Simple Icons slug (or icons/extra)
 export const STACK = {
   build: [
     { group: 'Languages', items: [['dart', 'Dart'], ['csharp', 'C#'], ['typescript', 'TypeScript'], ['javascript', 'JavaScript'], ['c', 'C']] },
     { group: 'Frameworks', items: [['flutter', 'Flutter'], ['dotnet', '.NET'], ['nodedotjs', 'Node.js'], ['nextdotjs', 'Next.js'], ['html5', 'HTML'], ['css', 'CSS']] },
-    { group: 'AI', items: [['openai', 'OpenAI'], ['claude', 'Claude'], ['googlegemini', 'Gemini'], ['cloudflare', 'AI Gateway']] },
+    { group: 'AI', items: [['openai', 'OpenAI'], ['claude', 'Claude'], ['googlegemini', 'Gemini'], ['cloudflare', 'AI Gateway', 'Cloudflare AI Gateway']] },
   ],
   run: [
     { group: 'Data', items: [['supabase', 'Supabase'], ['postgresql', 'PostgreSQL'], ['firebase', 'Firebase'], ['mysql', 'MySQL']] },
-    { group: 'Cloud & DevOps', items: [['microsoftazure', 'Azure'], ['cloudflare', 'Cloudflare'], ['docker', 'Docker'], ['githubactions', 'Actions'], ['linux', 'Linux'], ['git', 'Git']] },
+    { group: 'Cloud & DevOps', items: [['microsoftazure', 'Azure'], ['cloudflare', 'Cloudflare'], ['docker', 'Docker'], ['githubactions', 'Actions', 'GitHub Actions'], ['linux', 'Linux'], ['git', 'Git']] },
     { group: 'Tools & payments', items: [['razorpay', 'Razorpay'], ['figma', 'Figma'], ['postman', 'Postman'], ['visualstudiocode', 'VS Code']] },
   ],
 }
@@ -155,7 +155,7 @@ export const SERVICES = [
   { icon: 'rocket', title: 'Full-stack MVPs', time: '3–8 weeks', items: ['Mobile + backend + AI + security', 'Deployed on Azure + Cloudflare', 'Monitoring from day one', 'Full source handoff'] },
 ]
 
-export const WORKING_STYLE = ['Upfront scoping', 'Weekly deliverables', 'Full source on completion', 'Replies within 24 hours', 'No scope surprises']
+export const WORKING_STYLE = ['Upfront scoping', 'Weekly deliverables', 'Full source handoff', 'Replies within 24 hours', 'No scope surprises']
 
 export const CTA = {
   title: 'Let’s build something real.',

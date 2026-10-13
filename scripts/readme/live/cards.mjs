@@ -4,8 +4,9 @@
 //   activity-langs  top languages by code size: stacked bar + legend
 //
 // Both are half-width (415 × H, same H) and share one anatomy with the static
-// components: window header band (like about-*), a display-size headline at
-// the same baseline, then a ruled list on a 24px row grid.
+// components: window header band (same geometry as stack-* / decisions /
+// principles), a display-size headline at the same baseline, then a ruled list
+// on a 24px row grid. live/snake.mjs reuses the header for the snake card.
 
 import { createDoc, r1 } from '../lib/svg.mjs'
 import { LAYOUT } from '../lib/theme.mjs'
@@ -13,9 +14,11 @@ import { contrast } from '../lib/icons.mjs'
 
 export const W = LAYOUT.half // 415
 export const H = 288
-const PAD = 24
-const HEAD = 44 // header band height (same as about-*)
-const HEAD_BASE = 26 // header text baseline
+export const PAD = 24
+export const HEAD = 44 // header band height (same as about-*, stack-*, decisions)
+export const HEAD_BASE = 26 // header text baseline
+// header meta (right-hand text): same type as the stack-* / practice band counts
+export const META = { font: 'mono-500', size: 11, tracking: 0.08 }
 const NUM_BASE = 98 // headline number baseline (both cards)
 const SUB_BASE = 121 // line under the headline
 const KICK_BASE = 161 // section kicker baseline
@@ -139,11 +142,11 @@ function fit(d, str, { font, size, max }) {
 // ── shared chrome ────────────────────────────────────────────────────────────
 
 /** Window header band: tinted fill clipped to the card's top corners + hairline divider (as about-*). */
-function headerBand(d) {
+export function headerBand(d) {
   const t = d.t
   const r = LAYOUT.radius
   const x0 = 0.5
-  const x1 = W - 0.5
+  const x1 = d.w - 0.5
   const fill = t.name === 'dark' ? t.surfaceRaised : t.inset
   const op = t.name === 'dark' ? 0.55 : 0.75
   return [
@@ -152,25 +155,36 @@ function headerBand(d) {
   ].join('')
 }
 
-function header(d, { icon, label, right }) {
+/**
+ * Header band content, on the same grid as stack-* / decisions / principles:
+ * 15px icon at PAD, kicker at PAD + 24, meta right-aligned at W - PAD. The meta
+ * is muted rather than faint because here it carries data (date, repo count).
+ */
+export function headerText(d, { icon, label, right = '' }) {
   const t = d.t
-  d.add(
-    headerBand(d),
-    d.icon(icon, { x: PAD, y: HEAD / 2 - 7, size: 14, color: t.violet, stroke: 2 }),
-    d.kicker(label, { x: PAD + 22, y: HEAD_BASE - 0.5, fill: t.fg2 }),
-    right,
+  return (
+    d.icon(icon, { x: PAD, y: HEAD / 2 - 7.5, size: 15, color: t.violet, stroke: 1.9 }) +
+    d.kicker(label, { x: PAD + 24, y: HEAD_BASE - 0.5, fill: t.fg2 }) +
+    right
   )
 }
+
+function header(d, o) {
+  d.add(headerBand(d), headerText(d, o))
+}
+
+/** Right-aligned header meta text. */
+export const meta = (d, str) => d.text(str, { x: d.w - PAD, y: HEAD_BASE - 0.5, ...META, fill: d.t.muted, anchor: 'end' })
 
 /** "updated Oct 13, 2026" with a live dot, right-aligned in the header. */
 function updated(d, iso) {
   const t = d.t
   const label = `updated ${fmtDay(iso)}`
-  const w = d.measure(label, { font: 'mono-500', size: 11 })
-  const cx = W - PAD - w - 11
+  const w = d.measure(label, META)
+  const cx = d.w - PAD - w - 11
   return (
     `<circle class="pulse" cx="${r1(cx)}" cy="${HEAD / 2}" r="3" fill="${t.green}"/><circle cx="${r1(cx)}" cy="${HEAD / 2}" r="3" fill="${t.green}"/>` +
-    d.text(label, { x: W - PAD, y: HEAD_BASE - 0.5, font: 'mono-500', size: 11, fill: t.muted, anchor: 'end' })
+    meta(d, label)
   )
 }
 
@@ -293,17 +307,30 @@ function sparkline(d, series, { x, y, w, h }) {
 
 // ── activity-stats ───────────────────────────────────────────────────────────
 
+/** Most recent day with contributions, or null. */
+const lastActive = (data) => data.series.findLast((x) => x.count > 0)?.date ?? null
+
+/** Second line of a streak row: its dates, or what an empty streak means. */
+function streakDates(data, s, which, refYear) {
+  if (s.days) return fmtRange(s.start, s.end, refYear)
+  if (which === 'current') {
+    const last = lastActive(data)
+    if (last) return `last active ${fmtDay(last, yearOf(last) !== refYear)}`
+  }
+  return 'none yet'
+}
+
 export function statsAlt(data) {
   const s = data.streak
   const ly = data.lastYear
-  const range = (r) => (r.days ? ` (${fmtRange(r.start, r.end, -1)})` : '')
+  const range = (r, which) => (r.days || which === 'current' ? ` (${streakDates(data, r, which, -1)})` : '')
   return (
     `GitHub activity for @${data.login}, updated ${fmtDay(data.fetchedAt)}. ` +
     `${int(data.total)} contributions since ${fmtDay(data.since)}. ` +
     `Last 12 months: ${plural(ly.commits, 'commit')}, ${plural(ly.pullRequests, 'pull request')}, ${plural(ly.issues, 'issue')}, ` +
     `contributed to ${plural(ly.reposContributedTo, 'repository', 'repositories')}. ` +
-    `Current streak: ${plural(s.current.days, 'day')}${range(s.current)}. ` +
-    `Longest streak: ${plural(s.longest.days, 'day')}${range(s.longest)}.`
+    `Current streak: ${plural(s.current.days, 'day')}${range(s.current, 'current')}. ` +
+    `Longest streak: ${plural(s.longest.days, 'day')}${range(s.longest, 'longest')}.`
   )
 }
 
@@ -314,7 +341,8 @@ export function renderStats(t, data) {
     { cx: W - 70, cy: HEAD + 40, r: 230, color: [t.glowViolet[0], t.glowViolet[1] * (dark ? 0.7 : 0.8)] },
     { cx: 30, cy: H + 30, r: 200, color: [t.glowCyan[0], t.glowCyan[1] * 0.45] },
   ])
-  header(d, { icon: 'activity', label: 'GitHub activity', right: updated(d, data.fetchedAt) })
+  // the section header above already says "GitHub activity"
+  header(d, { icon: 'activity', label: 'Contributions', right: updated(d, data.fetchedAt) })
 
   // headline: all-time contributions, with the trend since the account opened
   d.add(headline(d, int(data.total), [{ text: 'contributions', font: 'body-500', fill: t.fg2 }, ` since ${monthYear(data.since)}`]))
@@ -353,12 +381,13 @@ export function renderStats(t, data) {
 
   const ref = yearOf(data.today)
   const streakRows = [
-    ['flame', 'Current', data.streak.current, t.amber],
-    ['trophy', 'Longest', data.streak.longest, t.amber],
+    ['flame', 'Current', 'current', t.amber],
+    ['trophy', 'Longest', 'longest', t.amber],
   ]
-  streakRows.forEach(([icon, label, s, accent], i) => {
+  streakRows.forEach(([icon, label, which, accent], i) => {
     const base = ROW0 + i * ROW * 2
-    const dates = s.days ? fmtRange(s.start, s.end, ref) : 'none yet'
+    const s = data.streak[which]
+    const dates = streakDates(data, s, which, ref)
     // dates sit under the label; long cross-year ranges drop the indent rather than shrink below 11px
     const [dx, ds] = [[22, 11.5], [22, 11], [0, 11.5], [0, 11]].find(([ix, sz]) => d.measure(dates, { font: 'mono-400', size: sz }) <= SCOL_R - ix) ?? [0, 11]
     d.add(
@@ -379,7 +408,8 @@ export function renderStats(t, data) {
 
 export function langsAlt(data) {
   const list = data.languages.map((l) => `${l.name} ${fmtShare(l.share)}`).join(', ')
-  return `Most used languages across @${data.login}'s repositories by code size, updated ${fmtDay(data.fetchedAt)}: ${list || 'no language data'}.`
+  const repos = data.publicOnly ? 'public repositories' : 'repositories'
+  return `Most used languages across @${data.login}'s ${repos} by code size, updated ${fmtDay(data.fetchedAt)}: ${list || 'no language data'}.`
 }
 
 function stackedBar(d, langs, { x, y, w, h }) {
@@ -441,8 +471,10 @@ export function renderLangs(t, data) {
     { cx: W - 70, cy: HEAD + 40, r: 230, color: [t.glowViolet[0], t.glowViolet[1] * (dark ? 0.7 : 0.8)] },
     { cx: 30, cy: H + 30, r: 200, color: [t.glowCyan[0], t.glowCyan[1] * 0.45] },
   ])
-  const right = data.repoCount ? `${plural(data.repoCount, 'repo')} · by size` : 'by code size'
-  header(d, { icon: 'code-xml', label: 'Top languages', right: d.text(right, { x: W - PAD, y: HEAD_BASE - 0.5, font: 'mono-500', size: 11, fill: t.muted, anchor: 'end' }) })
+  // say "public" when no private repository was counted (CI without a STATS_TOKEN),
+  // so the card does not read as the whole stack
+  const right = data.repoCount ? `${plural(data.repoCount, data.publicOnly ? 'public repo' : 'repo')} · by size` : 'by code size'
+  header(d, { icon: 'code-xml', label: 'Top languages', right: meta(d, right) })
 
   if (!langs.length) {
     d.add(d.text('No language data yet', { x: PAD, y: NUM_BASE, font: 'display-600', size: 20, fill: t.fg2 }))

@@ -1,9 +1,13 @@
 name: Update profile assets
 
-# Builds the live images the profile README uses (the activity cards rendered
-# by scripts/readme/live.mjs and the contribution snake) and publishes them to
-# the `output` branch. Generating them here instead of hot-linking public
-# services avoids rate limits and paused deployments.
+# publish: builds the live images the profile README uses (the activity cards
+#   and the contribution-graph card around the snake, all rendered by
+#   scripts/readme/live.mjs) and publishes them to the `output` branch.
+#   Generating them here instead of hot-linking public services avoids rate
+#   limits and paused deployments.
+# verify: on every push and pull request that touches the generator, checks
+#   that the committed assets/ and README.md are what scripts/readme builds,
+#   and that the live cards still render.
 
 on:
   schedule:
@@ -13,23 +17,28 @@ on:
     branches: [main]
     paths:
       - .github/workflows/profile-assets.yml
-      - scripts/readme/live.mjs
-      - scripts/readme/live/**
-      - scripts/readme/lib/**
-      - scripts/readme/readme.mjs
-      - scripts/readme/package-lock.json
+      - scripts/readme/**
+      - assets/**
+      - README.md
+  pull_request:
+    paths:
+      - .github/workflows/profile-assets.yml
+      - scripts/readme/**
+      - assets/**
+      - README.md
 
 permissions:
-  contents: write
-
-concurrency:
-  group: profile-assets
-  cancel-in-progress: true
+  contents: read
 
 jobs:
-  build:
+  verify:
+    name: Generated files are up to date
+    if: github.event_name == 'push' || github.event_name == 'pull_request'
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 10
+    concurrency:
+      group: profile-assets-verify-${{ github.ref }}
+      cancel-in-progress: true
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -45,27 +54,76 @@ jobs:
         working-directory: scripts/readme
         run: npm ci --omit=dev
 
-      # Uses the built-in token, which only sees public activity. To include
-      # private contributions, add a STATS_TOKEN secret (classic PAT with
-      # `read:user` and `repo` scopes). live.mjs exits non-zero on any API
-      # failure, which stops the job before publishing, so the previously
-      # published images stay in place.
-      - name: Activity cards
+      - name: Rebuild assets and README
         working-directory: scripts/readme
-        # The profile repo itself is excluded so the generator code does not skew languages.
-        run: node live.mjs --out ../../dist --exclude "${GITHUB_REPOSITORY#*/}"
-        env:
-          GITHUB_TOKEN: ${{ secrets.STATS_TOKEN || secrets.GITHUB_TOKEN }}
+        run: node build.mjs
 
-      # Colours follow scripts/readme/lib/theme.mjs: GitHub's empty-cell grey,
-      # then the violet ramp; the snake uses the theme's sky token.
+      - name: Fail if the committed output is stale
+        run: |
+          stale="$(git status --porcelain -- assets README.md)"
+          if [ -n "$stale" ]; then
+            echo "$stale"
+            git --no-pager diff --stat -- assets README.md
+            echo "::error::assets/ or README.md does not match scripts/readme. Run 'npm run build' in scripts/readme and commit the result."
+            exit 1
+          fi
+
+      - name: Render the live cards from mock data
+        working-directory: scripts/readme
+        run: node live.mjs --out "$RUNNER_TEMP/live-preview" --mock
+
+  publish:
+    name: Build and publish live images
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write # push to the output branch
+      actions: write # keep the schedule enabled (last step)
+    concurrency:
+      group: profile-assets-publish
+      cancel-in-progress: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: scripts/readme/package-lock.json
+
+      - name: Install renderer dependencies
+        working-directory: scripts/readme
+        run: npm ci --omit=dev
+
+      # Raw snake into snk/ (not published): live.mjs wraps it in the
+      # contribution-graph card and recolours it with RAMP from
+      # scripts/readme/live/snake.mjs. The colours below are that same ramp,
+      # only as a fallback; the snake is the theme's sky token.
       - name: Contribution snake
         uses: Platane/snk/svg-only@v3
         with:
           github_user_name: ${{ github.repository_owner }}
           outputs: |
-            dist/snake-dark.svg?color_snake=#7dd3fc&color_dots=#161b22,#41336d,#7c3aed,#a78bfa,#ddd6fe
-            dist/snake-light.svg?color_snake=#0369a1&color_dots=#ebedf0,#ddd6fe,#a78bfa,#7c3aed,#4c1d95
+            snk/snake-dark.svg?color_snake=#7dd3fc&color_dots=#2c2247,#4c1d95,#7c3aed,#a78bfa,#ddd6fe
+            snk/snake-light.svg?color_snake=#0369a1&color_dots=#e4ddf7,#c4b5fd,#a78bfa,#7c3aed,#4c1d95
+
+      # Without a STATS_TOKEN secret the built-in token only sees public
+      # repositories and public contributions, so the languages card is
+      # labelled "public repos". To count private work too, add a STATS_TOKEN
+      # secret (classic PAT with `read:user` and `repo` scopes). If it expires,
+      # live.mjs falls back to the built-in token and leaves a warning on the run.
+      # live.mjs exits non-zero on any other failure, which stops the job before
+      # publishing, so the previously published images stay in place.
+      - name: Activity cards and contribution-graph card
+        working-directory: scripts/readme
+        # The profile repo itself is excluded so the generator code does not skew languages.
+        run: node live.mjs --out ../../dist --snake ../../snk --exclude "${GITHUB_REPOSITORY#*/}"
+        env:
+          STATS_TOKEN: ${{ secrets.STATS_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Publish to output branch
         uses: crazy-max/ghaction-github-pages@v5
@@ -75,3 +133,15 @@ jobs:
           commit_message: "chore: update profile assets"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # GitHub disables scheduled workflows in public repositories after 60
+      # days without repository activity, and this job's pushes to `output`
+      # are not guaranteed to count. Re-enabling the workflow through the API
+      # (as gautamkrishnar/keepalive-workflow does) keeps the schedule alive
+      # without commits to main. Runs even when an earlier step failed.
+      - name: Keep the daily schedule enabled
+        if: ${{ !cancelled() && github.event_name == 'schedule' }}
+        continue-on-error: true
+        run: gh api --method PUT "repos/${GITHUB_REPOSITORY}/actions/workflows/profile-assets.yml/enable"
+        env:
+          GH_TOKEN: ${{ github.token }}
