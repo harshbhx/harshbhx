@@ -90,6 +90,42 @@ export const ARENA = {
 // No. 2 — Selected work (cards appear in this order, two per row)
 export const WORK = [
   {
+    // Every figure here is from the Ratchet README (github.com/harshbhx/ratchet),
+    // measured 22–24 Oct 2026 on exams the adapters never saw.
+    key: 'ratchet',
+    name: 'Ratchet',
+    status: 'built',
+    event: 'Nebius x NVIDIA Global AI Hackathon 2026',
+    eventPhrase: 'for the Nebius x NVIDIA Global AI Hackathon 2026',
+    kind: 'OpenAI-compatible gateway · license-clean distillation',
+    deck: 'License-clean distillation on open models, behind one OpenAI-compatible URL.',
+    summary: 'A small Nemotron student answers first; when it is unsure the teacher answers, and every teacher answer is logged with its license to become training data.',
+    pipeline: [
+      { step: 'Answer', tool: 'Nemotron 3 Nano 4B, the student, answers first' },
+      { step: 'Escalate', tool: 'when it is unsure, Nemotron 3 Ultra on Nebius Token Factory (the teacher) answers, logged with its license' },
+      { step: 'Retrain', tool: 'Night School trains a new LoRA adapter; a golden gate (95% precision) decides if it ships' },
+    ],
+    results: {
+      when: '22–24 Oct 2026',
+      title: 'Measured',
+      deck: 'Strict scoring, on exams the adapters never saw.',
+      exams: [
+        { task: 'Text-to-SQL', exam: 'exam 1 · 172 questions', before: 12.8, after: 39.0 },
+        { task: 'Tool calling', exam: 'hard exam · 150 questions', before: 62.7, after: 90.7 },
+      ],
+      facts: [
+        { approx: true, value: '$17', label: 'on record',detail: 'to teach the two text-to-SQL adapters' },
+        { value: '95%', label: 'precision at the golden gate', detail: 'before a new adapter ships' },
+        { value: 'LoRA', label: 'adapter you own', detail: 'with each teacher’s license logged' },
+      ],
+    },
+    stack: ['Python', 'FastAPI', 'Nemotron', 'Nebius', 'Cloudflare Workers', 'LoRA · QLoRA'],
+    links: [
+      { label: 'Source', href: 'https://github.com/harshbhx/ratchet' },
+      { label: 'ratchet.dualmindlab.tech', href: 'https://ratchet.dualmindlab.tech' },
+    ],
+  },
+  {
     key: 'pixelproof',
     name: 'PixelProof',
     status: 'built',
@@ -144,7 +180,7 @@ export const WORK = [
       { step: 'Preview', tool: 'sandboxed iframe + code view' },
     ],
     stack: ['Next.js 14', 'TypeScript', 'Cursor SDK', 'SSE', 'Tailwind'],
-    links: [{ label: 'Source', href: 'https://github.com/harshbhx/cursor-rajkot-workshop' }],
+    links: [{ label: 'Source', href: 'https://github.com/harshbhx/ai-component-builder' }],
   },
   {
     key: 'agent',
@@ -216,8 +252,8 @@ export const NOW = [
 
 // No. 4 — the toolbox. [Simple Icons slug, label]
 export const STACK = [
-  { group: 'AI', note: 'models, gateways, SDKs', items: [['openai', 'OpenAI'], ['claude', 'Claude'], ['googlegemini', 'Gemini'], ['cloudflare', 'AI Gateway'], ['cursor', 'Cursor SDK']] },
-  { group: 'Build', note: 'languages & frameworks', items: [['typescript', 'TypeScript'], ['javascript', 'JavaScript'], ['dart', 'Dart'], ['flutter', 'Flutter'], ['csharp', 'C#'], ['dotnet', '.NET'], ['nodedotjs', 'Node.js'], ['nextdotjs', 'Next.js'], ['react', 'React']] },
+  { group: 'AI', note: 'models, gateways, SDKs', items: [['openai', 'OpenAI'], ['claude', 'Claude'], ['googlegemini', 'Gemini'], ['cloudflare', 'AI Gateway'], ['cursor', 'Cursor SDK'], ['nvidia', 'Nemotron']] },
+  { group: 'Build', note: 'languages & frameworks', items: [['typescript', 'TypeScript'], ['javascript', 'JavaScript'], ['python', 'Python'], ['dart', 'Dart'], ['flutter', 'Flutter'], ['csharp', 'C#'], ['dotnet', '.NET'], ['nodedotjs', 'Node.js'], ['nextdotjs', 'Next.js'], ['react', 'React'], ['fastapi', 'FastAPI']] },
   { group: 'Data', note: 'where state lives', items: [['supabase', 'Supabase'], ['postgresql', 'PostgreSQL'], ['firebase', 'Firebase'], ['redis', 'Redis']] },
   { group: 'Run', note: 'cloud, edge, delivery', items: [['microsoftazure', 'Azure'], ['cloudflare', 'Cloudflare'], ['cloudflareworkers', 'Workers'], ['docker', 'Docker'], ['githubactions', 'GitHub Actions'], ['googlechrome', 'Chrome MV3'], ['reddit', 'Devvit']] },
 ]

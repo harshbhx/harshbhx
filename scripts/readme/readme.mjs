@@ -23,6 +23,7 @@ export const PAGE = [
   ['section', 'arena'],
   ['pair', 'arena-story', 'arena-figure'],
   ['section', 'work'],
+  ['pair', 'feature-ratchet', 'ratchet-results'],
   ['pair', 'feature-pixelproof', 'feature-modvigil'],
   ['pair', 'feature-builder', 'feature-agent'],
   ['pair', 'feature-mealmind', 'house-rules'],
@@ -213,6 +214,12 @@ function plainText() {
       `  - ${w.summary}`,
       ...(w.pipeline ? [`  - ${w.pipeline.map((s) => `${s.step} (${s.tool})`).join(' → ')}`] : []),
       ...(w.rules ? w.rules.map((r) => `  - **${r.rule}:** ${r.detail}`) : []),
+      ...(w.results
+        ? [
+            `  - **${w.results.title}** (${w.results.when}): ${w.results.deck} ${w.results.exams.map((e) => `${e.task}, ${e.exam}: ${e.before.toFixed(1)}% untrained → ${e.after.toFixed(1)}% with the adapter`).join('; ')}.`,
+            `  - ${w.results.facts.map((f) => `${f.approx ? 'About ' : ''}${f.value} ${f.label} ${f.detail}`).join('; ')}.`,
+          ]
+        : []),
       `  - **Stack:** ${w.stack.join(', ')}`,
     ]),
     '',

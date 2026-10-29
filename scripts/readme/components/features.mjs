@@ -1,13 +1,15 @@
-// No. 2 — Selected work: five feature cards and the "House rules" card.
+// No. 2 — Selected work: six feature cards, Ratchet's results page and the
+// "House rules" card.
 //
+//   feature-ratchet    · ratchet-results       (pair)
 //   feature-pixelproof · feature-modvigil      (pair)
 //   feature-builder    · feature-agent         (pair)
 //   feature-mealmind   · house-rules           (pair)
 //
-// All six share one template and one height, so every pair is identical in
+// All eight share one template and one height, so every pair is identical in
 // size and the section reads as one run of magazine pages:
 //
-//     40  kicker row     FEATURE · 1 OF 5 ………………………………… [BUILT]
+//     40  kicker row     FEATURE · 1 OF 6 ………………………………… [BUILT]
 //     54  hairline
 //     84  figure head    Fig. 3  How a scan works          (serif italic)
 //  102–272 the drawing   a real explanation of the product, in ink lines
@@ -22,7 +24,8 @@
 //   H-26  footer         the card's one link ↗ · serif-italic note
 //
 // Figures continue the issue's numbering after the masthead (Fig. 1) and
-// the Arena (Fig. 2). Wording comes from content.mjs, shortened where a
+// the Arena (Fig. 2): Ratchet is Fig. 3 with its results as Fig. 4, then
+// Figs. 5–9. Wording comes from content.mjs, shortened where a
 // label has to fit a drawing — never with new claims.
 
 import { createDoc, r1 } from '../lib/svg.mjs'
@@ -155,7 +158,170 @@ const INK = (t, w = 1) => `stroke="${t.fg}" stroke-width="${w}" stroke-linejoin=
 const bar = (t, x, y, w, { h = 4, op = 0.2, fill = t.fg } = {}) => `<rect x="${r1(x)}" y="${r1(y)}" width="${r1(w)}" height="${h}" rx="${h / 2}" fill="${fill}" opacity="${op}"/>`
 const arrowHead = (x, y, dir = 1) => `M${x - dir * 4.5} ${y - 3.5}L${x} ${y}L${x - dir * 4.5} ${y + 3.5}`
 
-// ── Fig. 3 · PixelProof ────────────────────────────────────────────────────
+// ── Fig. 3 · Ratchet ───────────────────────────────────────────────────────
+// Student → teacher → Night School, with the loop drawn over the top: the
+// adapter Night School ships becomes the next student.
+
+const RT_TOOLS = ['Nano 4B student', 'Ultra, when unsure', 'new adapter, gated']
+
+function figRatchet(d, w) {
+  const t = d.t
+  const out = []
+  const lines = []
+  const cols = [P, 150, 272]
+  const y0 = DRAW_TOP + 16
+  const ph = 96
+  const mid = y0 + ph / 2
+  const panel = (x, x2, fill = t.surfaceRaised) => `<rect x="${x}" y="${y0}" width="${x2 - x}" height="${ph}" rx="5" fill="${fill}" ${INK(t)}/>`
+  const head = (x, x2, icon, label) => {
+    assertFits(`ratchet panel "${label}"`, x + 27 + d.measure(label, { font: 'sans-600', size: 12 }), x2 - 6)
+    return [
+      d.icon(icon, { x: x + 9, y: y0 + 8, size: 13, color: t.fg, stroke: 1.9 }),
+      d.text(label, { x: x + 27, y: y0 + 18.5, font: 'sans-600', size: 12, fill: t.fg }),
+      `<path d="M${x} ${y0 + 27}H${x2}" stroke="${t.fg}" stroke-opacity=".22"/>`,
+    ].join('')
+  }
+  // 1 · the student: a draft answer and its confidence, short of the bar
+  const ax = cols[0]
+  const ax2 = cols[1] - 14
+  const tw = ax2 - ax - 18
+  const thr = ax + 9 + tw * 0.8
+  out.push(
+    panel(ax, ax2),
+    head(ax, ax2, 'bot', 'Nano 4B'),
+    bar(t, ax + 9, y0 + 38, tw - 12, { op: 0.14 }),
+    bar(t, ax + 9, y0 + 47, tw - 30, { op: 0.14 }),
+    `<rect x="${ax + 9}" y="${y0 + 66}" width="${tw}" height="6" rx="3" fill="${t.inset}"/>`,
+    fade(`<rect x="${ax + 9}" y="${y0 + 66}" width="${r1(tw * 0.48)}" height="6" rx="3" fill="${t.ink}"/>`, 0.35),
+    `<path d="M${r1(thr)} ${y0 + 59}V${y0 + 79}" stroke="${t.terra}" stroke-width="1.3" stroke-dasharray="2 2"/>`,
+  )
+  // 2 · the teacher: its answer, logged with its license
+  const bx = cols[1]
+  const bx2 = cols[2] - 14
+  out.push(panel(bx, bx2), head(bx, bx2, 'graduation-cap', 'Ultra'))
+  ;[0, 1, 2].forEach((k) => out.push(fade(bar(t, bx + 9, y0 + 38 + k * 9, bx2 - bx - 22 - [0, 14, 30][k], { op: 0.32 }), 0.55 + k * 0.08)))
+  const tag = `<rect x="${bx + 9}" y="${y0 + 66}" width="62" height="17" rx="3" fill="none" stroke="${t.ink}"/>` + d.icon('scroll-text', { x: bx + 13, y: y0 + 69.5, size: 10, color: t.ink, stroke: 2 }) + bar(t, bx + 28, y0 + 72.5, 36, { op: 0.4, fill: t.ink })
+  out.push(`<g class="stamp">${tag}</g>`)
+  // 3 · Night School: the ledger it trains on, and the gate the adapter must pass
+  const cx = cols[2]
+  out.push(panel(cx, R), head(cx, R, 'moon', 'Night School'))
+  ;[0, 1, 2].forEach((k) => out.push(fade(`<circle cx="${cx + 12}" cy="${y0 + 40 + k * 9}" r="1.8" fill="${t.terra}"/>` + bar(t, cx + 19, y0 + 38 + k * 9, R - cx - 32 - [0, 10, 22][k]), 0.8 + k * 0.08)))
+  const GATE = { font: 'mono-500', size: DATA, tracking: 0.04 }
+  const gate = w.pipeline[2].tool.match(/(\d+%)/)[1]
+  out.push(fade(d.icon('shield-check', { x: cx + 9, y: y0 + 67, size: 14, color: t.terra, stroke: 2 }) + d.text(gate, { x: cx + 28, y: y0 + 78.5, ...GATE, fill: t.terra }), 1.1))
+  // arrows between the panels
+  for (const [x1, x2] of [[ax2, bx], [bx2, cx]]) out.push(`<path d="M${x1 + 2} ${mid}H${x2 - 3}${arrowHead(x2 - 3, mid)}" fill="none" stroke="${t.terra}" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>`)
+  // the ratchet: the shipped adapter goes back to the student
+  const top = DRAW_TOP + 4
+  const xa = (ax + ax2) / 2
+  const xc = (cx + R) / 2
+  lines.push(inkPath(d, `M${xc} ${y0}V${top + 6}Q${xc} ${top} ${xc - 6} ${top}H${xa + 6}Q${xa} ${top} ${xa} ${top + 6}V${y0 - 2}`, { len: xc - xa + 2 * (y0 - top), stroke: t.terra, width: 1.1, delay: 1.2, dur: 0.6 }))
+  const xm = (xa + xc) / 2
+  out.push(
+    `<path d="M${xa - 4.5} ${y0 - 6.5}L${xa} ${y0 - 2}L${xa + 4.5} ${y0 - 6.5}" fill="none" stroke="${t.terra}" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/>`,
+    fade(`<circle cx="${r1(xm)}" cy="${top}" r="8" fill="${t.surfaceTop}" stroke="${t.terra}"/>` + d.icon('repeat', { x: xm - 5, y: top - 5, size: 10, color: t.terra, stroke: 2.2 }), 1.5),
+  )
+  d.add(lines.join(''), out.join(''))
+  d.add(stepRow(d, w.pipeline.map((s, i) => ({ step: s.step, tool: RT_TOOLS[i] })), { cols, y: 244, anchors: [y0 + ph, y0 + ph, y0 + ph] }))
+}
+
+// ── Fig. 4 · Ratchet, measured ─────────────────────────────────────────────
+// The companion page: the two exam results as bars on one 0–100% scale,
+// then three facts set like the House rules.
+
+function figResults(d, r) {
+  const t = d.t
+  const out = []
+  const LX = P
+  const TX = P + 74 // bar track start
+  const VW = 46 // value column
+  const TR = R - VW
+  const scale = (v) => TX + ((TR - TX) * v) / 100
+  const gTop = DRAW_TOP + 18
+  const gap = 72
+  // grid: 0 / 50 / 100%
+  const axisY = gTop + 2 * gap - 8
+  ;[0, 50, 100].forEach((v) => {
+    const x = r1(scale(v))
+    out.push(`<path d="M${x} ${gTop + 8}V${axisY}" stroke="${t.fg}" stroke-opacity="${v ? 0.12 : 0.35}"${v ? ' stroke-dasharray="1.5 3"' : ''}/>`)
+    out.push(d.text(`${v}%`, { x, y: axisY + 14, font: 'mono-400', size: 10.5, fill: t.muted, anchor: 'middle' }))
+  })
+  r.exams.forEach((e, i) => {
+    const y = gTop + i * gap
+    const g = [
+      d.text(e.task, { x: LX, y, font: 'sans-600', size: 13, fill: t.fg }),
+      d.text(e.exam, { x: R, y, ...TAG, fill: t.muted, anchor: 'end' }),
+    ]
+    assertFits(`results ${e.task}`, LX + d.measure(e.task, { font: 'sans-600', size: 13 }) + 16 + d.measure(e.exam, TAG), R)
+    ;[
+      ['untrained', e.before, t.fg, 0.28, t.muted, 'mono-400'],
+      ['adapter', e.after, t.terra, 1, t.terra, 'mono-500'],
+    ].forEach(([label, v, fill, op, vfill, vfont], k) => {
+      const by = y + 14 + k * 20
+      const bw = scale(v) - TX
+      g.push(
+        d.text(label, { x: LX, y: by + 9, font: 'sans-400', size: 12, fill: t.fg2 }),
+        `<rect x="${TX}" y="${by}" width="${r1(TR - TX)}" height="11" rx="2" fill="${t.inset}" opacity=".6"/>`,
+        `<rect class="grow" x="${TX}" y="${by}" width="${r1(bw)}" height="11" rx="2" fill="${fill}" opacity="${op}" style="animation-delay:${(0.3 + i * 0.25 + k * 0.1).toFixed(2)}s"/>`,
+        d.text(`${v.toFixed(1)}%`, { x: R, y: by + 9.5, font: vfont, size: DATA, fill: vfill, anchor: 'end' }),
+      )
+    })
+    out.push(fade(g.join(''), 0.15 + i * 0.25, 'fade-up'))
+  })
+  d.css('.grow{transform-box:fill-box;transform-origin:left;animation:grow .7s cubic-bezier(.3,.6,.3,1) both}@keyframes grow{from{transform:scaleX(0)}}')
+  d.add(out.join(''))
+}
+
+const RESULTS_ALT = (w, no) => {
+  const r = w.results
+  const exams = r.exams.map((e) => `${e.task.toLowerCase()}, ${e.exam.replace(' · ', ', ')}: ${e.before.toFixed(1)}% untrained, ${e.after.toFixed(1)}% with the adapter`).join('; ')
+  const facts = r.facts.map((f) => `${f.approx ? 'About ' : ''}${f.value} ${f.label} ${f.detail}.`).join(' ')
+  return `Feature ${no}, continued: ${w.name}, ${r.title.toLowerCase()} (${r.when}). ${r.deck} Fig. 4, exam results: ${exams}. ${facts} Link: ${linkLabel(w.links[1].href)}.`
+}
+
+function renderResults(theme, w, no) {
+  const r = w.results
+  const d = createDoc({ width: W, height: H, theme, title: `${w.name}, ${r.title.toLowerCase()}`, desc: RESULTS_ALT(w, no) })
+  editorial(d)
+  const t = d.t
+  d.add(paper(d))
+  const kx = kicker(d, 'Results', `· ${w.name}, feature ${no}`)
+  const st = status(d, 'measured', { x: R, y: 25, anchor: 'end' })
+  d.add(st.svg)
+  assertFits('results kicker', kx + 12, R - st.w)
+  figHeader(d, 4, 'Exams it never saw')
+  figResults(d, r)
+
+  d.add(d.text(`On real models · ${r.when}`,{ x: P, y: RUBRIC_Y, ...KICK, fill: t.muted }))
+  d.add(d.text(r.title, { x: P - 1.5, y: TITLE_Y, font: 'serif-400', size: 40, fill: t.fg, cls: 'fade-up' }))
+  const deck = setText(d, r.deck, { x: P, y: TITLE_Y + 29, width: R - P, font: 'serif-400i', size: 20, lh: 25, fill: t.fg, mark: nb('never saw'), label: 'results deck' })
+  d.add(`<g class="fade-up" style="animation-delay:.08s">${deck.svg}</g>`)
+
+  // three facts, set like the House rules: figure on the left, what it means on the right
+  const top = deck.last + 22
+  const bottom = FOOT_RULE - 6
+  const rh = (bottom - top) / r.facts.length
+  const NX = P + 92
+  d.add(doubleRule(d, P, R, top, { heavy: 1.2, gap: 2.5 }))
+  r.facts.forEach((f, i) => {
+    const y = top + 3 + i * rh
+    const ty = y + rh / 2 - 3
+    const segs = [...(f.approx ? [{ text: '≈', font: 'mono-500', size: 18, after: 4 }] : []), { text: f.value, font: 'serif-400', size: 30 }]
+    const v = runs(d, segs, { x: P, y: ty + 8, size: 30, fill: t.terra })
+    assertFits(`fact ${i + 1} value`, v.x + 8, NX)
+    const g = [v.svg, d.text(f.label, { x: NX, y: ty, font: 'sans-600', size: 13.5, fill: t.fg }), d.text(f.detail, { x: NX, y: ty + 18, font: 'sans-400', size: 12.5, fill: t.fg2 })]
+    assertFits(`fact ${i + 1} detail`, NX + d.measure(f.detail, { font: 'sans-400', size: 12.5 }), R)
+    assertFits(`fact ${i + 1} label`, NX + d.measure(f.label, { font: 'sans-600', size: 13.5 }), R)
+    d.add(fade(g.join(''), 0.3 + i * 0.1, 'fade-up'))
+    if (i < r.facts.length - 1) d.add(hairline(d, P, R, r1(top + 3 + (i + 1) * rh)))
+  })
+  if (rh < 36) throw new Error(`results facts: too tight (${rh.toFixed(1)})`)
+
+  footer(d, { link: linkLabel(w.links[1].href), note: 'every score recomputes' })
+  return d.end()
+}
+
+// ── Fig. 5 · PixelProof ────────────────────────────────────────────────────
 // A page in the browser: the image under PixelProof's viewfinder with its
 // verdict badge, the plain-English "why" and the fact-check panel, keyed to
 // the three steps of the pipeline.
@@ -237,7 +403,7 @@ function figPixelProof(d, w) {
   d.add(stepRow(d, w.pipeline.map((s, i) => ({ step: s.step, tool: PP_TOOLS[i] })), { cols, y: 244, anchors: [iy + ih + g, iy + ih, iy + ih] }))
 }
 
-// ── Fig. 4 · ModVigil ──────────────────────────────────────────────────────
+// ── Fig. 6 · ModVigil ──────────────────────────────────────────────────────
 // "What it automates": its four automations as a ledger, each marked with a
 // plain icon for what it watches (no on/off switches: content.mjs describes
 // the automations, not a deployment or a settings screen).
@@ -277,7 +443,7 @@ function figModVigil(d, w) {
   d.add(out.join(''))
 }
 
-// ── Fig. 5 · AI Component Builder ──────────────────────────────────────────
+// ── Fig. 7 · AI Component Builder ──────────────────────────────────────────
 // Prompt in the chat panel → code streamed over SSE → the component, rendered.
 
 const BUILDER_TOOLS = ['chat panel', 'Cursor SDK · SSE', 'sandboxed iframe']
@@ -346,7 +512,7 @@ function figBuilder(d, w) {
   d.add(stepRow(d, w.pipeline.map((s, i) => ({ step: s.step, tool: BUILDER_TOOLS[i] })), { cols, y: 244, anchors: [y0 + ph, y0 + ph, y0 + ph] }))
 }
 
-// ── Fig. 6 · AI Support Agent ──────────────────────────────────────────────
+// ── Fig. 8 · AI Support Agent ──────────────────────────────────────────────
 // One inbound query → the agent classifies it → resolved, or escalated with context.
 
 function figAgent(d, w) {
@@ -406,7 +572,7 @@ function figAgent(d, w) {
   d.add(lines.join(''), out.join(''))
 }
 
-// ── Fig. 7 · MealMind ──────────────────────────────────────────────────────
+// ── Fig. 9 · MealMind ──────────────────────────────────────────────────────
 // Pay → confirm → one Firestore write, fanning out to the three apps, with
 // the whole trip measured like a dimension line: under a second.
 
@@ -491,11 +657,12 @@ function figMealMind(d, w) {
 // comes from content.mjs `highlights`); a card without a link prints the
 // second half of its `kind` (the rubric carries the first half).
 const FEATURES = [
-  { key: 'pixelproof', fig: 3, caption: 'How a scan works', draw: figPixelProof, mark: 'Is this image real?', note: 'the whole page in one click' },
-  { key: 'modvigil', fig: 4, caption: 'What it automates', draw: figModVigil, mark: 'second pair of eyes', note: 'read the source' },
-  { key: 'builder', fig: 5, caption: 'From prompt to preview', draw: figBuilder, mark: 'plain English', note: 'read the source' },
-  { key: 'agent', fig: 6, caption: 'How a query is routed', draw: figAgent, mark: 'with context', rubric: 'Support automation', note: 'function calling' },
-  { key: 'mealmind', fig: 7, caption: 'One payment, every screen', draw: figMealMind, figAlt: ' — reaching the customer, chef and admin apps in under a second', mark: 'under a second', rubric: 'Restaurant ecosystem', note: '3 Flutter apps, one Firebase backend' },
+  { key: 'ratchet', fig: 3, caption: 'How it learns', draw: figRatchet, mark: 'License-clean distillation', note: 'read the source' },
+  { key: 'pixelproof', fig: 5, caption: 'How a scan works', draw: figPixelProof, mark: 'Is this image real?', note: 'the whole page in one click' },
+  { key: 'modvigil', fig: 6, caption: 'What it automates', draw: figModVigil, mark: 'second pair of eyes', note: 'read the source' },
+  { key: 'builder', fig: 7, caption: 'From prompt to preview', draw: figBuilder, mark: 'plain English', note: 'read the source' },
+  { key: 'agent', fig: 8, caption: 'How a query is routed', draw: figAgent, mark: 'with context', rubric: 'Support automation', note: 'function calling' },
+  { key: 'mealmind', fig: 9, caption:'One payment, every screen', draw: figMealMind, figAlt: ' — reaching the customer, chef and admin apps in under a second', mark: 'under a second', rubric: 'Restaurant ecosystem', note: '3 Flutter apps, one Firebase backend' },
 ]
 
 const linkLabel = (href) => href.replace(/^https?:\/\//, '').replace(/\/$/, '')
@@ -608,6 +775,15 @@ export default [
     alt: featureAlt(f, BY[f.key], i + 1),
     ...(BY[f.key].links[0] ? { href: BY[f.key].links[0].href } : {}),
     render: (theme) => renderFeature(theme, f, i + 1),
+  })),
+  // Ratchet's companion page (Fig. 4), paired with its feature card
+  ...[BY.ratchet].map((w) => ({
+    name: 'ratchet-results',
+    width: W,
+    height: H,
+    alt: RESULTS_ALT(w, 1),
+    href: w.links[1].href,
+    render: (theme) => renderResults(theme, w, 1),
   })),
   { name: 'house-rules', width: W, height: H, alt: RULES_ALT, render: renderRules },
 ]
