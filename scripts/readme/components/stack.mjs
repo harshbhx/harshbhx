@@ -7,7 +7,7 @@
 // in serif italic), a rule, then its entries A–Z in two newspaper columns,
 // read top-to-bottom like a real index. An entry is a small brand mark, the
 // tool's name and dot leaders to the figure numbers it appears in (Fig. 2
-// the Arena, Figs. 3–7 the feature cards), so a tool points at the work that
+// the Arena, Fig. 3 and Figs. 5–9 the feature cards), so a tool points at the work that
 // proves it; "–" when no figure in this issue shows it. stack-b carries
 // the key to those numbers in the space its shorter lists leave free.
 //
@@ -63,7 +63,7 @@ const REF = { font: 'serif-400i', size: 15 }
 const LOGO = 16
 const LABEL_X = 26 // logo → label
 
-// ── figures in this issue (arena.mjs: Fig. 2, features.mjs: Figs. 3–7) ──
+// ── figures in this issue (arena.mjs: Fig. 2, features.mjs: Figs. 3 and 5–9) ──
 // `copy` is what content.mjs says about the project; `shown` is what its
 // figure prints (the component's alt text).
 const altOf = (list, name) => {
@@ -75,7 +75,7 @@ const PROJECTS = [
   { key: 'arena', fig: 2, short: 'Arena', name: ARENA.name, copy: [...ARENA.stack, ...ARENA.diagram, ARENA.kind, ARENA.approach].join(' | '), shown: altOf(ARENA_PAGES, 'arena-figure') },
   ...WORK.map((w) => ({
     key: w.key,
-    fig: { pixelproof: 3, modvigil: 4, builder: 5, agent: 6, mealmind: 7 }[w.key],
+    fig: { ratchet: 3, pixelproof: 5, modvigil: 6, builder: 7, agent: 8, mealmind: 9 }[w.key],
     short: { builder: 'Builder', agent: 'Agent' }[w.key] || w.name,
     name: w.name,
     copy: [...w.stack, w.kind, w.summary].join(' | '),
@@ -98,8 +98,11 @@ const EVIDENCE = {
   Claude: { agent: 'Claude' },
   'Cursor SDK': { builder: 'Cursor SDK' },
   Gemini: { pixelproof: 'Gemini' },
+  Nemotron: { ratchet: 'Nemotron' },
   OpenAI: { agent: 'GPT-4o' },
   Dart: { mealmind: 'Flutter' },
+  FastAPI: { ratchet: 'FastAPI' },
+  Python: { ratchet: 'Python' },
   Flutter: { mealmind: 'Flutter' },
   JavaScript: { arena: 'Vanilla JS', pixelproof: 'Vanilla JS' },
   '.NET': { arena: '.NET Web API' },
@@ -113,9 +116,10 @@ const EVIDENCE = {
   Supabase: { arena: 'Supabase', agent: 'Supabase' },
   Azure: { arena: 'Azure' },
   'Chrome MV3': { pixelproof: 'Chrome MV3' },
-  Cloudflare: { arena: 'Cloudflare CDN' },
+  Cloudflare: { arena: 'Cloudflare CDN', ratchet: 'Cloudflare Workers' },
   Devvit: { modvigil: 'Devvit' },
   'GitHub Actions': { arena: 'GitHub Actions' },
+  Workers: { ratchet: 'Cloudflare Workers' },
 }
 
 /** Figures (sorted) whose drawing shows the tool; throws if the evidence is not in content.mjs. */
@@ -134,7 +138,7 @@ function usedIn(label) {
 
 // Maker of a short-form index label, added in parentheses in the alt text
 // ("AI Gateway (Cloudflare)") so it keeps the A–Z order the image shows.
-const MAKER = { 'AI Gateway': 'Cloudflare', Workers: 'Cloudflare', Devvit: 'Reddit', Gemini: 'Google' }
+const MAKER = { 'AI Gateway': 'Cloudflare', Workers: 'Cloudflare', Devvit: 'Reddit', Gemini: 'Google', Nemotron: 'NVIDIA' }
 
 // A–Z, ignoring leading punctuation (".NET" files under N, as in a printed index)
 const sortKey = (s) => s.replace(/^[^A-Za-z0-9]+/, '').toLowerCase()
@@ -150,7 +154,7 @@ const CARDS = [
 
 const rowsOf = (g) => Math.ceil(g.entries.length / 2)
 const rowsEnd = (card) => card.groups.reduce((y, g, i) => y + (i ? HEAD_BLOCK : 0) + rowsOf(g) * ROW, HEAD_BASE + HEAD_RULE + CELLS)
-const KEY_ROWS = 2 // the key to the figure numbers needs two rows
+const KEY_ROWS = 3 // the key to the figure numbers needs three rows
 const CONTENT_END = Math.max(...CARDS.map(rowsEnd))
 // the key goes in the card whose lists end early; there must be exactly one
 const KEY_CARD = CARDS.filter((c) => CONTENT_END - rowsEnd(c) >= KEY_ROWS * ROW)
@@ -247,11 +251,11 @@ function key(d, top) {
   const out = [hairline(d, P, R, top + 6)]
   // label column: "Figures / in this issue"
   out.push(d.text('Figures', { x: P, y: b1, ...LAB, fill: t.fg }), d.text('in this issue', { x: P, y: b2, ...LAB, fill: t.muted }))
-  // three columns (2/5, 3/6, 4/7): the middle one starts on the index's right
-  // column, the last one ends on the figure numbers' edge, and the gap between
-  // columns is the same twice over
-  const per = Math.ceil(used.length / 2)
-  if (per !== 3) throw new Error(`stack key: laid out for 3 columns, got ${per}`)
+  // three columns, filled row by row (2/3/5, 6/7/8, 9): the middle one starts
+  // on the index's right column, the last one ends on the figure numbers'
+  // edge, and the gap between columns is the same twice over
+  const per = 3
+  if (Math.ceil(used.length / per) > KEY_ROWS) throw new Error(`stack key: ${used.length} figures need more than ${KEY_ROWS} rows`)
   const segs = (p) => [{ text: String(p.fig), ...REF, fill: t.terra, after: 6 }, { text: p.short, ...NAME, fill: t.fg2 }]
   const wOf = (p) => d.measure(String(p.fig), REF) + 6 + d.measure(p.short, NAME)
   const colW = [0, 1, 2].map((c) => Math.max(...used.filter((_, i) => i % per === c).map(wOf)))
@@ -263,7 +267,7 @@ function key(d, top) {
   if (gap < 14) throw new Error(`stack key: columns too tight (${gap.toFixed(1)})`)
   assertFits('key label', P + d.measure('in this issue', LAB) + 16, x0)
   used.forEach((p, i) => {
-    out.push(runs(d, segs(p), { x: xs[i % per], y: i < per ? b1 : b2, size: NAME.size }).svg)
+    out.push(runs(d, segs(p), { x: xs[i % per], y: b1 + Math.floor(i / per) * (b2 - b1), size: NAME.size }).svg)
   })
   d.add(fade(out.join(''), T0))
   return used
