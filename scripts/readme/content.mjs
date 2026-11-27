@@ -126,6 +126,51 @@ export const WORK = [
     ],
   },
   {
+    // From the Tarang FM README (github.com/harshbhx/tarang-fm); the win is
+    // Sarvam's own announcement on X.
+    key: 'tarang',
+    name: 'Tarang FM',
+    status: '1st place',
+    event: 'Winner · Sarvam Bulbul Build Challenge',
+    eventPhrase: 'for the Sarvam Bulbul Build Challenge, where it won first place',
+    kind: 'Live AI radio station · Indian-language voice AI',
+    deck: 'A live radio station in five Indian languages, where every voice is AI.',
+    summary: 'RJs, news from 160+ feeds, spoof ads and a radio serial, each line acted by a Sarvam Bulbul V4 Flash voice. Hold to talk, or phone the studio, and the RJ answers you on air.',
+    pipeline: [
+      { step: 'Write', tool: 'Sarvam-105B writes the script; code checks and a producer judge pass it' },
+      { step: 'Voice', tool: 'one of 33 Bulbul V4 Flash voices acts each line' },
+      { step: 'Air', tool: 'one shared live show per station, on Durable Objects' },
+    ],
+    stack: ['TypeScript', 'Cloudflare Workers', 'Durable Objects', 'Workers KV', 'Bulbul V4 Flash', 'Saaras v4'],
+    links: [
+      { label: 'tarang-fm.dualmindlab.tech', href: 'https://tarang-fm.dualmindlab.tech' },
+      { label: 'Source', href: 'https://github.com/harshbhx/tarang-fm' },
+      { label: 'Announcement on X', href: 'https://x.com/SarvamForDevs/status/2112207014785175938' },
+    ],
+  },
+  {
+    // From the Halo README (github.com/harshbhx/halo) and its Devpost page.
+    key: 'halo',
+    name: 'Halo',
+    status: '2nd place',
+    event: '2nd place · Devpost Build With AI',
+    eventPhrase: 'for Devpost’s Build With AI: Basics, where it won 2nd place',
+    kind: 'Face-blindness aid · on-device face recognition',
+    deck: 'A quiet voice for faces you know.',
+    summary: 'A phone web app for people with face blindness. When the camera is sure it’s someone you added, with their own yes, an earbud says who they are and how you know them. Faces never leave the phone.',
+    pipeline: [
+      { step: 'See', tool: 'the phone camera, in the browser' },
+      { step: 'Match', tool: 'a 128-number face fingerprint, encrypted on the phone' },
+      { step: 'Whisper', tool: 'who they are and how you know them, in your earbud' },
+    ],
+    stack: ['TypeScript', 'React 19', 'Vite', 'face-api · TF.js', 'IndexedDB · AES-GCM', 'Cloudflare Workers'],
+    links: [
+      { label: 'halo.dualmindlab.tech', href: 'https://halo.dualmindlab.tech' },
+      { label: 'Devpost', href: 'https://devpost.com/software/halo-az5yd4' },
+      { label: 'Source', href: 'https://github.com/harshbhx/halo' },
+    ],
+  },
+  {
     key: 'pixelproof',
     name: 'PixelProof',
     status: 'built',

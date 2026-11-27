@@ -1,12 +1,13 @@
-// No. 2 — Selected work: six feature cards, Ratchet's results page and the
+// No. 2 — Selected work: eight feature cards, Ratchet's results page and the
 // "House rules" card.
 //
 //   feature-ratchet    · ratchet-results       (pair)
+//   feature-tarang     · feature-halo          (pair)
 //   feature-pixelproof · feature-modvigil      (pair)
 //   feature-builder    · feature-agent         (pair)
 //   feature-mealmind   · house-rules           (pair)
 //
-// All eight share one template and one height, so every pair is identical in
+// All ten share one template and one height, so every pair is identical in
 // size and the section reads as one run of magazine pages:
 //
 //     40  kicker row     FEATURE · 1 OF 6 ………………………………… [BUILT]
@@ -25,7 +26,7 @@
 //
 // Figures continue the issue's numbering after the masthead (Fig. 1) and
 // the Arena (Fig. 2): Ratchet is Fig. 3 with its results as Fig. 4, then
-// Figs. 5–9. Wording comes from content.mjs, shortened where a
+// Figs. 5–11. Wording comes from content.mjs, shortened where a
 // label has to fit a drawing — never with new claims.
 
 import { createDoc, r1 } from '../lib/svg.mjs'
@@ -651,6 +652,95 @@ function figMealMind(d, w) {
   d.add(lines.join(''), out.join(''))
 }
 
+// ── Fig. 5 · Tarang FM ─────────────────────────────────────────────────────
+// A radio dial tuned across the five stations, and under it the three things
+// every line goes through: a script, a voice, the shared live show.
+
+const TARANG_TOOLS = ['Sarvam-105B script', '33 Bulbul voices', 'one live show']
+const TARANG_FM = [91.1, 94.3, 98.3, 102.7, 106.1]
+
+function figTarang(d, w) {
+  const t = d.t
+  const out = []
+  const cols = [P, 146, 270]
+  const y0 = DRAW_TOP
+  const ph = 110
+  // the dial: 88–108 MHz, one tick per MHz, the five stations marked
+  out.push(`<rect x="${P}" y="${y0}" width="${R - P}" height="${ph}" rx="5" fill="${t.surfaceRaised}" ${INK(t)}/>`)
+  const sx = P + 18
+  const sw = R - P - 36
+  const fx = (f) => sx + ((f - 88) / 20) * sw
+  const by = y0 + 40
+  const ticks = []
+  for (let f = 88; f <= 108; f++) ticks.push(`M${r1(fx(f))} ${by}v${f % 2 ? -4 : -8}`)
+  out.push(`<path d="M${sx} ${by}H${sx + sw}${ticks.join('')}" fill="none" stroke="${t.fg}" stroke-opacity=".45" stroke-width="1"/>`)
+  TARANG_FM.forEach((f, i) => {
+    const x = fx(f)
+    out.push(fade(`<circle cx="${r1(x)}" cy="${by + 6}" r="2.2" fill="${t.terra}"/>` + d.text(String(f), { x, y: by - 14, font: 'mono-500', size: 10.5, fill: i ? t.muted : t.terra, anchor: 'middle' }), 0.3 + i * 0.08))
+  })
+  // the needle, tuned to Hindi 91.1
+  out.push(fade(`<path d="M${r1(fx(91.1))} ${by - 10}V${by + 14}" stroke="${t.terra}" stroke-width="1.6" stroke-linecap="round"/>`, 0.8))
+  const ly = y0 + 66
+  const lb = y0 + ph - 12
+  // 1 · the script: lines of text
+  const ax = cols[0] + 12
+  out.push(...[0, 1, 2, 3].map((i) => bar(t, ax, ly + i * 9, [78, 64, 82, 50][i], { op: 0.32 })))
+  // 2 · the voice: a waveform
+  const vx = cols[1]
+  const amps = [3, 7, 12, 6, 15, 9, 18, 11, 6, 14, 8, 4, 10, 6, 3]
+  out.push(fade(`<path d="${amps.map((a, i) => `M${vx + 4 + i * 6.5} ${ly + 14 - a / 1.3}v${r1((a / 1.3) * 2)}`).join('')}" stroke="${t.fg}" stroke-width="2.4" stroke-linecap="round" opacity=".75"/>`, 1.0))
+  // 3 · on air: the radio, heard by everyone tuned in
+  const rx = cols[2] + 6
+  out.push(fade(d.icon('radio', { x: rx, y: ly - 2, size: 30, color: t.fg, stroke: 1.6 }) + d.icon('users', { x: rx + 42, y: ly + 4, size: 22, color: t.muted, stroke: 1.6 }), 1.15))
+  for (const [x1, x2] of [[cols[0] + 98, cols[1] - 6], [cols[1] + 104, cols[2] - 2]]) out.push(`<path d="M${x1} ${ly + 14}H${x2}${arrowHead(x2, ly + 14)}" fill="none" stroke="${t.terra}" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>`)
+  d.add(out.join(''))
+  d.add(stepRow(d, w.pipeline.map((s, i) => ({ step: s.step, tool: TARANG_TOOLS[i] })), { cols, y: 244, anchors: [lb + 6, lb + 6, lb + 6] }))
+}
+
+// ── Fig. 6 · Halo ──────────────────────────────────────────────────────────
+// A face in the camera frame → its fingerprint matched on the phone → a
+// whisper in the earbud. Nothing crosses to a server.
+
+const HALO_TOOLS = ['in the browser', 'on the phone', 'to your earbud']
+
+function figHalo(d, w) {
+  const t = d.t
+  const out = []
+  const cols = [P, 146, 270]
+  const y0 = DRAW_TOP
+  const ph = 110
+  const mid = y0 + ph / 2
+  // 1 · the phone, a face in its camera frame
+  const px = cols[0] + 14
+  const pw = 72
+  out.push(`<rect x="${px}" y="${y0}" width="${pw}" height="${ph}" rx="10" fill="${t.surfaceRaised}" ${INK(t)}/>`, `<rect x="${px + pw / 2 - 9}" y="${y0 + 6}" width="18" height="3" rx="1.5" fill="${t.faint}"/>`)
+  const fx = px + 16
+  const fy = y0 + 24
+  const fs = 40
+  const c = 9
+  out.push(`<path d="M${fx} ${fy + c}V${fy}H${fx + c}M${fx + fs - c} ${fy}H${fx + fs}V${fy + c}M${fx + fs} ${fy + fs - c}V${fy + fs}H${fx + fs - c}M${fx + c} ${fy + fs}H${fx}V${fy + fs - c}" fill="none" stroke="${t.terra}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>`)
+  out.push(fade(d.icon('scan-face', { x: fx + 8, y: fy + 8, size: 24, color: t.fg, stroke: 1.5 }), 0.4))
+  out.push(bar(t, px + 14, fy + fs + 14, pw - 28, { op: 0.32 }), bar(t, px + 20, fy + fs + 23, pw - 40, { op: 0.2 }))
+  // 2 · the fingerprint: 128 numbers, compared on the phone, locked
+  const gx = cols[1]
+  const gw = 108
+  out.push(`<rect x="${gx}" y="${y0 + 14}" width="${gw}" height="${ph - 28}" rx="5" fill="${t.inset}" ${INK(t)}/>`)
+  const cells = []
+  for (let r = 0; r < 5; r++) for (let k = 0; k < 10; k++) {
+    const v = ((r * 7 + k * 13) % 10) / 10
+    cells.push(`<rect x="${gx + 10 + k * 9}" y="${y0 + 24 + r * 9}" width="6" height="6" rx="1" fill="${t.fg}" opacity="${(0.12 + v * 0.5).toFixed(2)}"/>`)
+  }
+  out.push(fade(cells.join(''), 0.7))
+  out.push(fade(d.icon('lock', { x: gx + gw - 26, y: y0 + ph - 38, size: 14, color: t.terra, stroke: 2 }) + d.text('MATCH', { x: gx + 10, y: y0 + ph - 26, font: 'mono-500', size: 10.5, fill: t.terra, tracking: 0.12 }), 1.0))
+  // 3 · the whisper: a speech bubble into the earbud
+  const ex = cols[2]
+  out.push(fade(`<path d="M${ex + 4} ${y0 + 22}H${R - 6}Q${R} ${y0 + 22} ${R} ${y0 + 28}V${y0 + 56}Q${R} ${y0 + 62} ${R - 6} ${y0 + 62}H${ex + 26}L${ex + 16} ${y0 + 70}V${y0 + 62}H${ex + 4}Q${ex - 2} ${y0 + 62} ${ex - 2} ${y0 + 56}V${y0 + 28}Q${ex - 2} ${y0 + 22} ${ex + 4} ${y0 + 22}Z" fill="${t.surfaceRaised}" ${INK(t)}/>` + bar(t, ex + 8, y0 + 34, 60, { op: 0.45 }) + bar(t, ex + 8, y0 + 44, 44, { op: 0.25 }), 1.15))
+  out.push(fade(d.icon('ear', { x: ex + 50, y: y0 + 74, size: 26, color: t.fg, stroke: 1.6 }), 1.3))
+  for (const [x1, x2] of [[px + pw, gx], [gx + gw, ex - 2]]) out.push(`<path d="M${x1 + 3} ${mid}H${x2 - 4}${arrowHead(x2 - 4, mid)}" fill="none" stroke="${t.terra}" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>`)
+  d.add(out.join(''))
+  d.add(stepRow(d, w.pipeline.map((s, i) => ({ step: s.step, tool: HALO_TOOLS[i] })), { cols, y: 244, anchors: [y0 + ph, y0 + ph - 14, y0 + 100] }))
+}
+
 // ── the feature card ───────────────────────────────────────────────────────
 
 // Footer notes say something the card does not already say (PixelProof's
@@ -658,11 +748,13 @@ function figMealMind(d, w) {
 // second half of its `kind` (the rubric carries the first half).
 const FEATURES = [
   { key: 'ratchet', fig: 3, caption: 'How it learns', draw: figRatchet, mark: 'License-clean distillation', note: 'read the source' },
-  { key: 'pixelproof', fig: 5, caption: 'How a scan works', draw: figPixelProof, mark: 'Is this image real?', note: 'the whole page in one click' },
-  { key: 'modvigil', fig: 6, caption: 'What it automates', draw: figModVigil, mark: 'second pair of eyes', note: 'read the source' },
-  { key: 'builder', fig: 7, caption: 'From prompt to preview', draw: figBuilder, mark: 'plain English', note: 'read the source' },
-  { key: 'agent', fig: 8, caption: 'How a query is routed', draw: figAgent, mark: 'with context', rubric: 'Support automation', note: 'function calling' },
-  { key: 'mealmind', fig: 9, caption:'One payment, every screen', draw: figMealMind, figAlt: ' — reaching the customer, chef and admin apps in under a second', mark: 'under a second', rubric: 'Restaurant ecosystem', note: '3 Flutter apps, one Firebase backend' },
+  { key: 'tarang', fig: 5, caption: 'How a show airs', draw: figTarang, mark: 'every voice is AI', note: 'tune in live' },
+  { key: 'halo', fig: 6, caption: 'From face to whisper', draw: figHalo, mark: 'faces you know', note: 'faces never leave the phone' },
+  { key: 'pixelproof', fig: 7, caption: 'How a scan works', draw: figPixelProof, mark: 'Is this image real?', note: 'the whole page in one click' },
+  { key: 'modvigil', fig: 8, caption: 'What it automates', draw: figModVigil, mark: 'second pair of eyes', note: 'read the source' },
+  { key: 'builder', fig: 9, caption: 'From prompt to preview', draw: figBuilder, mark: 'plain English', note: 'read the source' },
+  { key: 'agent', fig: 10, caption: 'How a query is routed', draw: figAgent, mark: 'with context', rubric: 'Support automation', note: 'function calling' },
+  { key: 'mealmind', fig: 11, caption:'One payment, every screen', draw: figMealMind, figAlt: ' — reaching the customer, chef and admin apps in under a second', mark: 'under a second', rubric: 'Restaurant ecosystem', note: '3 Flutter apps, one Firebase backend' },
 ]
 
 const linkLabel = (href) => href.replace(/^https?:\/\//, '').replace(/\/$/, '')

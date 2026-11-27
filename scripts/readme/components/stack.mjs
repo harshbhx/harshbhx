@@ -7,7 +7,7 @@
 // in serif italic), a rule, then its entries A–Z in two newspaper columns,
 // read top-to-bottom like a real index. An entry is a small brand mark, the
 // tool's name and dot leaders to the figure numbers it appears in (Fig. 2
-// the Arena, Fig. 3 and Figs. 5–9 the feature cards), so a tool points at the work that
+// the Arena, Fig. 3 and Figs. 5–11 the feature cards), so a tool points at the work that
 // proves it; "–" when no figure in this issue shows it. stack-b carries
 // the key to those numbers in the space its shorter lists leave free.
 //
@@ -63,7 +63,7 @@ const REF = { font: 'serif-400i', size: 15 }
 const LOGO = 16
 const LABEL_X = 26 // logo → label
 
-// ── figures in this issue (arena.mjs: Fig. 2, features.mjs: Figs. 3 and 5–9) ──
+// ── figures in this issue (arena.mjs: Fig. 2, features.mjs: Figs. 3 and 5–11) ──
 // `copy` is what content.mjs says about the project; `shown` is what its
 // figure prints (the component's alt text).
 const altOf = (list, name) => {
@@ -75,7 +75,7 @@ const PROJECTS = [
   { key: 'arena', fig: 2, short: 'Arena', name: ARENA.name, copy: [...ARENA.stack, ...ARENA.diagram, ARENA.kind, ARENA.approach].join(' | '), shown: altOf(ARENA_PAGES, 'arena-figure') },
   ...WORK.map((w) => ({
     key: w.key,
-    fig: { ratchet: 3, pixelproof: 5, modvigil: 6, builder: 7, agent: 8, mealmind: 9 }[w.key],
+    fig: { ratchet: 3, tarang: 5, halo: 6, pixelproof: 7, modvigil: 8, builder: 9, agent: 10, mealmind: 11 }[w.key],
     short: { builder: 'Builder', agent: 'Agent' }[w.key] || w.name,
     name: w.name,
     copy: [...w.stack, w.kind, w.summary].join(' | '),

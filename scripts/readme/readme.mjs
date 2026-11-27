@@ -24,6 +24,7 @@ export const PAGE = [
   ['pair', 'arena-story', 'arena-figure'],
   ['section', 'work'],
   ['pair', 'feature-ratchet', 'ratchet-results'],
+  ['pair', 'feature-tarang', 'feature-halo'],
   ['pair', 'feature-pixelproof', 'feature-modvigil'],
   ['pair', 'feature-builder', 'feature-agent'],
   ['pair', 'feature-mealmind', 'house-rules'],
