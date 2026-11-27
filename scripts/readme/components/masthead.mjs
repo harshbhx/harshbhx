@@ -79,7 +79,7 @@ function render(theme) {
     width: W,
     height: H,
     theme,
-    title: `${PROFILE.name} — ${PROFILE.companyRole}, ${PROFILE.company}`,
+    title: `${PROFILE.name} — ${PROFILE.role}, CS at ${PROFILE.university}`,
     desc: ALT,
   })
   editorial(d)
@@ -113,10 +113,8 @@ function render(theme) {
   const introLH = 23.5
   const colW = 514
 
-  const kicker = `${PROFILE.companyRole} · ${PROFILE.company}`
-  const kw = d.measure(kicker, { font: 'mono-500', size: 12, tracking: 0.14, upper: true })
+  const kicker = `${PROFILE.role} · ${PROFILE.university}`
   dt.push(d.text(kicker, { x: P, y: KB, font: 'mono-500', size: 12, tracking: 0.14, upper: true, fill: t.terra, cls: 'fade-in' }))
-  dt.push(d.text('↗', { x: P + kw + 6, y: KB, font: 'mono-500', size: 12, fill: t.terra, cls: 'fade-in' }))
 
   dt.push(d.text(PROFILE.name, { x: P - 3, y: NB, font: 'serif-400', size: nameSize, fill: t.fg, cls: 'fade-up', style: 'animation-delay:.08s' }))
   const nameRight = P - 3 + d.measure(PROFILE.name, { font: 'serif-400', size: nameSize })
@@ -239,9 +237,7 @@ function render(theme) {
   const pl = runs(
     d,
     [
-      { text: `${PROFILE.companyRole}, `, fill: t.fg2 },
-      { text: PROFILE.company, font: 'sans-600', fill: t.fg, after: 12 },
-      { text: '↗', font: 'sans-400', fill: t.terra, after: 16 },
+      { text: PROFILE.role, font: 'sans-600', fill: t.fg, after: 16 },
       { text: '·', fill: t.faint, after: 16 },
       { text: `CS, ${PROFILE.university}`, fill: t.fg2 },
     ],
@@ -256,7 +252,7 @@ function render(theme) {
 }
 
 const ALT = [
-  `${PROFILE.name} — ${PROFILE.companyRole.toLowerCase()} of ${PROFILE.company}.`,
+  `${PROFILE.name} — ${PROFILE.role}, CS student at ${PROFILE.university}.`,
   `“${PROFILE.deck}”`,
   PROFILE.intro,
   `${PROFILE.openTo.headline}: ${PROFILE.openTo.types.join(', ').toLowerCase()} · ${PROFILE.openTo.note}.`,

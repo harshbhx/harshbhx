@@ -187,7 +187,7 @@ function plainText() {
     '<details>',
     '<summary>Plain-text version</summary>',
     '',
-    `**${PROFILE.name}** — ${PROFILE.companyRole}, [${PROFILE.company}](${L.website.href}) · ${PROFILE.location}`,
+    `**${PROFILE.name}** — ${PROFILE.role} · CS at ${PROFILE.university} · ${PROFILE.location}`,
     '',
     `> ${PROFILE.deck}`,
     '',

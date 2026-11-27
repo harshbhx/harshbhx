@@ -9,7 +9,7 @@ export const PROFILE = {
   deck: 'I build AI agents & automations — and the products around them.',
   deckHighlight: 'AI agents & automations', // phrase marked with the highlighter
   intro:
-    'CS student at Parul University in Vadodara, India. In 2025 I co-founded DualMind Labs with Rishi A. Bangoriya, and our first product — DualMind Arena, blind head-to-head AI model evaluation — is live.',
+    'CS student at Parul University in Vadodara, India. I build AI agents and voice AI: Tarang FM won Sarvam’s Bulbul Build Challenge, and Halo took 2nd place at Devpost’s Build With AI. I also co-founded DualMind Labs.',
   city: 'Vadodara',
   location: 'Vadodara, Gujarat, India',
   timezone: 'IST (UTC+5:30)',
@@ -19,6 +19,7 @@ export const PROFILE = {
   diploma: 'Diploma from Darshan University', // completed before Parul
   company: 'DualMind Labs',
   companyRole: 'Co-founder',
+  role: 'AI builder', // the masthead's kicker: the work, not a title
   cofounder: 'Rishi A. Bangoriya',
   founded: '2025',
   focus: 'Generative AI — AI agents & automations',
